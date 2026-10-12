@@ -1,0 +1,10 @@
+# Robots.txt for NowPro (https://sellzon.in/)
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /community.html
+Disallow: /admin.html
+Disallow: /reset-password.html
+Disallow: /*?*
+
+Sitemap: https://sellzon.in/sitemap.xml
