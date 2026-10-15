@@ -1,0 +1,2786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>AI Question Answer — NowPro</title>
+<style>
+:root {
+  --bg: #0b1020;
+  --card: #111827;
+  --soft: #182235;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --line: #263449;
+  --p: #4f46e5;
+  --p2: #7c3aed;
+  --good: #10b981;
+  --bad: #ef4444;
+  --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+body.light {
+  --bg: #f6f8fc;
+  --card: #ffffff;
+  --soft: #eef2f7;
+  --text: #111827;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --p: #4f46e5;
+  --p2: #7c3aed;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+}
+.ai-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--card);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header */
+.ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--card) 88%, var(--soft));
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  z-index: 10;
+}
+.ai-profile {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.ai-avatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.22), rgba(139,92,246,0.22));
+  border: 1px solid rgba(99,102,241,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  flex-shrink: 0;
+}
+.ai-online-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border: 2px solid var(--card);
+  border-radius: 50%;
+  box-shadow: 0 0 6px #10b981;
+}
+.ai-meta {
+  display: flex;
+  flex-direction: column;
+}
+.ai-title {
+  font-size: 15.5px;
+  font-weight: 850;
+  color: var(--text);
+  line-height: 1.2;
+}
+.ai-subtitle {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+.ai-badge-model {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--p) 14%, transparent);
+  color: var(--p);
+  font-weight: 800;
+  font-size: 10px;
+  border: 1px solid color-mix(in srgb, var(--p) 25%, transparent);
+}
+.ai-status-live {
+  color: #10b981;
+  font-weight: 800;
+  font-size: 10.5px;
+}
+.ai-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 11px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ai-btn-pill:hover, .ai-btn-pill:active {
+  color: var(--text);
+  border-color: var(--text);
+  background: color-mix(in srgb, var(--line) 40%, var(--soft));
+}
+.ai-close-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--soft);
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ai-close-btn:hover, .ai-close-btn:active {
+  background: color-mix(in srgb, #ef4444 15%, var(--soft));
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+/* Chat Body */
+.ai-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Empty State / Welcome Screen */
+.ai-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+  text-align: center;
+  padding: 8px 4px;
+  width: 100%;
+}
+.ai-empty.is-hidden {
+  display: none !important;
+}
+.ai-hero-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--p), var(--p2));
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  box-shadow: 0 8px 20px rgba(99,102,241,0.3);
+}
+.ai-empty h3 {
+  font-size: 16.5px;
+  font-weight: 850;
+  color: var(--text);
+  margin: 0 0 5px;
+}
+.ai-empty p {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 430px;
+}
+
+/* Suggestions */
+.ai-suggestions-wrap {
+  width: 100%;
+  margin-top: 16px;
+}
+.ai-sugg-header {
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.ai-rotate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--p);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.ai-rotate-btn:hover {
+  background: var(--soft);
+  transform: translateY(-1px);
+}
+.ai-suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+@media(max-width: 520px) {
+  .ai-suggestions {
+    grid-template-columns: 1fr;
+  }
+}
+.ai-suggestions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 48px;
+  overflow-wrap: anywhere;
+}
+.ai-suggestions button:hover, .ai-suggestions button:focus-visible {
+  background: color-mix(in srgb, var(--p) 10%, var(--soft));
+  border-color: var(--p);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.ai-suggestions button .sugg-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.ai-suggestions button .sugg-text {
+  flex: 1 1 auto;
+  line-height: 1.35;
+}
+
+/* Chat Messages */
+.ai-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  width: 100%;
+}
+.ai-thread.is-hidden {
+  display: none !important;
+}
+.ai-chat-msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 90%;
+  animation: aiMsgFadeIn 0.22s ease-out;
+}
+@keyframes aiMsgFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* User Message Bubble */
+.ai-chat-msg.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--p), var(--p2));
+  color: #fff;
+  border-radius: 18px 18px 4px 18px !important;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.25);
+  word-break: break-word;
+}
+.ai-chat-msg.user .chat-role {
+  font-size: 10px;
+  font-weight: 850;
+  opacity: 0.82;
+  margin-bottom: 3px;
+  text-align: right;
+  text-transform: uppercase;
+}
+.ai-chat-msg.user .chat-image-preview {
+  display: block;
+  max-width: 220px;
+  max-height: 160px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Assistant Message Bubble */
+.ai-chat-msg.assistant {
+  align-self: flex-start;
+  max-width: 96%;
+  width: 100%;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 18px 18px 18px 4px !important;
+  padding: 12px 15px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  word-break: break-word;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.ai-chat-msg.assistant .chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 850;
+  color: var(--p);
+}
+.ai-chat-msg.assistant .chat-body {
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.ai-chat-msg.assistant .chat-body p {
+  margin: 0 0 7px;
+}
+.ai-chat-msg.assistant .chat-body p:last-child {
+  margin-bottom: 0;
+}
+.ai-chat-msg.assistant .chat-body ul, .ai-chat-msg.assistant .chat-body ol {
+  padding-left: 20px;
+  margin: 6px 0;
+}
+.ai-chat-msg.assistant .chat-body li {
+  margin-bottom: 3px;
+}
+.ai-chat-msg.assistant .chat-body code {
+  background: color-mix(in srgb, var(--p) 12%, transparent);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+.ai-chat-msg.assistant .chat-body pre {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 12px;
+  margin: 8px 0;
+}
+.ai-chat-msg.assistant .chat-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 9px;
+  padding-top: 7px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.ai-copy-btn {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 750;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.15s;
+}
+.ai-copy-btn:hover {
+  background: var(--card);
+  color: var(--text);
+}
+
+/* Thinking Indicator Bubble */
+.ai-chat-msg.thinking {
+  align-self: flex-start;
+  max-width: 85%;
+  background: var(--soft);
+  border: 1.5px dashed color-mix(in srgb, var(--p) 50%, var(--line)) !important;
+  border-radius: 18px 18px 18px 4px !important;
+  padding: 11px 14px;
+  animation: aiThinkingPulse 1.8s infinite ease-in-out !important;
+}
+@keyframes aiThinkingPulse {
+  0%, 100% { border-color: color-mix(in srgb, var(--p) 40%, var(--line)); box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+  50% { border-color: var(--p); box-shadow: 0 0 12px rgba(99,102,241,0.25); }
+}
+.ai-thinking-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 850;
+  color: var(--p);
+  margin-bottom: 7px;
+}
+.ai-thinking-status {
+  font-size: 10.5px;
+  font-weight: 600;
+  opacity: 0.85;
+  color: var(--muted);
+}
+.ai-typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: color-mix(in srgb, var(--p) 9%, var(--card));
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--p) 20%, transparent);
+}
+.ai-typing-dot {
+  width: 7px;
+  height: 7px;
+  background: linear-gradient(135deg, var(--p), var(--p2));
+  border-radius: 50%;
+  animation: aiDotBounce 1.4s infinite ease-in-out both;
+}
+.ai-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.ai-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.ai-typing-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes aiDotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.35; }
+  40% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 6px var(--p); }
+}
+
+/* Error Bubble */
+.ai-chat-msg.error {
+  align-self: flex-start;
+  width: 100%;
+  background: color-mix(in srgb, #ef4444 8%, var(--soft));
+  border: 1px solid color-mix(in srgb, #ef4444 35%, var(--line));
+  border-radius: 18px 18px 18px 4px;
+  padding: 12px 15px;
+  color: var(--text);
+}
+.ai-error-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 850;
+  color: #ef4444;
+  margin-bottom: 5px;
+}
+.ai-error-msg {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+.ai-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: #ef4444;
+  color: #fff;
+  border: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ai-retry-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Composer Bar */
+.ai-composer-wrap {
+  padding: 10px 14px 12px;
+  background: color-mix(in srgb, var(--card) 92%, var(--soft));
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+  z-index: 10;
+}
+.ai-composer-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+  padding: 4px 7px 4px 9px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ai-composer-bar:focus-within {
+  border-color: var(--p);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.14);
+}
+.ai-tool-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.ai-tool-btn:hover {
+  background: var(--soft);
+  color: var(--text);
+}
+.ai-tool-btn.listening {
+  background: #ef4444 !important;
+  color: #fff !important;
+  animation: aiMicPulse 1.2s infinite;
+}
+@keyframes aiMicPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+  50% { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(239,68,68,0.15); }
+}
+.ai-input {
+  flex: 1 1 auto;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  font: inherit !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+  resize: none !important;
+  min-height: 24px !important;
+  max-height: 110px !important;
+  padding: 6px 2px !important;
+  outline: none !important;
+}
+.ai-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  border: 0;
+  background: linear-gradient(135deg, var(--p), var(--p2));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 800;
+  transition: all 0.18s;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(99,102,241,0.32);
+}
+.ai-send-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(99,102,241,0.42);
+}
+.ai-send-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ai-composer-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding: 0 4px;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.ai-status {
+  font-size: 10.5px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* File Preview */
+.ai-file-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  margin-bottom: 7px;
+  border-radius: 10px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  font-size: 11.5px;
+}
+.ai-file-preview img {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+.ai-file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ai-remove-file {
+  border: 0;
+  background: transparent;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+html, body, .ai-app, .ai-header, .ai-body, .ai-composer-wrap, .ai-composer-bar, .ai-suggestions button, .ai-chat-msg {
+  transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+}
+.ai-online-dot.offline {
+  background: #f59e0b !important;
+  box-shadow: 0 0 6px #f59e0b !important;
+}
+.ai-status-live.offline {
+  color: #f59e0b !important;
+}
+.ai-badge-model.math-engine {
+  background: color-mix(in srgb, #10b981 14%, transparent) !important;
+  color: #10b981 !important;
+  border-color: color-mix(in srgb, #10b981 30%, transparent) !important;
+}
+.ai-chat-msg.assistant .chat-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 12.5px;
+}
+.ai-chat-msg.assistant .chat-body th,
+.ai-chat-msg.assistant .chat-body td {
+  border: 1px solid var(--line);
+  padding: 5px 8px;
+  text-align: left;
+}
+.ai-chat-msg.assistant .chat-body th {
+  background: var(--card);
+  color: var(--p);
+  font-weight: 800;
+}
+</style>
+</head>
+<body class="dark">
+<div class="ai-app">
+  <!-- Header -->
+  <header class="ai-header">
+    <div class="ai-profile">
+      <div class="ai-avatar">
+        <span>🤖</span>
+        <span class="ai-online-dot" id="aiOnlineDot" title="Online"></span>
+      </div>
+      <div class="ai-meta">
+        <div class="ai-title" id="aiTitle">AI Question Answer</div>
+        <div class="ai-subtitle">
+          <span class="ai-badge-model">DeepSeek AI</span>
+          <span class="ai-status-live" id="aiHeaderLiveStatus">● Active</span>
+        </div>
+      </div>
+    </div>
+    <div class="ai-header-actions">
+      <button type="button" id="aiClearBtn" class="ai-btn-pill" style="display:none" title="Clear chat history">
+        <span>🗑️</span> <span id="aiClearText">Clear</span>
+      </button>
+      <button type="button" id="aiCloseBtn" class="ai-close-btn" title="Close" aria-label="Close">✕</button>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <main class="ai-body" id="aiChatBody">
+    <!-- Empty State -->
+    <div class="ai-empty" id="aiEmptyState">
+      <div class="ai-hero-icon">✨</div>
+      <h3 id="aiWelcomeTitle">नमस्ते! मैं आपका NowPro AI Assistant हूँ</h3>
+      <p id="aiWelcomeSub">गणित, विज्ञान, सामान्य ज्ञान या कोई भी प्रश्न पूछें। नीचे दिए गए सुझाव पर टैप करें या अपना प्रश्न लिखें।</p>
+
+      <!-- Suggested Questions -->
+      <div class="ai-suggestions-wrap">
+        <div class="ai-sugg-header">
+          <span id="aiSuggestionsLabel">💡 सुझाये गए प्रश्न (Suggestions)</span>
+          <button type="button" class="ai-rotate-btn" id="aiRotateBtn" title="Rotate questions">
+            <span>🔄</span> <span id="aiRotateText">नए प्रश्न</span>
+          </button>
+        </div>
+        <div class="ai-suggestions" id="aiSuggestions"></div>
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <section class="ai-thread is-hidden" id="aiChatThread" aria-live="polite"></section>
+  </main>
+
+  <!-- Composer -->
+  <footer class="ai-composer-wrap">
+    <div id="aiFilePreview" class="ai-file-preview" style="display:none"></div>
+    <input type="file" id="aiFileInput" accept="image/*,application/pdf" style="display:none">
+
+    <div class="ai-composer-bar">
+      <button type="button" class="ai-tool-btn" id="aiVoiceBtn" title="Tap to speak" aria-label="Voice input">
+        <span id="aiMicIcon">🎙️</span>
+      </button>
+      <button type="button" class="ai-tool-btn" id="aiAttachBtn" title="Add Image or PDF" aria-label="Attach file">
+        <span>📎</span>
+      </button>
+      <textarea id="aiInput" class="ai-input" placeholder="Type your question in Hindi or English…" rows="1" maxlength="2000"></textarea>
+      <button type="button" class="ai-send-btn" id="aiSendBtn" title="Send Question" aria-label="Send">
+        <span>➤</span>
+      </button>
+    </div>
+
+    <div class="ai-composer-foot">
+      <span class="ai-status" id="aiStatus">Instant AI Answers • In-memory Chat</span>
+      <span class="ai-secure" style="flex-shrink:0">🔒 Private &amp; Secure</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var SUPABASE_URL = 'https://akmnecnvbcyjaforsijz.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_p92ofrykqrrEx96BGB61Zw_BqsuDPHg';
+
+  // 9 Supported Indian Languages + English & Hindi
+  var I18N = {
+    hi: {
+      title: 'AI Question Answer',
+      welcome: 'नमस्ते! मैं आपका NowPro AI Assistant हूँ',
+      welcomeSub: 'गणित, विज्ञान, सामान्य ज्ञान या कोई भी प्रश्न पूछें। नीचे दिए गए सुझाव पर टैप करें या अपना प्रश्न लिखें।',
+      suggLabel: '💡 सुझाये गए प्रश्न (Suggestions)',
+      rotate: 'नए प्रश्न',
+      placeholder: 'अपना प्रश्न यहाँ लिखें… (Hindi या English)',
+      clear: 'Clear',
+      you: 'आप',
+      generating: 'उत्तर तैयार हो रहा है…',
+      instant: '⚡ Instant Answer',
+      copy: '📋 Copy',
+      copied: '✓ Copied',
+      statusDefault: 'Instant AI Answers • In-memory Chat',
+      listening: 'सुन रहे हैं… अब बोलें।',
+      noSpeech: 'कोई आवाज़ सुनाई नहीं दी। पुनः प्रयास करें।',
+      micDenied: 'माइक्रोफ़ोन अनुमति नहीं मिली।'
+    },
+    en: {
+      title: 'AI Question Answer',
+      welcome: 'Welcome! I am your NowPro AI Assistant',
+      welcomeSub: 'Ask anything about mathematics, science, general knowledge, or study concepts. Tap a suggestion or type your question below.',
+      suggLabel: '💡 Suggested Questions',
+      rotate: 'New Questions',
+      placeholder: 'Type your question in English or your language…',
+      clear: 'Clear',
+      you: 'You',
+      generating: 'Generating answer…',
+      instant: '⚡ Instant Answer',
+      copy: '📋 Copy',
+      copied: '✓ Copied',
+      statusDefault: 'Instant AI Answers • In-memory Chat',
+      listening: 'Listening… speak now.',
+      noSpeech: 'No speech detected. Please try again.',
+      micDenied: 'Microphone permission denied.'
+    },
+    bn: {
+      title: 'AI প্রশ্ন-উত্তর',
+      welcome: 'নমস্কার! আমি আপনার NowPro AI Assistant',
+      welcomeSub: 'গণিত, বিজ্ঞান, সাধারণ জ্ঞান বা যেকোনো বিষয়ে প্রশ্ন করুন। নিচে দেওয়া সাজেশনে ট্যাপ করুন বা প্রশ্ন লিখুন।',
+      suggLabel: '💡 প্রস্তাবিত প্রশ্নাবলী',
+      rotate: 'নতুন প্রশ্ন',
+      placeholder: 'আপনার প্রশ্ন এখানে লিখুন…',
+      clear: 'মুছুন',
+      you: 'আপনি',
+      generating: 'উত্তর তৈরি হচ্ছে…',
+      instant: '⚡ তাৎক্ষণিক উত্তর',
+      copy: '📋 কপি',
+      copied: '✓ কপি হয়েছে',
+      statusDefault: 'তাৎক্ষণিক এআই উত্তর • ইন-মেমরি চ্যাট',
+      listening: 'শুনছি… এখন বলুন।',
+      noSpeech: 'কোনো কথা শোনা যায়নি। আবার চেষ্টা করুন।',
+      micDenied: 'মাইক্রোফোন অনুমতি মেলেনি।'
+    },
+    mr: {
+      title: 'AI प्रश्न-उत्तर',
+      welcome: 'नमस्कार! मी तुमचा NowPro AI Assistant आहे',
+      welcomeSub: 'गणित, विज्ञान, सामान्य ज्ञान किंवा कोणताही प्रश्न विचारा. खालील सूचनेवर टॅप करा किंवा प्रश्न टाईप करा.',
+      suggLabel: '💡 सुचवलेले प्रश्न',
+      rotate: 'नवीन प्रश्न',
+      placeholder: 'तुमचा प्रश्न येथे टाईप करा…',
+      clear: 'साफ करा',
+      you: 'तुम्ही',
+      generating: 'उत्तर तयार होत आहे…',
+      instant: '⚡ झटपट उत्तर',
+      copy: '📋 कॉपी',
+      copied: '✓ कॉपी झाले',
+      statusDefault: 'झटपट AI उत्तरे • इन-मेमरी चॅट',
+      listening: 'ऐकत आहे… आता बोला.',
+      noSpeech: 'आवाज ऐकू आला नाही. पुन्हा प्रयत्न करा.',
+      micDenied: 'मायक्रोफोन परवानगी नाकारली.'
+    },
+    te: {
+      title: 'AI ప్రశ్న-జవాబు',
+      welcome: 'నమస్కారం! నేను మీ NowPro AI అసిస్టెంట్',
+      welcomeSub: 'గణితం, సైన్స్, సాధారణ పరిజ్ఞానం లేదా ఏదైనా ప్రశ్న అడగండి. సూచనపై నొక్కండి లేదా మీ ప్రశ్నను టైప్ చేయండి.',
+      suggLabel: '💡 సూచించబడిన ప్రశ్నలు',
+      rotate: 'కొత్త ప్రశ్నలు',
+      placeholder: 'మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి…',
+      clear: 'క్లియర్',
+      you: 'మీరు',
+      generating: 'సమాధానం సిద్ధమవుతోంది…',
+      instant: '⚡ తక్షణ సమాధానం',
+      copy: '📋 కాపీ',
+      copied: '✓ కాపీ అయింది',
+      statusDefault: 'తక్షణ AI సమాధానాలు • ఇన్-మెమరీ చాట్',
+      listening: 'వింటున్నాను… ఇప్పుడు మాట్లాడండి.',
+      noSpeech: 'వాయిస్ వినబడలేదు. మళ్లీ ప్రయత్నించండి.',
+      micDenied: 'మైక్రోఫోన్ అనుమతి నిరాకరించబడింది.'
+    },
+    ta: {
+      title: 'AI கேள்வி-பதில்',
+      welcome: 'வணக்கம்! நான் உங்கள் NowPro AI உதவியாளர்',
+      welcomeSub: 'கணிதம், அறிவியல், பொது அறிவு அல்லது ஏதேனும் கேள்வியைக் கேளுங்கள். கீழே உள்ள பரிந்துரையைத் தட்டவும் அல்லது எழுதவும்.',
+      suggLabel: '💡 பரிந்துரைக்கப்பட்ட கேள்விகள்',
+      rotate: 'புதிய கேள்விகள்',
+      placeholder: 'உங்கள் கேள்வியை இங்கே தட்டச்சு செய்க…',
+      clear: 'அழி',
+      you: 'நீங்கள்',
+      generating: 'பதில் தயாராகிறது…',
+      instant: '⚡ உடனடி பதில்',
+      copy: '📋 நகலெடு',
+      copied: '✓ நகலெடுக்கப்பட்டது',
+      statusDefault: 'உடனடி AI பதில்கள் • தற்காலிக அரட்டை',
+      listening: 'கேட்கிறேன்… இப்போது பேசுங்கள்.',
+      noSpeech: 'குரல் கேட்கவில்லை. மீண்டும் முயற்சிக்கவும்.',
+      micDenied: 'மைக்ரோஃபோன் அனுமதி மறுக்கப்பட்டது.'
+    },
+    gu: {
+      title: 'AI પ્રશ્ન-જવાબ',
+      welcome: 'નમસ્તે! હું તમારો NowPro AI Assistant છું',
+      welcomeSub: 'ગણિત, વિજ્ઞાન, સામાન્ય જ્ઞાન અથવા કોઈપણ પ્રશ્ન પૂછો. નીચેના સૂચન પર ટેપ કરો અથવા પ્રશ્ન લખો.',
+      suggLabel: '💡 સૂચવેલા પ્રશ્નો',
+      rotate: 'નવા પ્રશ્નો',
+      placeholder: 'તમારો પ્રશ્ન અહીં લખો…',
+      clear: 'સાફ કરો',
+      you: 'તમે',
+      generating: 'જવાબ તૈયાર થઈ રહ્યો છે…',
+      instant: '⚡ ત્વરિત જવાબ',
+      copy: '📋 કોપી',
+      copied: '✓ કોપી થયું',
+      statusDefault: 'ત્વરિત AI જવાબો • ઇન-મેમરી ચેટ',
+      listening: 'સાંભળી રહ્યા છીએ… હવે બોલો.',
+      noSpeech: 'કોઈ અવાજ સંભળાયો નથી. ફરી પ્રયાસ કરો.',
+      micDenied: 'માઇક્રોફોન પરવાનગી મળી નથી.'
+    },
+    ur: {
+      title: 'AI سوال و جواب',
+      welcome: 'خوش آمدید! میں آپ کا NowPro AI معاون ہوں',
+      welcomeSub: 'ریاضی، سائنس، عمومی معلومات یا کوئی بھی سوال پوچھیں۔ نیچے دی گئی تجویز پر ٹیپ کریں یا لکھیں۔',
+      suggLabel: '💡 تجویز کردہ سوالات',
+      rotate: 'نئے سوالات',
+      placeholder: 'اپنا سوال یہاں لکھیں…',
+      clear: 'صاف کریں',
+      you: 'آپ',
+      generating: 'جواب تیار ہو رہا ہے…',
+      instant: '⚡ فوری جواب',
+      copy: '📋 کاپی',
+      copied: '✓ کاپی ہو گیا',
+      statusDefault: 'فوری AI جوابات • عارضی چیٹ',
+      listening: 'سن رہے ہیں… اب بولیں۔',
+      noSpeech: 'کوئی آواز نہیں سنی گئی۔ دوبارہ کوشش کریں۔',
+      micDenied: 'مائیکروفون کی اجازت نہیں ملی۔'
+    },
+    as: {
+      title: 'AI প্ৰশ্ন-উত্তৰ',
+      welcome: 'নমস্কাৰ! মই আপোনাৰ NowPro AI Assistant',
+      welcomeSub: 'গণিত, বিজ্ঞান, সাধাৰণ জ্ঞান বা যিকোনো প্ৰশ্ন সোধক। তলৰ পৰামৰ্শত টেপ কৰক বা লিখক।',
+      suggLabel: '💡 পৰামৰ্শ দিয়া প্ৰশ্নসমূহ',
+      rotate: 'নতুন প্ৰশ্ন',
+      placeholder: 'আপোনাৰ প্ৰশ্ন ইয়াত লিখক…',
+      clear: 'মুচক',
+      you: 'আপুনি',
+      generating: 'উত্তৰ প্ৰস্তুত হৈছে…',
+      instant: '⚡ তাৎক্ষণিক উত্তৰ',
+      copy: '📋 কপি',
+      copied: '✓ কপি হ’ল',
+      statusDefault: 'তাৎক্ষণিক AI উত্তৰ • ইন-মেমৰি চেট',
+      listening: 'শুনি আছোঁ… এতিয়া কওক।',
+      noSpeech: 'কোনো মাত শুনা নগ’ল। পুনৰ চেষ্টা কৰক।',
+      micDenied: 'মাইক্ৰ’ফোনৰ অনুমতি দিয়া হোৱা নাই।'
+    }
+  };
+
+  // Rotating Question Pools across 9 Languages
+  var SUGGESTION_POOLS = {
+    hi: [
+      [
+        { icon: "🧮", label: "Percentage आसान तरीके से", prompt: "Explain percentage in simple Hindi with everyday examples." },
+        { icon: "🧪", label: "Photosynthesis कैसे काम करता है?", prompt: "How does photosynthesis work? Explain simply in Hindi." },
+        { icon: "📚", label: "भारत के संविधान की विशेषताएँ", prompt: "भारत के संविधान की प्रमुख विशेषताएँ समझाइए।" },
+        { icon: "💡", label: "5 Interesting GK Facts", prompt: "Give me 5 interesting GK facts with explanations in Hindi." },
+        { icon: "✏️", label: "Solve Maths step by step", prompt: "Solve this maths question step by step in Hindi." },
+        { icon: "✨", label: "किसी भी विषय को आसान भाषा में", prompt: "Explain this topic in simple language with examples." }
+      ],
+      [
+        { icon: "📐", label: "Pythagoras Theorem समझाइए", prompt: "Explain Pythagoras Theorem with step by step examples in Hindi." },
+        { icon: "🌍", label: "पृथ्वी अपनी धुरी पर क्यों घूमती है?", prompt: "Why does Earth rotate on its axis? Explain scientifically in Hindi." },
+        { icon: "📜", label: "सिंधु घाटी सभ्यता के प्रमुख स्थल", prompt: "Explain major sites and features of Indus Valley Civilization in Hindi." },
+        { icon: "⚡", label: "सौरमंडल और ग्रहों के रोचक तथ्य", prompt: "Explain fascinating facts about our Solar System in Hindi." },
+        { icon: "🧮", label: "Compound Interest की शॉर्टकट ट्रिक", prompt: "Explain compound interest calculation formula and tricks in Hindi." },
+        { icon: "📖", label: "पढ़ाई में एकाग्रता कैसे बढ़ाएँ?", prompt: "Give practical tips to improve concentration while studying in Hindi." }
+      ],
+      [
+        { icon: "🔬", label: "DNA और कोशिका की संरचना", prompt: "Explain DNA and cell structure in simple Hindi." },
+        { icon: "🏛️", label: "लोकसभा और राज्यसभा में अंतर", prompt: "Explain difference between Lok Sabha and Rajya Sabha in Indian Parliament in Hindi." },
+        { icon: "🔢", label: "Prime Numbers पहचानने की ट्रिक", prompt: "Explain prime numbers and quick methods to test primality in Hindi." },
+        { icon: "💡", label: "न्यूटन के गति के तीनों नियम", prompt: "Explain Newton's three laws of motion with daily life examples in Hindi." },
+        { icon: "🧠", label: "मानसिक गणना गति कैसे तेज़ करें?", prompt: "How to improve mental math speed and accuracy? Give daily exercises in Hindi." },
+        { icon: "📝", label: "परीक्षा में Time Management", prompt: "Give effective time management tips during exams in Hindi." }
+      ]
+    ],
+    en: [
+      [
+        { icon: "🧮", label: "Explain percentage simply", prompt: "Explain percentage in simple terms with everyday examples." },
+        { icon: "🧪", label: "How photosynthesis works?", prompt: "How does photosynthesis work? Explain step by step simply." },
+        { icon: "📚", label: "Key features of Constitution", prompt: "Explain the main features of the Constitution of India." },
+        { icon: "💡", label: "5 interesting GK facts", prompt: "Give me 5 interesting general knowledge facts with explanations." },
+        { icon: "✏️", label: "Solve Maths step by step", prompt: "Solve this maths problem step by step." },
+        { icon: "✨", label: "Explain a complex topic simply", prompt: "Explain this topic in simple language with examples." }
+      ],
+      [
+        { icon: "📐", label: "Pythagoras Theorem with examples", prompt: "Explain Pythagoras theorem with formulas and real examples." },
+        { icon: "🌍", label: "Why does Earth rotate?", prompt: "Why does the Earth rotate on its axis? Explain scientifically." },
+        { icon: "📜", label: "Indus Valley Civilization overview", prompt: "Explain the major discoveries and life in the Indus Valley Civilization." },
+        { icon: "⚡", label: "Fascinating Solar System facts", prompt: "Tell me fascinating and important facts about our Solar System." },
+        { icon: "🧮", label: "Compound Interest shortcuts", prompt: "Explain shortcut tricks to calculate compound interest easily." },
+        { icon: "📖", label: "How to focus while studying", prompt: "Give proven techniques to improve focus and retention while studying." }
+      ],
+      [
+        { icon: "🔬", label: "DNA and Cell Structure", prompt: "Explain the structure of a cell and DNA in simple terms." },
+        { icon: "🏛️", label: "Lok Sabha vs Rajya Sabha", prompt: "Explain the differences between Lok Sabha and Rajya Sabha." },
+        { icon: "🔢", label: "Prime Numbers identification tricks", prompt: "How to quickly check if a number is prime? Give rules." },
+        { icon: "💡", label: "Newton's 3 laws of motion", prompt: "Explain Newton's three laws of motion with real-world examples." },
+        { icon: "🧠", label: "Boost mental calculation speed", prompt: "What are the best methods to calculate arithmetic faster mentally?" },
+        { icon: "📝", label: "Exam time management tips", prompt: "How should a student manage time effectively during examinations?" }
+      ]
+    ],
+    bn: [
+      [
+        { icon: "🧮", label: "শতকরা সহজে উদাহরণের সাথে", prompt: "শতকরা সহজে দৈনন্দিন উদাহরণের সাহায্যে বুঝিয়ে দিন।" },
+        { icon: "🧪", label: "সালোকসংশ্লেষ কীভাবে কাজ করে?", prompt: "সালোকসংশ্লেষ কীভাবে কাজ করে? সহজে বুঝিয়ে বলুন।" },
+        { icon: "📚", label: "ভারতের সংবিধানের বৈশিষ্ট্য", prompt: "ভারতের সংবিধানের মূল বৈশিষ্ট্যগুলি সংক্ষেপে লিখুন।" },
+        { icon: "💡", label: "৫টি গুরুত্বপূর্ণ সাধারণ জ্ঞান", prompt: "৫টি গুরুত্বপূর্ণ এবং আকর্ষণীয় জিকে ফ্যাক্টস দিন।" },
+        { icon: "✏️", label: "অংক সমাধান ধাপে ধাপে", prompt: "এই গণিতের প্রশ্নটি ধাপে ধাপে সমাধান করে দিন।" },
+        { icon: "✨", label: "যেকোনো বিষয় সহজ ভাষায়", prompt: "এই বিষয়টি সহজ ভাষায় উদাহরণসহ বুঝিয়ে বলুন।" }
+      ]
+    ],
+    mr: [
+      [
+        { icon: "🧮", label: "टक्केवारी सोप्या पद्धतीने", prompt: "टक्केवारी काढण्याची सोपी पद्धत उदाहरणासह सांगा." },
+        { icon: "🧪", label: "प्रकाशसंश्लेषण कसे कार्य करते?", prompt: "प्रकाशसंश्लेषण म्हणजे काय आणि ते कसे होते?" },
+        { icon: "📚", label: "भारतीय संविधानाची वैशिष्ट्ये", prompt: "भारतीय संविधानाची प्रमुख वैशिष्ट्ये स्पष्ट करा." },
+        { icon: "💡", label: "५ रंजक सामान्य ज्ञान तथ्ये", prompt: "५ मनोरंजक सामान्य ज्ञान तथ्ये स्पष्टीकरणासह सांगा." },
+        { icon: "✏️", label: "गणिताचे स्टेप बाय स्टेप उत्तर", prompt: "हा गणिताचा प्रश्न पायरी-पायरीने सोडवून दाखवा." },
+        { icon: "✨", label: "सोप्या भाषेत स्पष्ट करा", prompt: "हा विषय सोप्या भाषेत उदाहरणांसह समजावून सांगा." }
+      ]
+    ],
+    te: [
+      [
+        { icon: "🧮", label: "శాతాన్ని సులభంగా అర్థం చేసుకోండి", prompt: "శాతాన్ని సులభమైన ఉదాహరణలతో వివరించండి." },
+        { icon: "🧪", label: "కిరణజన్య సంయోగక్రియ ఎలా పనిచేస్తుంది?", prompt: "కిరణజన్య సంయోగక్రియ ఎలా జరుగుతుందో సులభంగా చెప్పండి." },
+        { icon: "📚", label: "భారత రాజ్యాంగ విశేషాలు", prompt: "భారత రాజ్యాంగం యొక్క ముఖ్య లక్షణాలను వివరించండి." },
+        { icon: "💡", label: "5 ఆసక్తికరమైన GK నిజాలు", prompt: "5 ఆసక్తికరమైన జీకే విషయాలను వివరణలతో చెప్పండి." },
+        { icon: "✏️", label: "గణిత సమస్యల స్టెప్ బై స్టెప్ పరిష్కారం", prompt: "ఈ గణిత సమస్యను దశలవారీగా పరిష్కరించండి." },
+        { icon: "✨", label: "సులభమైన శైలిలో వివరణ", prompt: "ఈ విషయాన్ని ఉదాహరణలతో సులభంగా వివరించండి." }
+      ]
+    ],
+    ta: [
+      [
+        { icon: "🧮", label: "சதவீதம் எளிய முறையில்", prompt: "சதவீதத்தை எளிய உதாரணங்களுடன் விளக்குங்கள்." },
+        { icon: "🧪", label: "ஒளிச்சேர்க்கை எவ்வாறு செயல்படுகிறது?", prompt: "ஒளிச்சேர்க்கை செயல்முறையை எளிய முறையில் விளக்குக." },
+        { icon: "📚", label: "இந்திய அரசியலமைப்பு சிறப்புகள்", prompt: "இந்திய அரசியலமைப்பின் முக்கிய அம்சங்களை விளக்குக." },
+        { icon: "💡", label: "5 சுவாரசியமான பொது அறிவு உண்மைகள்", prompt: "5 சுவாரசியமான பொது அறிவுத் தகவல்களைத் தருக." },
+        { icon: "✏️", label: "படி படியாக கணித தீர்வு", prompt: "இந்த கணிதக் கேள்வியை படி படியாக தீர்க்கவும்." },
+        { icon: "✨", label: "எளிய முறையில் விளக்கம்", prompt: "இந்த தலைப்பை எளிய முறையில் உதாரணங்களுடன் விளக்குக." }
+      ]
+    ],
+    gu: [
+      [
+        { icon: "🧮", label: "ટકાવારી સરળ રીતે", prompt: "ટકાવારીની ગણતરી સરળ ઉદાહરણો સાથે સમજાવો." },
+        { icon: "🧪", label: "પ્રકાશસંશ્લેષણ કેવી રીતે થાય છે?", prompt: "પ્રકાશસંશ્લેષણ પ્રક્રિયા સરળ રીતે સમજાવો." },
+        { icon: "📚", label: "ભારતીય બંધારણની વિશેષતાઓ", prompt: "ભારતીય બંધારણની મુખ્ય વિશેષતાઓ સમજાવો." },
+        { icon: "💡", label: "૫ રસપ્રદ સામાન્ય જ્ઞાન તથ્યો", prompt: "૫ રસપ્રદ જીકે તથ્યો સમજૂતી સાથે આપો." },
+        { icon: "✏️", label: "ગણિતના સ્ટેપ બાય સ્ટેપ ઉકેલ", prompt: "આ ગણિતનો પ્રશ્ન સ્ટેપ બાય સ્ટેપ ઉકેલો." },
+        { icon: "✨", label: "સરળ ભાષામાં સમજૂતી", prompt: "આ વિષયને સરળ ભાષામાં ઉદાહરણો સાથે સમજાવો." }
+      ]
+    ],
+    ur: [
+      [
+        { icon: "🧮", label: "فیصد آسان طریقے سے", prompt: "فیصد معلوم کرنے کا آسان طریقہ مثالوں کے ساتھ سمجھائیں۔" },
+        { icon: "🧪", label: "فوٹوسنتھیسس کیسے کام کرتا ہے؟", prompt: "فوٹوسنتھیسس کا عمل آسان زبان میں بیان کریں۔" },
+        { icon: "📚", label: "آئینِ ہند کی خصوصیات", prompt: "ہندوستانی آئین کی اہم خصوصیات بیان کریں۔" },
+        { icon: "💡", label: "5 دلچسپ معلومات", prompt: "5 دلچسپ جنرل نالج حقائق وضاحت کے ساتھ دیں۔" },
+        { icon: "✏️", label: "مرحلہ وار ریاضی کا حل", prompt: "اس ریاضی کے سوال کو مرحلہ وار حل کریں۔" },
+        { icon: "✨", label: "آسان زبان میں وضاحت", prompt: "اس موضوع کو آسان زبان میں مثالوں کے ساتھ سمجھائیں۔" }
+      ]
+    ],
+    as: [
+      [
+        { icon: "🧮", label: "শতাংশ সহজ পদ্ধতিৰে", prompt: "শতাংশৰ হিচাপ সহজ উদাহৰণসহ বুজাই দিয়ক।" },
+        { icon: "🧪", label: "সালোকসংশ্লেষণ কিদৰে হয়?", prompt: "সালোকসংশ্লেষণ প্ৰক্ৰিয়াটো সহজ ভাষাত বুজাওক।" },
+        { icon: "📚", label: "ভাৰতৰ সংবিধানৰ বৈশিষ্ট্য", prompt: "ভাৰতৰ সংবিধানৰ মূল বৈশিষ্ট্যসমূহ উল্লেখ কৰক।" },
+        { icon: "💡", label: "৫টা গুৰুত্বপূৰ্ণ সাধাৰণ জ্ঞান", prompt: "৫টা আকৰ্ষণীয় সাধাৰণ জ্ঞানৰ তথ্য দিয়ক।" },
+        { icon: "✏️", label: "অংক সমাধান খোজ অনুসৰি", prompt: "এই অংকটো খোজ অনুসৰি সমাধান কৰি দিয়ক।" },
+        { icon: "✨", label: "সহজ ভাষাত বুজাওক", prompt: "এই বিষয়টো সহজ ভাষাত বুজাই দিয়ক।" }
+      ]
+    ]
+  };
+
+
+  /* ====================================================================
+     NOWPRO MULTILINGUAL CALCULATION ENGINE (ONLINE + 100% OFFLINE)
+     - Zero latency & zero AI credit usage for solvable math/calculations
+     - Supports all 9 languages (hi, en, bn, mr, te, ta, gu, ur, as) + Hinglish
+     - Supports Indian script numerals (०-९, ০-৯, ૦-૯, ௦-௯, ౦-౯, ۰-۹)
+     - Automatically routes complex/general questions to DeepSeek AI
+     ==================================================================== */
+  var NowProMathEngine = (function(){
+    var MATH_LABELS = {
+      hi: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'प्रश्न (Question)',
+        problem: 'प्रश्न (Question)',
+        solution: 'चरण-दर-चरण समाधान (Step-by-Step Solution)',
+        finalAns: 'अंतिम उत्तर (Final Answer)',
+        formula: 'सूत्र (Formula)',
+        calculation: 'गणना (Calculation)',
+        tableOf: 'का पहाड़ा (Multiplication Table)',
+        given: 'दिया गया है (Given)',
+        step: 'चरण (Step)',
+        expr: 'व्यंजक (Expression)',
+        result: 'परिणाम (Result)',
+        sumLabel: 'सभी संख्याओं का योग (Sum)',
+        countLabel: 'कुल संख्याएँ (Count)',
+        factorsLabel: 'गुणनखंड (Factors)',
+        primeYes: 'हाँ, यह एक अभाज्य संख्या (Prime Number) है।',
+        primeNo: 'नहीं, यह एक भाज्य संख्या (Composite Number) है।',
+        offlineGeneralNotice: '⚠️ **ऑफ़लाइन मोड (Offline Mode)**: आपका इंटरनेट कनेक्शन बंद है। आप गणित और कैलकुलेशन के सभी सवाल (जोड़, घटाव, गुणा, भाग, BODMAS, प्रतिशत, वर्ग, घन, वर्गमूल, घनमूल, औसत, पहाड़े, भिन्न, अनुपात, साधारण/चक्रवृद्धि ब्याज, लाभ-हानि, LCM, HCF आदि) अभी भी ऑफ़लाइन पूछ सकते हैं! सामान्य ज्ञान या अन्य विषयों के लिए कृपया इंटरनेट से कनेक्ट करें।',
+        offlineEngineNote: '*(यह उत्तर NowPro Math Engine द्वारा ऑफ़लाइन और बिना किसी सर्वर देरी के तुरंत दिया गया है)*'
+      },
+      en: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'Question',
+        problem: 'Question',
+        solution: 'Step-by-Step Solution',
+        finalAns: 'Final Answer',
+        formula: 'Formula',
+        calculation: 'Calculation',
+        tableOf: 'Multiplication Table of',
+        given: 'Given',
+        step: 'Step',
+        expr: 'Expression',
+        result: 'Result',
+        sumLabel: 'Sum of values',
+        countLabel: 'Total count',
+        factorsLabel: 'Factors',
+        primeYes: 'Yes, it is a Prime Number.',
+        primeNo: 'No, it is a Composite Number.',
+        offlineGeneralNotice: '⚠️ **Offline Mode**: You are currently offline (no internet connection). You can still ask any mathematical or calculation questions (Arithmetic, BODMAS, Percentage, Squares, Cubes, Roots, Tables, Average, LCM/HCF, Ratio, Fractions, SI/CI, Profit & Loss) offline! For general knowledge or other topics, please reconnect to the internet.',
+        offlineEngineNote: '*(This answer was calculated instantly offline by NowPro Math Engine)*'
+      },
+      bn: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'প্রশ্ন (Question)',
+        problem: 'প্রশ্ন (Question)',
+        solution: 'ধাপে ধাপে সমাধান (Step-by-Step Solution)',
+        finalAns: 'চূড়ান্ত উত্তর (Final Answer)',
+        formula: 'সূত্র (Formula)',
+        calculation: 'গণনা (Calculation)',
+        tableOf: 'এর নামতা (Multiplication Table)',
+        given: 'দেওয়া আছে (Given)',
+        step: 'ধাপ (Step)',
+        expr: 'রাশি (Expression)',
+        result: 'ফলাফল (Result)',
+        sumLabel: 'সংখ্যাগুলির যোগফল (Sum)',
+        countLabel: 'মোট সংখ্যা (Count)',
+        factorsLabel: 'গুণনীয়ক (Factors)',
+        primeYes: 'হ্যাঁ, এটি একটি মৌলিক সংখ্যা (Prime Number)।',
+        primeNo: 'না, এটি একটি যৌগিক সংখ্যা (Composite Number)।',
+        offlineGeneralNotice: '⚠️ **অফলাইন মোড (Offline Mode)**: আপনার ইন্টারনেট সংযোগ বন্ধ রয়েছে। আপনি গণিতের যেকোনো হিসাব (যোগ, বিয়োগ, গুণ, ভাগ, শতকরা, বর্গ, বর্গমূল, গড়, নামতা, লসাগু, গসাগু ইত্যাদি) এখনও অফলাইনে করতে পারেন! সাধারণ জ্ঞানের জন্য অনুগ্রহ করে ইন্টারনেটে সংযুক্ত হন।',
+        offlineEngineNote: '*(এই উত্তরটি NowPro Math Engine দ্বারা অফলাইনে তাত্ক্ষণিকভাবে তৈরি করা হয়েছে)*'
+      },
+      mr: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'प्रश्न (Question)',
+        problem: 'प्रश्न (Question)',
+        solution: 'पायरी-पायरीने उपाय (Step-by-Step Solution)',
+        finalAns: 'अंतिम उत्तर (Final Answer)',
+        formula: 'सूत्र (Formula)',
+        calculation: 'गणना (Calculation)',
+        tableOf: 'चा पाढा (Multiplication Table)',
+        given: 'दिलेले आहे (Given)',
+        step: 'पायरी (Step)',
+        expr: 'पदावली (Expression)',
+        result: 'निकाल (Result)',
+        sumLabel: 'सर्व संख्यांची बेरीज (Sum)',
+        countLabel: 'एकूण संख्या (Count)',
+        factorsLabel: 'विभाजक (Factors)',
+        primeYes: 'होय, ही मूळ संख्या (Prime Number) आहे.',
+        primeNo: 'नाही, ही संयुक्त संख्या (Composite Number) आहे.',
+        offlineGeneralNotice: '⚠️ **ऑफलाइन मोड (Offline Mode)**: तुमचे इंटरनेट कनेक्शन बंद आहे. तुम्ही गणिताचे सर्व प्रश्न (बेरीज, वजाबाकी, गुणाकार, भागाकार, टक्केवारी, वर्ग, वर्गमूळ, सरासरी, पाढे, लसावि, मसावि इ.) ऑफलाइन विचारू शकता! इतर प्रश्नांसाठी कृपया इंटरनेट कनेक्ट करा.',
+        offlineEngineNote: '*(हे उत्तर NowPro Math Engine द्वारे ऑफलाइन झटपट तयार केले आहे)*'
+      },
+      te: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'ప్రశ్న (Question)',
+        problem: 'ప్రశ్న (Question)',
+        solution: 'దశలవారీగా పరిష్కారం (Step-by-Step Solution)',
+        finalAns: 'తుది సమాధానం (Final Answer)',
+        formula: 'సూత్రం (Formula)',
+        calculation: 'గణన (Calculation)',
+        tableOf: 'యొక్క ఎక్కం (Multiplication Table)',
+        given: 'ఇవ్వబడినది (Given)',
+        step: 'దశ (Step)',
+        expr: 'సమాసము (Expression)',
+        result: 'ఫలితం (Result)',
+        sumLabel: 'మొత్తం (Sum)',
+        countLabel: 'సంఖ్యల సంఖ్య (Count)',
+        factorsLabel: 'కారణాంకాలు (Factors)',
+        primeYes: 'అవును, ఇది ప్రధాన సంఖ్య (Prime Number).',
+        primeNo: 'కాదు, ఇది సంయుక్త సంఖ్య (Composite Number).',
+        offlineGeneralNotice: '⚠️ **ఆఫ్‌లైన్ మోడ్ (Offline Mode)**: మీ ఇంటర్నెట్ కనెక్షన్ ఆఫ్‌లో ఉంది. మీరు గణిత ప్రశ్నలను ఆఫ్‌లైన్‌లో అడగవచ్చు! సాధారణ ప్రశ్నల కోసం దయచేసి ఇంటర్నెట్‌ను కనెక్ట్ చేయండి.',
+        offlineEngineNote: '*(ఈ సమాధానం NowPro Math Engine ద్వారా ఆఫ్‌లైన్‌లో తక్షణమే రూపొందించబడింది)*'
+      },
+      ta: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'கேள்வி (Question)',
+        problem: 'கேள்வி (Question)',
+        solution: 'படி படியான தீர்வு (Step-by-Step Solution)',
+        finalAns: 'இறுதி பதில் (Final Answer)',
+        formula: 'சூத்திரம் (Formula)',
+        calculation: 'கணக்கீடு (Calculation)',
+        tableOf: 'வாய்ப்பாடு (Multiplication Table)',
+        given: 'கொடுக்கப்பட்டது (Given)',
+        step: 'படி (Step)',
+        expr: 'கோவை (Expression)',
+        result: 'முடிவு (Result)',
+        sumLabel: 'கூடுதல் (Sum)',
+        countLabel: 'மொத்த எண்கள் (Count)',
+        factorsLabel: 'காரணிகள் (Factors)',
+        primeYes: 'ஆம், இது ஒரு பகா எண் (Prime Number).',
+        primeNo: 'இல்லை, இது ஒரு பகு எண் (Composite Number).',
+        offlineGeneralNotice: '⚠️ **ஆஃப்லைன் பயன்முறை (Offline Mode)**: உங்கள் இணைய இணைப்பு துண்டிக்கப்பட்டுள்ளது. கணிதக் கணக்குகளை நீங்கள் ஆஃப்லைனிலேயே கேட்கலாம்! பொதுவான கேள்விகளுக்கு இணையத்துடன் இணையவும்.',
+        offlineEngineNote: '*(இந்த பதில் NowPro Math Engine மூலம் ஆஃப்லைனில் உடனடியாக உருவாக்கப்பட்டது)*'
+      },
+      gu: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'પ્રશ્ન (Question)',
+        problem: 'પ્રશ્ન (Question)',
+        solution: 'પગલું-દર-પગલું ઉકેલ (Step-by-Step Solution)',
+        finalAns: 'અંતિમ જવાબ (Final Answer)',
+        formula: 'સૂત્ર (Formula)',
+        calculation: 'ગણતરી (Calculation)',
+        tableOf: 'નો ઘડિયો (Multiplication Table)',
+        given: 'આપેલ છે (Given)',
+        step: 'પગલું (Step)',
+        expr: 'પદાવલિ (Expression)',
+        result: 'પરિણામ (Result)',
+        sumLabel: 'સરવાળો (Sum)',
+        countLabel: 'કુલ સંખ્યા (Count)',
+        factorsLabel: 'અવયવો (Factors)',
+        primeYes: 'હા, આ અવિભાજ્ય સંખ્યા (Prime Number) છે.',
+        primeNo: 'ના, આ વિભાજ્ય સંખ્યા (Composite Number) છે.',
+        offlineGeneralNotice: '⚠️ **ઑફલાઇન મોડ (Offline Mode)**: તમારું ઇન્ટરનેટ કનેક્શન બંધ છે. ગણિતના પ્રશ્નો તમે ઑફલાઇન પણ પૂછી શકો છો! સામાન્ય પ્રશ્નો માટે કૃપા કરીને ઇન્ટરનેટથી કનેક્ટ થાઓ.',
+        offlineEngineNote: '*(આ જવાબ NowPro Math Engine દ્વારા ઑફલાઇન તાત્કાલિક આપવામાં આવ્યો છે)*'
+      },
+      ur: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'سوال (Question)',
+        problem: 'سوال (Question)',
+        solution: 'مرحلہ وار حل (Step-by-Step Solution)',
+        finalAns: 'حتمی جواب (Final Answer)',
+        formula: 'فارمولا (Formula)',
+        calculation: 'حساب (Calculation)',
+        tableOf: 'کا پہاڑا (Multiplication Table)',
+        given: 'دیا گیا ہے (Given)',
+        step: 'مرحلہ (Step)',
+        expr: 'عبارت (Expression)',
+        result: 'نتیجہ (Result)',
+        sumLabel: 'مجموعہ (Sum)',
+        countLabel: 'کل تعداد (Count)',
+        factorsLabel: 'عوامل (Factors)',
+        primeYes: 'جی ہاں، یہ ایک مفرد عدد (Prime Number) ہے۔',
+        primeNo: 'نہیں، یہ ایک مرکب عدد (Composite Number) ہے۔',
+        offlineGeneralNotice: '⚠️ **آف لائن موڈ (Offline Mode)**: آپ کا انٹرنیٹ کنکشن بند ہے۔ آپ ریاضی کے سوالات اب بھی آف لائن پوچھ سکتے ہیں! دیگر سوالات کے لیے براہ کرم انٹرنیٹ سے رابطہ کریں۔',
+        offlineEngineNote: '*(یہ جواب NowPro Math Engine کے ذریعے بغیر تاخیر کے آف لائن تیار کیا گیا ہے)*'
+      },
+      as: {
+        badge: '⚡ NowPro Math Engine',
+        badgeOffline: '⚡ Math Engine (Offline)',
+        question: 'প্ৰশ্ন (Question)',
+        problem: 'প্ৰশ্ন (Question)',
+        solution: 'খোজ অনুসৰি সমাধান (Step-by-Step Solution)',
+        finalAns: 'চূড়ান্ত উত্তৰ (Final Answer)',
+        formula: 'সূত্ৰ (Formula)',
+        calculation: 'গণনা (Calculation)',
+        tableOf: 'ৰ নামতা (Multiplication Table)',
+        given: 'দিয়া আছে (Given)',
+        step: 'খোজ (Step)',
+        expr: 'ৰাশি (Expression)',
+        result: 'ফলাফল (Result)',
+        sumLabel: 'যোগফল (Sum)',
+        countLabel: 'মুঠ সংখ্যা (Count)',
+        factorsLabel: 'গুণনীয়ক (Factors)',
+        primeYes: 'হয়, এইটো এটা মৌলিক সংখ্যা (Prime Number)।',
+        primeNo: 'নহয়, এইটো এটা যৌগিক সংখ্যা (Composite Number)।',
+        offlineGeneralNotice: '⚠️ **অফলাইন ম’ড (Offline Mode)**: আপোনাৰ ইণ্টাৰনেট সংযোগ বন্ধ হৈ আছে। আপুনি গণিতৰ প্ৰশ্ন অফলাইনতো সুধিব পাৰে! অন্যান্য প্ৰশ্নৰ বাবে অনুগ্ৰহ কৰি ইণ্টাৰনেট সংযোগ কৰক।',
+        offlineEngineNote: '*(এই উত্তৰটো NowPro Math Engine দ্বাৰা অফলাইনত প্ৰস্তুত কৰা হৈছে)*'
+      }
+    };
+
+    // Convert Indian/Arabic script digits (०-९, ০-৯, ૦-૯, ௦-௯, ౦-౯, ۰-۹, ٠-٩) to ASCII 0-9
+    function normalizeDigits(str){
+      return String(str || '').replace(/[\u0966-\u096F\u09E6-\u09EF\u0AE6-\u0AEF\u0BE6-\u0BEF\u0C66-\u0C6F\u0660-\u0669\u06F0-\u06F9]/g, function(ch){
+        var code = ch.charCodeAt(0);
+        if(code >= 0x0966 && code <= 0x096F) return String(code - 0x0966);
+        if(code >= 0x09E6 && code <= 0x09EF) return String(code - 0x09E6);
+        if(code >= 0x0AE6 && code <= 0x0AEF) return String(code - 0x0AE6);
+        if(code >= 0x0BE6 && code <= 0x0BEF) return String(code - 0x0BE6);
+        if(code >= 0x0C66 && code <= 0x0C6F) return String(code - 0x0C66);
+        if(code >= 0x0660 && code <= 0x0669) return String(code - 0x0660);
+        if(code >= 0x06F0 && code <= 0x06F9) return String(code - 0x06F0);
+        return ch;
+      });
+    }
+
+    function detectQueryLanguage(q, fallbackLang){
+      var s = String(q || '');
+      if(/[\u0C00-\u0C7F]/.test(s)) return 'te';
+      if(/[\u0B80-\u0BFF]/.test(s)) return 'ta';
+      if(/[\u0A80-\u0AFF]/.test(s)) return 'gu';
+      if(/[\u0600-\u06FF]/.test(s)) return 'ur';
+      if(/[\u0980-\u09FF]/.test(s)){
+        if(/[ৰৱ]/.test(s) || fallbackLang === 'as') return 'as';
+        return 'bn';
+      }
+      if(/[\u0900-\u097F]/.test(s)){
+        if(/(?:\bचा\b|\bचे\b|\bची\b|सरासरी|लसावि|मसावि|वर्गमूळ|घनमूळ|पाढा|पाढे|टक्के)/.test(s) || fallbackLang === 'mr') return 'mr';
+        return 'hi';
+      }
+      if(/\b(kitna|kitne|kya|nikale|nikalo|batao|bataiye|pratishat|jod|ghatav|guna|bhag|ausat|vargmul|ghanmul|varg|ghan|pahada|mein|aur)\b/i.test(s)){
+        return 'hi';
+      }
+      return MATH_LABELS[fallbackLang] ? fallbackLang : 'en';
+    }
+
+    function getL(l){ return MATH_LABELS[l] || MATH_LABELS.en; }
+
+    function gcd(a, b){
+      a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b));
+      while(b){ var t = a % b; a = b; b = t; }
+      return a || 1;
+    }
+
+    function lcm(a, b){
+      a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b));
+      if(!a || !b) return 0;
+      return Math.abs(a * b) / gcd(a, b);
+    }
+
+    function fmtNum(n){
+      if(typeof n !== 'number' || !Number.isFinite(n)) return String(n);
+      if(Math.abs(n) < 1e-10) return '0';
+      if(Math.abs(n - Math.round(n)) < 1e-9) return String(Math.round(n));
+      return String(Number(n.toFixed(4)));
+    }
+
+    function calcNormalize(e){
+      return normalizeDigits(e)
+        .replace(/×|✕|\*/g, '*')
+        .replace(/÷/g, '/')
+        .replace(/−|–|—/g, '-')
+        .replace(/√/g, 'sqrt')
+        .replace(/∛/g, 'cbrt')
+        .replace(/π/gi, 'pi')
+        .replace(/\{/g, '(').replace(/\}/g, ')')
+        .replace(/\[/g, '(').replace(/\]/g, ')')
+        .replace(/(\d+(?:\.\d+)?)\s*[xX]\s*(?=\d|\(|sqrt|cbrt)/g, '$1*');
+    }
+
+    function evaluateMath(expr){
+      var s = calcNormalize(expr), i = 0;
+      function ws(){ while(i < s.length && (s[i] === ' ' || s[i] === '\t')) i++; }
+      function number(){
+        ws(); var st = i;
+        while(i < s.length && /[0-9.]/.test(s[i])) i++;
+        if(st === i) throw new Error('Expected number');
+        var n = Number(s.slice(st, i));
+        if(!Number.isFinite(n)) throw new Error('Invalid number');
+        return n;
+      }
+      function primary(){
+        ws();
+        if(s.slice(i, i+4).toLowerCase() === 'sqrt'){
+          i += 4; var q = primary(); if(q < 0) throw new Error('Negative root');
+          return Math.sqrt(q);
+        }
+        if(s.slice(i, i+4).toLowerCase() === 'cbrt'){
+          i += 4; return Math.cbrt(primary());
+        }
+        if(s[i] === '+'){ i++; return primary(); }
+        if(s[i] === '-'){ i++; return -primary(); }
+        if(s[i] === '('){
+          i++; var v = add(); ws();
+          if(s[i] !== ')') throw new Error('Mismatched bracket');
+          i++;
+          ws();
+          if(i < s.length && (/[0-9(]/.test(s[i]) || s.slice(i, i+4).toLowerCase() === 'sqrt')){
+            v *= primary();
+          }
+          return v;
+        }
+        if(s.slice(i, i+2).toLowerCase() === 'pi'){ i += 2; return Math.PI; }
+        var numVal = number();
+        ws();
+        if(s[i] === '('){
+          numVal *= primary();
+        }
+        return numVal;
+      }
+      function power(){
+        var v = primary(); ws();
+        while(s[i] === '^' || (s[i] === '*' && s[i+1] === '*')){
+          if(s[i] === '^') i++; else i += 2;
+          v = Math.pow(v, power()); ws();
+        }
+        return v;
+      }
+      function postfix(){
+        var v = power(); ws();
+        while(s[i] === '%' || s[i] === '!'){
+          if(s[i] === '%'){ v = v / 100; i++; ws(); }
+          else if(s[i] === '!'){
+            if(v < 0 || v > 170 || Math.floor(v) !== v) throw new Error('Invalid factorial');
+            var f = 1; for(var k = 2; k <= v; k++) f *= k;
+            v = f; i++; ws();
+          }
+        }
+        return v;
+      }
+      function mul(){
+        var v = postfix();
+        while(true){
+          ws();
+          if(s[i] === '*'){ i++; v *= postfix(); }
+          else if(s[i] === '/'){
+            i++; var d = postfix();
+            if(d === 0) throw new Error('Division by zero');
+            v /= d;
+          } else break;
+        }
+        return v;
+      }
+      function add(){
+        var v = mul();
+        while(true){
+          ws();
+          if(s[i] === '+'){ i++; v += mul(); }
+          else if(s[i] === '-'){ i++; v -= mul(); }
+          else break;
+        }
+        return v;
+      }
+      var res = add(); ws();
+      if(i !== s.length || !Number.isFinite(res)) throw new Error('Invalid expression');
+      return res;
+    }
+
+    // Generate intermediate BODMAS steps for an arithmetic expression
+    function buildBodmasSteps(cleanExpr, finalVal, L){
+      var steps = [];
+      var work = calcNormalize(cleanExpr).replace(/\s+/g, ' ').trim();
+      var disp = cleanExpr.trim();
+      steps.push('1. ' + L.expr + ': `' + disp + '`');
+      var stepNum = 2;
+      var cur = work;
+      var guard = 0;
+      // Reduce innermost parentheses first
+      while(/\([^()]+\)/.test(cur) && guard < 6){
+        guard++;
+        var nextCur = cur.replace(/\(([^()]+)\)/, function(m, inner){
+          try { return fmtNum(evaluateMath(inner)); } catch(e){ return m; }
+        });
+        if(nextCur === cur) break;
+        cur = nextCur;
+        if(cur !== fmtNum(finalVal)){
+          steps.push(stepNum++ + '. BODMAS (Brackets): `' + cur.replace(/\*/g, '×').replace(/\//g, '÷') + '`');
+        }
+      }
+      // Reduce powers or roots if present
+      if(/(?:sqrt|cbrt|\^)/.test(cur)){
+        var nextPow = cur
+          .replace(/sqrt\s*(\d+(?:\.\d+)?)/gi, function(m, a){ return fmtNum(Math.sqrt(Number(a))); })
+          .replace(/cbrt\s*(\d+(?:\.\d+)?)/gi, function(m, a){ return fmtNum(Math.cbrt(Number(a))); })
+          .replace(/(\d+(?:\.\d+)?)\s*\^\s*(\d+(?:\.\d+)?)/g, function(m, a, b){ return fmtNum(Math.pow(Number(a), Number(b))); });
+        if(nextPow !== cur && nextPow !== fmtNum(finalVal)){
+          cur = nextPow;
+          steps.push(stepNum++ + '. BODMAS (Order / Powers & Roots): `' + cur.replace(/\*/g, '×').replace(/\//g, '÷') + '`');
+        }
+      }
+      // Reduce multiplication and division left-to-right if addition/subtraction also exist
+      if(/[+\-]/.test(cur) && /[*\/]/.test(cur)){
+        var nextMul = cur;
+        var g2 = 0;
+        while(/(\d+(?:\.\d+)?)\s*([*\/])\s*(\d+(?:\.\d+)?)/.test(nextMul) && g2 < 6){
+          g2++;
+          nextMul = nextMul.replace(/(\d+(?:\.\d+)?)\s*([*\/])\s*(\d+(?:\.\d+)?)/, function(m, a, op, b){
+            var va = Number(a), vb = Number(b);
+            return fmtNum(op === '*' ? va * vb : va / vb);
+          });
+        }
+        if(nextMul !== cur && nextMul !== fmtNum(finalVal)){
+          cur = nextMul;
+          steps.push(stepNum++ + '. BODMAS (Multiplication / Division): `' + cur.replace(/\*/g, '×').replace(/\//g, '÷') + '`');
+        }
+      }
+      steps.push(stepNum + '. ' + L.result + ': `' + fmtNum(finalVal) + '`');
+      return steps.join('\n');
+    }
+
+    function solve(rawQuery, appLang){
+      var qNorm = normalizeDigits(String(rawQuery || '').trim());
+      if(!qNorm) return null;
+      var lang = detectQueryLanguage(qNorm, appLang || 'hi');
+      var L = getL(lang);
+      var q = qNorm.replace(/[?？।!]+$/g, '').trim();
+
+      // 1. Multiplication Table (1 to 1000)
+      var mTable = q.match(/^(?:write\s+|show\s+|give\s+)?(?:the\s+)?(?:table\s+of|multiplication\s+table\s+of|pahada\s+of)\s+(\d+)$|^(\d+)\s*(?:का\s+पहाड़ा|का\s+पहाडा|की\s+table|ka\s+pahada|ka\s+table|table|चा\s+पाढा|चे\s+पाढे|এর\s+নামতা|ৰ\s+নামতা|નો\s+ઘડિયો|வாய்ப்பாடு|ఎక్కం|کا\s+پہاڑا)(?:\s*(?:बताएं|बताओ|लिखो|दिखाओ|लिखिए|batao|likho))?$/i);
+      if(mTable){
+        var tn = parseInt(mTable[1] || mTable[2], 10);
+        if(tn > 0 && tn <= 1000){
+          var rows = [];
+          for(var ti = 1; ti <= 10; ti++){
+            rows.push('* `' + tn + ' × ' + ti + ' = ' + (tn * ti) + '`');
+          }
+          var tTitle = (lang === 'en') ? (L.tableOf + ' ' + tn) : (tn + ' ' + L.tableOf);
+          return '**' + L.question + ':** ' + tTitle + '\n\n' +
+            '**' + L.solution + ':**\n' +
+            rows.join('\n') + '\n\n' +
+            '**' + L.finalAns + ':** **`' + tn + ' × 10 = ' + (tn * 10) + '`**';
+        }
+      }
+
+      // 2. Cube Root (check before cube)
+      var mCbrt = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+|solve\s+)?(?:the\s+)?(?:cube\s*root\s+of|cbrt\s+of|cbrt|ghanmul\s+of|∛)\s*\(?(\d+(?:\.\d+)?)\)?$|^(\d+(?:\.\d+)?)\s*(?:का\s+घनमूल|ka\s+ghanmul|ka\s+cube\s*root|चे\s+घनमूळ|નું\s+ઘનમૂળ|এর\s+ঘনমূল|ৰ\s+ঘনমূল|கனமூலம்|ఘనమూలం|کا\s+جذر\s+المکعب)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+      if(mCbrt){
+        var cn = parseFloat(mCbrt[1] || mCbrt[2]);
+        var cr = Math.cbrt(cn);
+        var crRound = Math.round(cr);
+        var isPerfectCube = (Math.abs(crRound * crRound * crRound - cn) < 1e-7);
+        var crStr = isPerfectCube ? String(crRound) : fmtNum(cr);
+        return '**' + L.question + ':** `∛' + cn + '`\n\n' +
+          '**' + L.formula + ':** `∛n = r  ⇔  r × r × r = n`\n\n' +
+          '**' + L.solution + ':**\n' +
+          (isPerfectCube
+            ? '1. `' + crRound + ' × ' + crRound + ' × ' + crRound + ' = ' + cn + '`\n2. `' + L.result + ': ∛' + cn + ' = ' + crRound + '`'
+            : '1. `' + L.calculation + ': ∛' + cn + ' ≈ ' + crStr + '`') + '\n\n' +
+          '**' + L.finalAns + ':** **' + crStr + '**';
+      }
+
+      // 3. Square Root (check before square)
+      var mSqrt = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+|solve\s+)?(?:the\s+)?(?:square\s*root\s+of|sqrt\s+of|sqrt|vargmul\s+of|root\s+of|√)\s*\(?(\d+(?:\.\d+)?)\)?$|^(\d+(?:\.\d+)?)\s*(?:का\s+वर्गमूल|का\s+root|ka\s+vargmul|ka\s+square\s*root|ka\s+root|चे\s+वर्गमूळ|નું\s+વર્ગમૂળ|এর\s+বর্গমূল|ৰ\s+বৰ্গমূল|வர்க்கமூலம்|వర్గమూలం|کا\s+جذر\s+المربع)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+      if(mSqrt){
+        var sn = parseFloat(mSqrt[1] || mSqrt[2]);
+        var sr = Math.sqrt(sn);
+        var srRound = Math.round(sr);
+        var isPerfectSquare = (Math.abs(srRound * srRound - sn) < 1e-7);
+        var srStr = isPerfectSquare ? String(srRound) : fmtNum(sr);
+        return '**' + L.question + ':** `√' + sn + '`\n\n' +
+          '**' + L.formula + ':** `√n = r  ⇔  r × r = n`\n\n' +
+          '**' + L.solution + ':**\n' +
+          (isPerfectSquare
+            ? '1. `' + srRound + ' × ' + srRound + ' = ' + sn + '`\n2. `' + L.result + ': √' + sn + ' = ' + srRound + '`'
+            : '1. `' + L.calculation + ': √' + sn + ' ≈ ' + srStr + '`') + '\n\n' +
+          '**' + L.finalAns + ':** **' + srStr + '**';
+      }
+
+      // 4. Cube
+      var mCube = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+)?(?:the\s+)?(?:cube\s+of)\s+(\d+(?:\.\d+)?)$|^(\d+(?:\.\d+)?)\s*(?:का\s+घन|ka\s+ghan|ka\s+cube|चा\s+घन|નો\s+ઘન|এর\s+ঘন|ৰ\s+ঘন|கனம்|ఘనం|کا\s+مکعب|\s+cube|³)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+      if(mCube && !/root|मूल|मूळ|মূল|ૂળ/i.test(q)){
+        var cnum = parseFloat(mCube[1] || mCube[2]);
+        var csq = cnum * cnum;
+        var cans = csq * cnum;
+        return '**' + L.question + ':** `' + cnum + '³`\n\n' +
+          '**' + L.formula + ':** `n³ = n × n × n`\n\n' +
+          '**' + L.solution + ':**\n' +
+          '1. `' + cnum + ' × ' + cnum + ' = ' + fmtNum(csq) + '`\n' +
+          '2. `' + fmtNum(csq) + ' × ' + cnum + ' = ' + fmtNum(cans) + '`\n\n' +
+          '**' + L.finalAns + ':** **' + fmtNum(cans) + '**';
+      }
+
+      // 5. Square
+      var mSquare = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+)?(?:the\s+)?(?:square\s+of)\s+(\d+(?:\.\d+)?)$|^(\d+(?:\.\d+)?)\s*(?:का\s+वर्ग|ka\s+varg|ka\s+square|चा\s+वर्ग|નો\s+વર્ગ|এর\s+বর্গ|ৰ\s+বৰ্গ|வர்க்கம்|వర్గం|کا\s+مربع|\s+square|²)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+      if(mSquare && !/root|मूल|मूळ|মূল|ૂળ/i.test(q)){
+        var sqnum = parseFloat(mSquare[1] || mSquare[2]);
+        var sqans = sqnum * sqnum;
+        return '**' + L.question + ':** `' + sqnum + '²`\n\n' +
+          '**' + L.formula + ':** `n² = n × n`\n\n' +
+          '**' + L.solution + ':**\n' +
+          '1. `' + sqnum + ' × ' + sqnum + ' = ' + fmtNum(sqans) + '`\n\n' +
+          '**' + L.finalAns + ':** **' + fmtNum(sqans) + '**';
+      }
+
+      // 6A. Percentage Increase / Decrease / Discount:
+      // e.g. "200 increased by 15%", "200 में 15% वृद्धि", "500 पर 20% छूट", "discount of 20% on 500"
+      var mPctInc = q.match(/^(\d+(?:\.\d+)?)\s*(?:increased\s+by|plus|\+|में|me)\s*(\d+(?:\.\d+)?)\s*(?:%|percent|प्रतिशत|परसेंट|टक्के|শতাংশ|ટકા)?\s*(?:की\s*वृद्धि|वृद्धि|बढ़ोतरी|increase|badhane\s*par|ज्यादा)?$/i);
+      if(mPctInc && /increased|वृद्धि|बढ़ोतरी|increase|badhane|\+/i.test(q) && /%|percent|प्रतिशत|परसेंट|टक्के|শতাংশ|ટકા/i.test(q)){
+        var baseInc = parseFloat(mPctInc[1]), pctInc = parseFloat(mPctInc[2]);
+        var incVal = (baseInc * pctInc) / 100;
+        var finalInc = baseInc + incVal;
+        return '**' + L.question + ':** `' + baseInc + ' + ' + pctInc + '%`\n\n' +
+          '**' + L.formula + ':** `New Value = Base + (Base × % ÷ 100)`\n\n' +
+          '**' + L.solution + ':**\n' +
+          '1. `' + pctInc + '% of ' + baseInc + ' = (' + baseInc + ' × ' + pctInc + ') ÷ 100 = ' + fmtNum(incVal) + '`\n' +
+          '2. `' + baseInc + ' + ' + fmtNum(incVal) + ' = ' + fmtNum(finalInc) + '`\n\n' +
+          '**' + L.finalAns + ':** **' + fmtNum(finalInc) + '**';
+      }
+      var mPctDec = q.match(/^(?:discount\s+of\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent|प्रतिशत|परसेंट)?\s*(?:discount\s+on|off\s+on|decreased\s+by|minus|\-|में|पर|me|par)\s*(\d+(?:\.\d+)?)\s*(?:%|percent|प्रतिशत|परसेंट|टक्के|শতাংশ|ટકા)?\s*(?:की\s*कमी|कमी|छूट|डिस्काउंट|discount|decrease|ghatane\s*par)?$/i);
+      if(mPctDec && /discount|off|decreased|कमी|छूट|डिस्काउंट|decrease|ghatane|\-/i.test(q) && /%|percent|प्रतिशत|परसेंट|टक्के|শতাংশ|ટકા/i.test(q)){
+        var isDiscountFirst = /^discount\s+of/i.test(q);
+        var baseDec = isDiscountFirst ? parseFloat(mPctDec[2]) : parseFloat(mPctDec[1]);
+        var pctDec = isDiscountFirst ? parseFloat(mPctDec[1]) : parseFloat(mPctDec[2]);
+        var decVal = (baseDec * pctDec) / 100;
+        var finalDec = baseDec - decVal;
+        return '**' + L.question + ':** `' + baseDec + ' − ' + pctDec + '%`\n\n' +
+          '**' + L.formula + ':** `New Value = Base − (Base × % ÷ 100)`\n\n' +
+          '**' + L.solution + ':**\n' +
+          '1. `' + pctDec + '% of ' + baseDec + ' = (' + baseDec + ' × ' + pctDec + ') ÷ 100 = ' + fmtNum(decVal) + '`\n' +
+          '2. `' + baseDec + ' − ' + fmtNum(decVal) + ' = ' + fmtNum(finalDec) + '`\n\n' +
+          '**' + L.finalAns + ':** **' + fmtNum(finalDec) + '**';
+      }
+
+      // 6B. "X is what percent of Y" / "X, Y का कितना प्रतिशत है"
+      var mWhatPct = q.match(/^(?:what\s+percent(?:age)?\s+of\s+(\d+(?:\.\d+)?)\s+is\s+(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s+is\s+what\s+percent(?:age)?\s+of\s+(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*[,\s]\s*(\d+(?:\.\d+)?)\s*(?:का|चा|चे|এর|નો|ৰ)\s*(?:कितना|कितने|kitna|किति|কত|કેટલા)\s*(?:%|percent|प्रतिशत|परसेंट|टक्के|শতাংশ|ટકા)(?:\s*(?:है|होगा|hai|hoga|आहे))?)$/i);
+      if(mWhatPct){
+        var partVal = parseFloat(mWhatPct[2] || mWhatPct[3] || mWhatPct[5]);
+        var wholeVal = parseFloat(mWhatPct[1] || mWhatPct[4] || mWhatPct[6]);
+        if(wholeVal !== 0 && !isNaN(partVal) && !isNaN(wholeVal)){
+          var wpAns = (partVal / wholeVal) * 100;
+          return '**' + L.question + ':** `' + partVal + ' / ' + wholeVal + ' × 100%`\n\n' +
+            '**' + L.formula + ':** `(Part ÷ Whole) × 100`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. `(' + partVal + ' ÷ ' + wholeVal + ') × 100`\n' +
+            '2. `' + fmtNum(partVal / wholeVal) + ' × 100 = ' + fmtNum(wpAns) + '%`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(wpAns) + '%**';
+        }
+      }
+
+      // 6C. Standard Percentage: "15% of 240" or "240 का 15 प्रतिशत" or "240 ka 15%"
+      var mPct = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+|solve\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent|प्रतिशत|परसेंट|pratishat|टक्के|শতাংশ|ટકા|శాతం|சதவீதம்|فیصد)\s*(?:of|का|की|के|ka|ki|ke|এর|चे|चा|இல்|లో|નો|ના|ৰ|کا)\s*(\d+(?:\.\d+)?)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+      var pctVal = null, baseVal = null;
+      if(mPct){
+        pctVal = parseFloat(mPct[1]); baseVal = parseFloat(mPct[2]);
+      } else {
+        var mPctRev = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+|solve\s+)?(\d+(?:\.\d+)?)\s*(?:का|की|के|ka|ki|ke|of|এর|चे|चा|இல்|లో|નો|ના|ৰ|کا)\s*(\d+(?:\.\d+)?)\s*(?:%|percent|प्रतिशत|परसेंट|pratishat|टक्के|শতাংশ|ટકા|శాతం|சதவீதம்|فیصد)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+        if(mPctRev){ baseVal = parseFloat(mPctRev[1]); pctVal = parseFloat(mPctRev[2]); }
+      }
+      if(pctVal !== null && baseVal !== null && !isNaN(pctVal) && !isNaN(baseVal)){
+        var pAns = (pctVal * baseVal) / 100;
+        var pProd = pctVal * baseVal;
+        return '**' + L.question + ':** `' + pctVal + '% of ' + baseVal + '`\n\n' +
+          '**' + L.formula + ':** `(Percentage × Base) ÷ 100`\n\n' +
+          '**' + L.solution + ':**\n' +
+          '1. `(' + pctVal + ' × ' + baseVal + ') ÷ 100`\n' +
+          '2. `' + fmtNum(pProd) + ' ÷ 100 = ' + fmtNum(pAns) + '`\n\n' +
+          '**' + L.finalAns + ':** **' + fmtNum(pAns) + '**';
+      }
+
+      // 7. LCM (2 or more numbers)
+      var mLcm = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+)?(?:the\s+)?(?:lcm|ल\.?स\.?प?\.?|लघुत्तम\s+समापवर्त्य|लसावि|লসাগু|ল\.সা\.গু\.|લ\.સા\.અ\.|மீ\.சி\.ம|క\.సా\.గు)\s*(?:of|का|के)?\s*([0-9\s,andऔरआणिএবংআৰুઅનેव&]+)$|^([0-9\s,andऔरआणिএবংআৰুઅનેव&]+)\s*(?:का\s+lcm|ka\s+lcm|का\s+ल\.?स\.?प?\.?|का\s+लघुत्तम|चा\s+लसावि|এর\s+লসাগু|ৰ\s+ল\.সা\.গু\.|નો\s+લ\.સા\.અ\.|lcm)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+      if(mLcm){
+        var lcmNums = (mLcm[1] || mLcm[2]).match(/\d+/g);
+        if(lcmNums && lcmNums.length >= 2){
+          var lArr = lcmNums.map(Number).filter(function(n){ return n > 0; });
+          if(lArr.length >= 2){
+            var curLcm = lArr[0], curGcd = lArr[0];
+            for(var li = 1; li < lArr.length; li++){
+              curLcm = lcm(curLcm, lArr[li]);
+              curGcd = gcd(curGcd, lArr[li]);
+            }
+            return '**' + L.question + ':** `LCM(' + lArr.join(', ') + ')`\n\n' +
+              '**' + L.solution + ':**\n' +
+              '1. ' + L.given + ': `' + lArr.join(', ') + '`\n' +
+              '2. `HCF = ' + curGcd + '`\n' +
+              '3. `LCM = ' + curLcm + '`\n\n' +
+              '**' + L.finalAns + ':** **' + curLcm + '**';
+          }
+        }
+      }
+
+      // 8. HCF / GCD (2 or more numbers)
+      var mHcf = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+)?(?:the\s+)?(?:hcf|gcd|म\.?स\.?प?\.?|महत्तम\s+समापवर्तक|मसावि|গসাগু|গ\.সা\.গু\.|ગ\.સા\.અ\.|மீ\.பொ\.வ|గ\.సా\.భా)\s*(?:of|का|के)?\s*([0-9\s,andऔरआणिএবংআৰুઅનેव&]+)$|^([0-9\s,andऔरआणिএবংআৰুઅનેव&]+)\s*(?:का\s+hcf|ka\s+hcf|का\s+gcd|ka\s+gcd|का\s+म\.?स\.?प?\.?|का\s+महत्तम|चा\s+मसावि|এর\s+গসাগু|ৰ\s+গ\.সা\.গু\.|નો\s+ગ\.સા\.અ\.|hcf|gcd)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+      if(mHcf){
+        var hcfNums = (mHcf[1] || mHcf[2]).match(/\d+/g);
+        if(hcfNums && hcfNums.length >= 2){
+          var hArr = hcfNums.map(Number).filter(function(n){ return n > 0; });
+          if(hArr.length >= 2){
+            var resHcf = hArr[0], resLcm = hArr[0];
+            for(var hi = 1; hi < hArr.length; hi++){
+              resHcf = gcd(resHcf, hArr[hi]);
+              resLcm = lcm(resLcm, hArr[hi]);
+            }
+            return '**' + L.question + ':** `HCF(' + hArr.join(', ') + ')`\n\n' +
+              '**' + L.solution + ':**\n' +
+              '1. ' + L.given + ': `' + hArr.join(', ') + '`\n' +
+              '2. `HCF / GCD = ' + resHcf + '` *(LCM = ' + resLcm + ')*\n\n' +
+              '**' + L.finalAns + ':** **' + resHcf + '**';
+          }
+        }
+      }
+
+      // 9. Average / Mean
+      var mAvg = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+)?(?:the\s+)?(?:average|mean|औसत|ausat|सरासरी|গড়|গড়|સરેરાશ|சராசரி|సగటు|اوسط)\s*(?:of|का|की|चे|ची)?\s*([0-9.,\s]+(?:and|और|आणि|এবং|আৰু|અને|aur|\s)\s*[0-9.]+|[0-9.,\s]+)$|^([0-9.,\s]+(?:and|और|आणि|এবং|আৰু|અને|aur|\s)\s*[0-9.]+|[0-9.,\s]+)\s*(?:का\s+औसत|ka\s+ausat|ka\s+average|की\s+सरासरी|ची\s+सरासरी|ની\s+સરેરાશ|এর\s+গড়|ৰ\s+গড়|average|mean)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|निकालें|kya\s+hai|kitna\s+hoga|batao))?$/i);
+      if(mAvg){
+        var avgNums = (mAvg[1] || mAvg[2]).match(/\d+(?:\.\d+)?/g);
+        if(avgNums && avgNums.length >= 2){
+          var aArr = avgNums.map(Number);
+          var aSum = aArr.reduce(function(acc, val){ return acc + val; }, 0);
+          var aCount = aArr.length;
+          var aResult = aSum / aCount;
+          return '**' + L.question + ':** `Average(' + aArr.join(', ') + ')`\n\n' +
+            '**' + L.formula + ':** `Average = Sum ÷ Count`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. ' + L.sumLabel + ': `' + aArr.join(' + ') + ' = ' + fmtNum(aSum) + '`\n' +
+            '2. ' + L.countLabel + ': `' + aCount + '`\n' +
+            '3. `' + fmtNum(aSum) + ' ÷ ' + aCount + ' = ' + fmtNum(aResult) + '`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(aResult) + '**';
+        }
+      }
+
+      // 10. Fraction of Base: e.g. "3/4 of 120" or "120 का 3/4"
+      var mFracOf = q.match(/^(?:what\s+is\s+|find\s+|calculate\s+)?(\d+)\s*\/\s*(\d+)\s*(?:of|का|की|के|ka|এর|चे|चा|இல்|లో|નો|ৰ)\s*(\d+(?:\.\d+)?)$|^(?:what\s+is\s+|find\s+|calculate\s+)?(\d+(?:\.\d+)?)\s*(?:का|की|के|ka|of|এর|चे|चा|இல்|లో|નો|ৰ)\s*(\d+)\s*\/\s*(\d+)(?:\s*(?:क्या\s+है|कितना\s+होगा|बताओ|kya\s+hai|kitna\s+hoga))?$/i);
+      if(mFracOf){
+        var fNum = parseInt(mFracOf[1] || mFracOf[5], 10);
+        var fDen = parseInt(mFracOf[2] || mFracOf[6], 10);
+        var fBase = parseFloat(mFracOf[3] || mFracOf[4]);
+        if(fDen !== 0 && !isNaN(fBase)){
+          var fAns = (fBase * fNum) / fDen;
+          return '**' + L.question + ':** `(' + fNum + '/' + fDen + ') × ' + fBase + '`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. `(' + fBase + ' × ' + fNum + ') ÷ ' + fDen + '`\n' +
+            '2. `' + fmtNum(fBase * fNum) + ' ÷ ' + fDen + ' = ' + fmtNum(fAns) + '`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(fAns) + '**';
+        }
+      }
+
+      // 11. Two-Fraction Arithmetic: e.g. "1/3 + 1/4", "5/6 - 1/3", "2/3 * 3/4", "3/4 ÷ 1/2"
+      var mTwoFrac = q.match(/^(?:solve|calculate|simplify|हल\s+करें|सरल\s+करें)?\s*(\d+)\s*\/\s*(\d+)\s*([+\-−*×x÷/])\s*(\d+)\s*\/\s*(\d+)$/i);
+      if(mTwoFrac){
+        var n1 = parseInt(mTwoFrac[1], 10), d1 = parseInt(mTwoFrac[2], 10);
+        var fop = mTwoFrac[3], n2 = parseInt(mTwoFrac[4], 10), d2 = parseInt(mTwoFrac[5], 10);
+        if(d1 !== 0 && d2 !== 0){
+          var numOut = 0, denOut = 1, stepDesc = '';
+          if(fop === '+' || fop === '-' || fop === '−'){
+            var commonD = lcm(d1, d2);
+            var m1 = n1 * (commonD / d1), m2 = n2 * (commonD / d2);
+            numOut = (fop === '+') ? (m1 + m2) : (m1 - m2);
+            denOut = commonD;
+            stepDesc = '1. Common Denominator `LCM(' + d1 + ', ' + d2 + ') = ' + commonD + '`\n' +
+              '2. `(' + m1 + ' ' + (fop === '+' ? '+' : '−') + ' ' + m2 + ') / ' + commonD + ' = ' + numOut + '/' + denOut + '`';
+          } else if(fop === '*' || fop === '×' || fop.toLowerCase() === 'x'){
+            numOut = n1 * n2; denOut = d1 * d2;
+            stepDesc = '1. `(' + n1 + ' × ' + n2 + ') / (' + d1 + ' × ' + d2 + ') = ' + numOut + '/' + denOut + '`';
+          } else {
+            if(n2 === 0) return null;
+            numOut = n1 * d2; denOut = d1 * n2;
+            stepDesc = '1. `(' + n1 + '/' + d1 + ') × (' + d2 + '/' + n2 + ') = ' + numOut + '/' + denOut + '`';
+          }
+          var g = gcd(numOut, denOut);
+          var sNum = numOut / g, sDen = denOut / g;
+          var decVal = numOut / denOut;
+          var fracFinal = (sDen === 1) ? String(sNum) : (sNum + '/' + sDen + ' (≈ ' + fmtNum(decVal) + ')');
+          return '**' + L.question + ':** `' + n1 + '/' + d1 + ' ' + fop + ' ' + n2 + '/' + d2 + '`\n\n' +
+            '**' + L.solution + ':**\n' + stepDesc + '\n' +
+            (g > 1 ? '3. Simplified: `' + sNum + '/' + sDen + '`\n' : '') + '\n' +
+            '**' + L.finalAns + ':** **' + fracFinal + '**';
+        }
+      }
+
+      // 12. Ratio Division & Proportion:
+      // 12A: "2 : 3 = ? : 18" or "2:3 = x:18"
+      var mProp = q.match(/^(\d+(?:\.\d+)?)\s*[:∶]\s*(\d+(?:\.\d+)?)\s*=\s*([?xX]|\d+(?:\.\d+)?)\s*[:∶]\s*([?xX]|\d+(?:\.\d+)?)$/);
+      if(mProp && (/[?xX]/.test(mProp[3]) || /[?xX]/.test(mProp[4]))){
+        var pa = parseFloat(mProp[1]), pb = parseFloat(mProp[2]);
+        if(/[?xX]/.test(mProp[3]) && !/[?xX]/.test(mProp[4])){
+          var pd = parseFloat(mProp[4]);
+          var px = (pa * pd) / pb;
+          return '**' + L.question + ':** `' + pa + ' : ' + pb + ' = ? : ' + pd + '`\n\n' +
+            '**' + L.formula + ':** `a : b = x : d  ⇒  x = (a × d) ÷ b`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. `x = (' + pa + ' × ' + pd + ') ÷ ' + pb + '`\n' +
+            '2. `x = ' + fmtNum(pa * pd) + ' ÷ ' + pb + ' = ' + fmtNum(px) + '`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(px) + '**';
+        } else if(!/[?xX]/.test(mProp[3]) && /[?xX]/.test(mProp[4])){
+          var pc = parseFloat(mProp[3]);
+          var py = (pb * pc) / pa;
+          return '**' + L.question + ':** `' + pa + ' : ' + pb + ' = ' + pc + ' : ?`\n\n' +
+            '**' + L.formula + ':** `a : b = c : x  ⇒  x = (b × c) ÷ a`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. `x = (' + pb + ' × ' + pc + ') ÷ ' + pa + '`\n' +
+            '2. `x = ' + fmtNum(pb * pc) + ' ÷ ' + pa + ' = ' + fmtNum(py) + '`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(py) + '**';
+        }
+      }
+
+      // 12B: Divide total in ratio A:B ("divide 120 in 2:3" or "120 को 2:3 के अनुपात में बाँटें")
+      var mRatio = q.match(/(?:divide\s+|split\s+)?(\d+(?:\.\d+)?)\s*(?:in|into|को|मे|में|ko|me|मध्ये|তে)?\s*(?:the\s+)?(?:ratio\s+of|ratio|अनुपात|प्रमाण|ગુણોત્તર|অনুপাত)?\s*(\d+)\s*[:∶]\s*(\d+)/i);
+      if(mRatio){
+        var rTotal = parseFloat(mRatio[1]), rA = parseInt(mRatio[2], 10), rB = parseInt(mRatio[3], 10);
+        var rSum = rA + rB;
+        if(rSum > 0){
+          var rUnit = rTotal / rSum;
+          var rPart1 = rA * rUnit, rPart2 = rB * rUnit;
+          return '**' + L.question + ':** `' + rTotal + ' → ' + rA + ' : ' + rB + '`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. Total parts: `' + rA + ' + ' + rB + ' = ' + rSum + '`\n' +
+            '2. 1 part: `' + rTotal + ' ÷ ' + rSum + ' = ' + fmtNum(rUnit) + '`\n' +
+            '3. First share: `' + rA + ' × ' + fmtNum(rUnit) + ' = ' + fmtNum(rPart1) + '`\n' +
+            '4. Second share: `' + rB + ' × ' + fmtNum(rUnit) + ' = ' + fmtNum(rPart2) + '`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(rPart1) + ' , ' + fmtNum(rPart2) + '**';
+        }
+      }
+
+      // 12C: Simplify ratio "ratio of 24 and 36" or "simplify 24:36"
+      var mSimpRatio = q.match(/^(?:simplify\s+ratio|ratio\s+of|अनुपात\s+निकालें|अनुपात)\s*(\d+)\s*(?:[:∶]|and|to|और|आणि|এবং|aur)\s*(\d+)$|^(\d+)\s*[:∶]\s*(\d+)\s*(?:का\s+सरल\s+अनुपात|को\s+सरल\s+करें|simplify)$/i);
+      if(mSimpRatio){
+        var ra = parseInt(mSimpRatio[1] || mSimpRatio[3], 10), rb = parseInt(mSimpRatio[2] || mSimpRatio[4], 10);
+        if(ra > 0 && rb > 0){
+          var rg = gcd(ra, rb);
+          return '**' + L.question + ':** `' + ra + ' : ' + rb + '`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. `HCF(' + ra + ', ' + rb + ') = ' + rg + '`\n' +
+            '2. `(' + ra + ' ÷ ' + rg + ') : (' + rb + ' ÷ ' + rg + ') = ' + (ra/rg) + ' : ' + (rb/rg) + '`\n\n' +
+            '**' + L.finalAns + ':** **' + (ra/rg) + ' : ' + (rb/rg) + '**';
+        }
+      }
+
+      // 13. Simple Interest (SI) & Compound Interest (CI)
+      if(/(?:simple\s+interest|\bsi\b|साधारण\s+ब्याज|sadharan\s+byaj|सरळव्याज|সরল\s+সুদ|સાદું\s+વ્યાજ)/i.test(q)){
+        var siNums = q.match(/\d+(?:\.\d+)?/g);
+        if(siNums && siNums.length >= 3){
+          var P = parseFloat(siNums[0]), R = parseFloat(siNums[1]), T = parseFloat(siNums[2]);
+          var SI = (P * R * T) / 100;
+          var A = P + SI;
+          return '**' + L.question + ':** `P = ' + P + ', R = ' + R + '%, T = ' + T + '` (Simple Interest / साधारण ब्याज)\n\n' +
+            '**' + L.formula + ':** `SI = (P × R × T) ÷ 100`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. `SI = (' + P + ' × ' + R + ' × ' + T + ') ÷ 100`\n' +
+            '2. `SI = ' + fmtNum(P * R * T) + ' ÷ 100 = ' + fmtNum(SI) + '`\n' +
+            '3. `Total Amount (मिश्रधन) = ' + P + ' + ' + fmtNum(SI) + ' = ' + fmtNum(A) + '`\n\n' +
+            '**' + L.finalAns + ':** **SI = ' + fmtNum(SI) + ' (Amount = ' + fmtNum(A) + ')**';
+        }
+      }
+      if(/(?:compound\s+interest|\bci\b|चक्रवृद्धि\s+ब्याज|chakravridhi\s+byaj|चक्रवाढ\s+व्याज|চক্রবৃদ্ধি\s+সুদ|ચક્રવૃદ્ધિ\s+વ્યાજ)/i.test(q)){
+        var ciNums = q.match(/\d+(?:\.\d+)?/g);
+        if(ciNums && ciNums.length >= 3){
+          var cP = parseFloat(ciNums[0]), cR = parseFloat(ciNums[1]), cT = parseFloat(ciNums[2]);
+          if(cT <= 100){
+            var cA = cP * Math.pow(1 + cR / 100, cT);
+            var cCI = cA - cP;
+            return '**' + L.question + ':** `P = ' + cP + ', R = ' + cR + '%, T = ' + cT + '` (Compound Interest / चक्रवृद्धि ब्याज)\n\n' +
+              '**' + L.formula + ':** `A = P × (1 + R/100)^T ,  CI = A − P`\n\n' +
+              '**' + L.solution + ':**\n' +
+              '1. `A = ' + cP + ' × (1 + ' + cR + '/100)^' + cT + ' = ' + fmtNum(cA) + '`\n' +
+              '2. `CI = ' + fmtNum(cA) + ' − ' + cP + ' = ' + fmtNum(cCI) + '`\n\n' +
+              '**' + L.finalAns + ':** **CI = ' + fmtNum(cCI) + ' (Amount = ' + fmtNum(cA) + ')**';
+          }
+        }
+      }
+
+      // 14. Prime Check & Factors of N
+      var mPrime = q.match(/^(?:is\s+(\d+)\s+(?:a\s+)?prime(?:\s+number)?|क्या\s+(\d+)\s+(?:एक\s+)?अभाज्य(?:\s+संख्या)?\s+है|kya\s+(\d+)\s+prime\s+(?:number\s+)?hai)$/i);
+      if(mPrime){
+        var pn = parseInt(mPrime[1] || mPrime[2] || mPrime[3], 10);
+        if(pn >= 1 && pn <= 1e9){
+          var isP = pn > 1;
+          var firstDiv = 0;
+          for(var d = 2; d * d <= pn; d++){
+            if(pn % d === 0){ isP = false; firstDiv = d; break; }
+          }
+          return '**' + L.question + ':** `Prime check: ' + pn + '`\n\n' +
+            '**' + L.solution + ':**\n' +
+            (isP
+              ? '1. `' + pn + '` केवल `1` और `' + pn + '` से विभाजित होता है।\n2. ' + L.primeYes
+              : '1. `' + pn + '` संख्या `' + firstDiv + '` से विभाजित होती है (`' + pn + ' = ' + firstDiv + ' × ' + (pn/firstDiv) + '`)।\n2. ' + L.primeNo) + '\n\n' +
+            '**' + L.finalAns + ':** **' + (isP ? L.primeYes : L.primeNo) + '**';
+        }
+      }
+      var mFactors = q.match(/^(?:find\s+)?(?:all\s+)?(?:factors|divisors)\s+of\s+(\d+)$|^(\d+)\s*(?:के\s+गुणनखंड|ke\s+gunankhand|ke\s+factors|चे\s+विभाजक|এর\s+গুণনীয়ক)(?:\s*(?:बताओ|निकालें|क्या\s+हैं|batao))?$/i);
+      if(mFactors){
+        var fn = parseInt(mFactors[1] || mFactors[2], 10);
+        if(fn > 0 && fn <= 100000){
+          var fList = [];
+          for(var fd = 1; fd * fd <= fn; fd++){
+            if(fn % fd === 0){
+              fList.push(fd);
+              if(fd * fd !== fn) fList.push(fn / fd);
+            }
+          }
+          fList.sort(function(a, b){ return a - b; });
+          return '**' + L.question + ':** `' + L.factorsLabel + ' of ' + fn + '`\n\n' +
+            '**' + L.solution + ':**\n' +
+            '1. ' + L.factorsLabel + ': `' + fList.join(', ') + '`\n' +
+            '2. ' + L.countLabel + ': `' + fList.length + '`\n\n' +
+            '**' + L.finalAns + ':** **' + fList.join(', ') + '**';
+        }
+      }
+
+      // 15. Linear Equation in 1 Variable: e.g. "2x + 5 = 17" or "3x - 9 = 12" or "5x = 45"
+      var mLinEq = q.match(/^(?:solve\s+|हल\s+करें[:\s]*)?([+-]?\s*\d*)\s*[xX]\s*(?:([+\-−])\s*(\d+(?:\.\d+)?))?\s*=\s*([+-]?\s*\d+(?:\.\d+)?)$/i);
+      if(mLinEq){
+        var rawA = (mLinEq[1] || '').replace(/\s+/g, '');
+        var coefA = (rawA === '' || rawA === '+') ? 1 : (rawA === '-' ? -1 : parseFloat(rawA));
+        var signB = mLinEq[2] || '+';
+        var valB = mLinEq[3] ? parseFloat(mLinEq[3]) : 0;
+        if(signB === '-' || signB === '−') valB = -valB;
+        var rhsC = parseFloat(mLinEq[4].replace(/\s+/g, ''));
+        if(coefA !== 0 && !isNaN(coefA) && !isNaN(rhsC)){
+          var rhsAfterB = rhsC - valB;
+          var xAns = rhsAfterB / coefA;
+          var eqStr = (coefA === 1 ? 'x' : (coefA === -1 ? '-x' : coefA + 'x')) + (valB !== 0 ? (valB > 0 ? ' + ' + valB : ' − ' + Math.abs(valB)) : '') + ' = ' + rhsC;
+          return '**' + L.question + ':** `' + eqStr + '`\n\n' +
+            '**' + L.solution + ':**\n' +
+            (valB !== 0 ? '1. `' + coefA + 'x = ' + rhsC + (valB > 0 ? ' − ' + valB : ' + ' + Math.abs(valB)) + ' = ' + fmtNum(rhsAfterB) + '`\n2. `x = ' + fmtNum(rhsAfterB) + ' ÷ ' + coefA + ' = ' + fmtNum(xAns) + '`' : '1. `x = ' + rhsC + ' ÷ ' + coefA + ' = ' + fmtNum(xAns) + '`') + '\n\n' +
+            '**' + L.finalAns + ':** **`x = ' + fmtNum(xAns) + '`**';
+        }
+      }
+
+      // 16. Unit Conversions
+      var mConv = q.match(/^(\d+(?:\.\d+)?)\s*(km|kilometers?|किमी|किलोमीटर|m|meters?|मीटर|cm|centimeters?|सेमी|hours?|hrs?|घंटे|घंटा|hr|minutes?|mins?|मिनट|min|seconds?|secs?|सेकंड|sec|kg|किलो|किलोग्राम|grams?|ग्राम|gm?)\s*(?:in|to|into|में\s+कितने|में|को|कितना|कितने|=)\s*(km|kilometers?|किमी|किलोमीटर|m|meters?|मीटर|cm|centimeters?|सेमी|hours?|hrs?|घंटे|घंटा|hr|minutes?|mins?|मिनट|min|seconds?|secs?|सेकंड|sec|kg|किलो|किलोग्राम|grams?|ग्राम|gm?)(?:\s*(?:होते\s+हैं|होगा|हैं|hote\s+hain|hoga))?$/i);
+      if(mConv){
+        var cVal = parseFloat(mConv[1]), fromU = mConv[2].toLowerCase(), toU = mConv[3].toLowerCase();
+        var isKmFrom = /^(?:km|kilometers?|किमी|किलोमीटर)$/.test(fromU);
+        var isMFrom = /^(?:m|meters?|मीटर)$/.test(fromU);
+        var isMTo = /^(?:m|meters?|मीटर)$/.test(toU);
+        var isCmTo = /^(?:cm|centimeters?|सेमी)$/.test(toU);
+        if(isKmFrom && isMTo){
+          return '**' + L.question + ':** `' + cVal + ' km → meters`\n\n' +
+            '**' + L.formula + ':** `1 km = 1000 meters`\n\n' +
+            '**' + L.solution + ':**\n1. `' + cVal + ' × 1000 = ' + fmtNum(cVal * 1000) + ' m`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(cVal * 1000) + ' meters**';
+        }
+        if(isMFrom && isCmTo){
+          return '**' + L.question + ':** `' + cVal + ' m → cm`\n\n' +
+            '**' + L.formula + ':** `1 meter = 100 cm`\n\n' +
+            '**' + L.solution + ':**\n1. `' + cVal + ' × 100 = ' + fmtNum(cVal * 100) + ' cm`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(cVal * 100) + ' cm**';
+        }
+        var isHourFrom = /^(?:hours?|hrs?|घंटे|घंटा|hr)$/.test(fromU);
+        var isMinFrom = /^(?:minutes?|mins?|मिनट|min)$/.test(fromU);
+        var isMinTo = /^(?:minutes?|mins?|मिनट|min)$/.test(toU);
+        var isSecTo = /^(?:seconds?|secs?|सेकंड|sec)$/.test(toU);
+        if(isHourFrom && isMinTo){
+          return '**' + L.question + ':** `' + cVal + ' hours → minutes`\n\n' +
+            '**' + L.formula + ':** `1 hour = 60 minutes`\n\n' +
+            '**' + L.solution + ':**\n1. `' + cVal + ' × 60 = ' + fmtNum(cVal * 60) + ' minutes`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(cVal * 60) + ' minutes**';
+        }
+        if(isMinFrom && isSecTo){
+          return '**' + L.question + ':** `' + cVal + ' minutes → seconds`\n\n' +
+            '**' + L.formula + ':** `1 minute = 60 seconds`\n\n' +
+            '**' + L.solution + ':**\n1. `' + cVal + ' × 60 = ' + fmtNum(cVal * 60) + ' seconds`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(cVal * 60) + ' seconds**';
+        }
+        var isKgFrom = /^(?:kg|किलो|किलोग्राम)$/.test(fromU);
+        var isGTo = /^(?:grams?|ग्राम|gm?)$/.test(toU);
+        if(isKgFrom && isGTo){
+          return '**' + L.question + ':** `' + cVal + ' kg → grams`\n\n' +
+            '**' + L.formula + ':** `1 kg = 1000 grams`\n\n' +
+            '**' + L.solution + ':**\n1. `' + cVal + ' × 1000 = ' + fmtNum(cVal * 1000) + ' grams`\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(cVal * 1000) + ' grams**';
+        }
+      }
+
+      // 17. Natural Language Word Arithmetic & Direct BODMAS Expressions:
+      // Convert "subtract A from B" -> "B - A", "A me se B ghataye/gaya" -> "A - B"
+      var mSubFrom = q.match(/^subtract\s+(\d+(?:\.\d+)?)\s+from\s+(\d+(?:\.\d+)?)$/i);
+      if(mSubFrom){
+        q = mSubFrom[2] + ' - ' + mSubFrom[1];
+      }
+      var mMeSe = q.match(/^(\d+(?:\.\d+)?)\s*(?:में\s+से|मे\s+से|me\s+se|मधून)\s*(\d+(?:\.\d+)?)\s*(?:घटाएं|घटाने\s+पर|घटाओ|गया|कम\s+करें|ghataye|ghatao|gaya|वजा\s+करा)?$/i);
+      if(mMeSe){
+        q = mMeSe[1] + ' - ' + mMeSe[2];
+      }
+
+      // Strip conversational prefixes and suffixes around math expressions
+      var cleanExpr = q
+        .replace(/^(?:please\s+|कृपया\s+)?(?:solve|calculate|simplify|evaluate|find|what\s+is|what's|whats|हल\s+करें|सरल\s+करें|मान\s+निकालें|मान\s+बताइए|मान\s+बताओ|कैलकुलेट\s+करें|बताओ|बताइए|जवाब\s+दो|उत्तर\s+बताओ)[:\s]*/i, '')
+        .replace(/\s*(?:का\s+मान\s+क्या\s+होगा|का\s+मान\s+निकालें|का\s+उत्तर\s+क्या\s+है|कितना\s+होता\s+है|कितना\s+होगा|क्या\s+होगा|क्या\s+है|बताओ|बताइए|हल\s+करें|kitna\s+hota\s+hai|kitna\s+hoga|kya\s+hoga|kya\s+hai|batao|bataiye|equals\s+what|=\s*\?|\?)+$/i, '')
+        .trim();
+
+      // Convert spoken operators between numbers into symbols
+      cleanExpr = cleanExpr
+        .replace(/(\d)\s*(?:plus|add|added\s+to|जोड़|जमा|धन|और|aur|যোগ|अधिक|बेरीज|વત્તા|கூட்டல்|కూడిక)\s*(?=\d|\()/gi, '$1 + ')
+        .replace(/(\d)\s*(?:minus|subtract|घटाव|माइनस|বিয়োগ|वजा|ઓછા|கழித்தல்|తీసివేత)\s*(?=\d|\()/gi, '$1 - ')
+        .replace(/(\d)\s*(?:into|times|multiplied\s+by|multiply\s+by|multiply|गुणा|गुणे|guna|গুণ|गुणिले|ગુણ્યા|பெருக்கல்|గుణకారం)\s*(?=\d|\()/gi, '$1 * ')
+        .replace(/(\d)\s*(?:divided\s+by|divide\s+by|भागे|भाग|बटा|bhag|ভাগ|भागिले|ભાગ્યા|வகுத்தல்|భాగహారం)\s*(?=\d|\()/gi, '$1 / ')
+        .replace(/(\d)\s*(?:to\s+the\s+power\s+of|to\s+the\s+power|power|की\s+घात|घात|ki\s+power|ki\s+ghat)\s*(?=\d|\()/gi, '$1 ^ ')
+        .replace(/[\s=?]+$/g, '')
+        .trim();
+
+      if(/^[0-9+\-*\/^%!().,xX×÷−–—√∛\[\]\{\}\s]+$/.test(cleanExpr) && (/[+\-*\/^%!xX×÷−–—√∛]/.test(cleanExpr))){
+        try{
+          var eRes = evaluateMath(cleanExpr);
+          var prettyExpr = cleanExpr.replace(/\*/g, '×').replace(/\//g, '÷');
+          var stepsText = buildBodmasSteps(prettyExpr, eRes, L);
+          return '**' + L.question + ':** `' + prettyExpr + '`\n\n' +
+            '**' + L.solution + ':**\n' +
+            stepsText + '\n\n' +
+            '**' + L.finalAns + ':** **' + fmtNum(eRes) + '**';
+        }catch(err){
+          return null;
+        }
+      }
+
+      // 18. Offline Concept Guide Fallback (ONLY when navigator.onLine === false)
+      if(typeof navigator !== 'undefined' && navigator.onLine === false){
+        if(/percentage|प्रतिशत|टक्के|শতাংশ|ટકા/i.test(q)){
+          return '**' + L.question + ':** Percentage (प्रतिशत)\n\n' +
+            '**' + L.formula + ':**\n' +
+            '* `X% of Y = (X × Y) ÷ 100`\n' +
+            '* `X is what % of Y = (X ÷ Y) × 100`\n\n' +
+            '**' + L.solution + ' (Example):**\n' +
+            '1. `15% of 240 = (15 × 240) ÷ 100 = 36`\n' +
+            '2. आप चैट में कोई भी संख्या लिखकर तुरंत ऑफ़लाइन प्रतिशत निकाल सकते हैं (जैसे: `240 का 15%`)!';
+        }
+        if(/pythagoras|पाइथागोरस/i.test(q)){
+          return '**' + L.question + ':** Pythagoras Theorem (पाइथागोरस प्रमेय)\n\n' +
+            '**' + L.formula + ':** ` कर्ण² = लंब² + आधार²  (a² + b² = c²)`\n\n' +
+            '**' + L.solution + ' (Example):**\n' +
+            '1. यदि `a = 3, b = 4`, तो `c = √(3² + 4²) = √(9 + 16) = √25 = 5`';
+        }
+      }
+
+      return null;
+    }
+
+    return {
+      solve: solve,
+      labels: MATH_LABELS,
+      detectLanguage: detectQueryLanguage
+    };
+  })();
+
+  // State
+  var currentLang = 'hi';
+  var currentPoolIndex = 0;
+  var attachedFile = null;
+  var attachedFileDataUrl = null;
+  var isListening = false;
+  var speechRecognizer = null;
+  var lastQuestion = '';
+  var conversationHistory = [];
+
+  function $(id){ return document.getElementById(id); }
+
+  function syncNetworkStatus(){
+    var dot = $('aiOnlineDot');
+    var status = $('aiHeaderLiveStatus');
+    var isOnline = navigator.onLine !== false;
+    if(dot){
+      dot.classList.toggle('offline', !isOnline);
+      dot.title = isOnline ? 'Online' : 'Offline (Math Engine Active)';
+    }
+    if(status){
+      status.classList.toggle('offline', !isOnline);
+      status.textContent = isOnline ? '● Active' : '● Offline (Math Active)';
+    }
+  }
+
+  function applyThemeState(isDark, tokens){
+    document.body.classList.toggle('dark', !!isDark);
+    document.body.classList.toggle('light', !isDark);
+    document.documentElement.classList.toggle('dark', !!isDark);
+    document.documentElement.classList.toggle('light', !isDark);
+    if(tokens && typeof tokens === 'object'){
+      Object.keys(tokens).forEach(function(k){
+        if(tokens[k]){
+          document.documentElement.style.setProperty('--' + k, tokens[k]);
+          document.body.style.setProperty('--' + k, tokens[k]);
+        }
+      });
+    }
+  }
+
+  function setLanguage(langCode) {
+    if (!I18N[langCode]) langCode = 'en';
+    currentLang = langCode;
+    var t = I18N[langCode] || I18N.en;
+
+    document.documentElement.lang = langCode;
+    document.documentElement.dir = (langCode === 'ur') ? 'rtl' : 'ltr';
+
+    if ($('aiTitle')) $('aiTitle').textContent = t.title;
+    if ($('aiWelcomeTitle')) $('aiWelcomeTitle').textContent = t.welcome;
+    if ($('aiWelcomeSub')) $('aiWelcomeSub').textContent = t.welcomeSub;
+    if ($('aiSuggestionsLabel')) $('aiSuggestionsLabel').textContent = t.suggLabel;
+    if ($('aiRotateText')) $('aiRotateText').textContent = t.rotate;
+    if ($('aiClearText')) $('aiClearText').textContent = t.clear;
+    if ($('aiInput')) $('aiInput').placeholder = t.placeholder;
+    if ($('aiStatus')) $('aiStatus').textContent = t.statusDefault;
+
+    renderSuggestions();
+    syncNetworkStatus();
+  }
+
+  function getActivePool() {
+    var pools = SUGGESTION_POOLS[currentLang] || SUGGESTION_POOLS.en;
+    return pools[currentPoolIndex % pools.length];
+  }
+
+  function renderSuggestions() {
+    var box = $('aiSuggestions');
+    if (!box) return;
+    var pool = getActivePool();
+    box.innerHTML = pool.map(function(item){
+      return '<button type="button" data-prompt="' + item.prompt.replace(/"/g, '&quot;') + '">' +
+        '<span class="sugg-icon">' + item.icon + '</span>' +
+        '<span class="sugg-text">' + item.label + '</span>' +
+        '</button>';
+    }).join('');
+
+    box.querySelectorAll('button').forEach(function(b){
+      b.onclick = function(){
+        var p = this.getAttribute('data-prompt');
+        var inp = $('aiInput');
+        if (inp) {
+          inp.value = p;
+          sendQuestion();
+        }
+      };
+    });
+  }
+
+  function rotateSuggestions() {
+    var pools = SUGGESTION_POOLS[currentLang] || SUGGESTION_POOLS.en;
+    currentPoolIndex = (currentPoolIndex + 1) % pools.length;
+    renderSuggestions();
+  }
+
+  function syncEmptyState() {
+    var thread = $('aiChatThread');
+    var empty = $('aiEmptyState');
+    var clearBtn = $('aiClearBtn');
+    var count = thread ? thread.querySelectorAll('.ai-chat-msg').length : 0;
+    if (count > 0) {
+      if (empty) empty.classList.add('is-hidden');
+      if (thread) thread.classList.remove('is-hidden');
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
+    } else {
+      if (empty) empty.classList.remove('is-hidden');
+      if (thread) thread.classList.add('is-hidden');
+      if (clearBtn) clearBtn.style.display = 'none';
+    }
+  }
+
+  function scrollToBottom() {
+    var body = $('aiChatBody');
+    if (body) {
+      setTimeout(function(){
+        body.scrollTop = body.scrollHeight;
+      }, 40);
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function(ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+    });
+  }
+
+  function formatMarkdown(val) {
+    var raw = String(val || '').replace(/\r\n?/g, '\n');
+    var lines = raw.split('\n'), out = [], listType = '';
+    function inline(txt) {
+      return escapeHtml(txt)
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^\*]+)\*/g, '<em>$1</em>');
+    }
+    lines.forEach(function(line){
+      var m = line.match(/^\s*[-*]\s+(.+)$/), n = line.match(/^\s*\d+[.)]\s+(.+)$/);
+      if (m || n) {
+        var next = m ? 'ul' : 'ol';
+        if (listType !== next) { if (listType) out.push('</' + listType + '>'); out.push('<' + next + '>'); listType = next; }
+        out.push('<li>' + inline((m || n)[1]) + '</li>');
+      } else {
+        if (listType) { out.push('</' + listType + '>'); listType = ''; }
+        if (!line.trim()) return;
+        out.push('<p>' + inline(line) + '</p>');
+      }
+    });
+    if (listType) out.push('</' + listType + '>');
+    return out.join('');
+  }
+
+  function copyAnswer(btn) {
+    if (!btn) return;
+    var msg = btn.closest('.ai-chat-msg');
+    if (!msg) return;
+    var body = msg.querySelector('.chat-body');
+    if (!body) return;
+    var text = body.innerText || body.textContent || '';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function(){
+        var t = I18N[currentLang] || I18N.en;
+        btn.textContent = t.copied;
+        setTimeout(function(){ btn.textContent = t.copy; }, 2000);
+      });
+    }
+  }
+  window.aiCopyAnswer = copyAnswer;
+
+  function addUserMessage(text, imageSrc) {
+    var thread = $('aiChatThread');
+    if (!thread) return;
+    var t = I18N[currentLang] || I18N.en;
+    var bubble = document.createElement('div');
+    bubble.className = 'ai-chat-msg user';
+
+    var role = document.createElement('div');
+    role.className = 'chat-role';
+    role.textContent = t.you;
+    bubble.appendChild(role);
+
+    if (imageSrc) {
+      var img = document.createElement('img');
+      img.className = 'chat-image-preview';
+      img.src = imageSrc;
+      img.alt = 'Attached image';
+      bubble.appendChild(img);
+    }
+
+    if (text) {
+      var txt = document.createElement('div');
+      txt.className = 'chat-text';
+      txt.textContent = text;
+      bubble.appendChild(txt);
+    }
+
+    thread.appendChild(bubble);
+    syncEmptyState();
+    scrollToBottom();
+  }
+
+  function addAssistantMessage(content, modelName) {
+    var thread = $('aiChatThread');
+    if (!thread) return;
+    var t = I18N[currentLang] || I18N.en;
+    var bubble = document.createElement('div');
+    bubble.className = 'ai-chat-msg assistant';
+
+    var isMathEngine = String(modelName || '').indexOf('Math Engine') !== -1;
+    var badgeClass = isMathEngine ? 'ai-badge-model math-engine' : 'ai-badge-model';
+
+    var head = document.createElement('div');
+    head.className = 'chat-head';
+    head.innerHTML = '<span>🤖 NowPro AI</span><span class="' + badgeClass + '">' + (modelName || 'DeepSeek AI') + '</span>';
+
+    var body = document.createElement('div');
+    body.className = 'chat-body';
+    body.innerHTML = formatMarkdown(content);
+
+    var foot = document.createElement('div');
+    foot.className = 'chat-foot';
+    foot.innerHTML = '<span>' + t.instant + '</span><button type="button" class="ai-copy-btn" onclick="aiCopyAnswer(this)">' + t.copy + '</button>';
+
+    bubble.append(head, body, foot);
+    thread.appendChild(bubble);
+    syncEmptyState();
+    scrollToBottom();
+  }
+
+  function showThinking() {
+    hideThinking();
+    var thread = $('aiChatThread');
+    if (!thread) return;
+    var t = I18N[currentLang] || I18N.en;
+    var bubble = document.createElement('div');
+    bubble.className = 'ai-chat-msg thinking';
+    bubble.id = 'aiThinkingBubble';
+
+    var head = document.createElement('div');
+    head.className = 'ai-thinking-head';
+    head.innerHTML = '<span>🤖 NowPro AI <span class="ai-badge-model">DeepSeek AI</span></span><span class="ai-thinking-status">' + t.generating + '</span>';
+
+    var indicator = document.createElement('div');
+    indicator.className = 'ai-typing-indicator';
+    indicator.innerHTML = '<span class="ai-typing-dot"></span><span class="ai-typing-dot"></span><span class="ai-typing-dot"></span>';
+
+    bubble.append(head, indicator);
+    thread.appendChild(bubble);
+    syncEmptyState();
+    scrollToBottom();
+  }
+
+  function hideThinking() {
+    var b = $('aiThinkingBubble');
+    if (b && b.parentNode) b.parentNode.removeChild(b);
+  }
+
+  function addErrorMessage(errMsg, failedQuery) {
+    var thread = $('aiChatThread');
+    if (!thread) return;
+    var bubble = document.createElement('div');
+    bubble.className = 'ai-chat-msg error';
+
+    var head = document.createElement('div');
+    head.className = 'ai-error-head';
+    head.innerHTML = '<span>⚠️ AI Response Error</span>';
+
+    var body = document.createElement('div');
+    body.className = 'ai-error-msg';
+    body.textContent = errMsg;
+
+    var actions = document.createElement('div');
+    var retryBtn = document.createElement('button');
+    retryBtn.type = 'button';
+    retryBtn.className = 'ai-retry-btn';
+    retryBtn.innerHTML = '🔄 Retry';
+    retryBtn.onclick = function(){
+      var inp = $('aiInput');
+      if (inp) inp.value = failedQuery || lastQuestion || '';
+      sendQuestion();
+    };
+    actions.appendChild(retryBtn);
+
+    bubble.append(head, body, actions);
+    thread.appendChild(bubble);
+    syncEmptyState();
+    scrollToBottom();
+  }
+
+  function clearChat() {
+    var thread = $('aiChatThread');
+    if (thread) thread.innerHTML = '';
+    conversationHistory = [];
+    lastQuestion = '';
+    clearAttachedFile();
+    hideThinking();
+    syncEmptyState();
+    var t = I18N[currentLang] || I18N.en;
+    setStatus(t.statusDefault);
+  }
+
+  function setStatus(msg) {
+    var el = $('aiStatus');
+    if (el) el.textContent = msg;
+  }
+
+  // Voice Search (Speech to Text)
+  function getSpeechLang() {
+    var map = {
+      'hi': 'hi-IN', 'en': 'en-IN', 'bn': 'bn-IN', 'mr': 'mr-IN',
+      'te': 'te-IN', 'ta': 'ta-IN', 'gu': 'gu-IN', 'ur': 'ur-IN', 'as': 'as-IN'
+    };
+    return map[currentLang] || 'en-IN';
+  }
+
+  function stopVoice() {
+    if (speechRecognizer) {
+      try { speechRecognizer.stop(); } catch(e){}
+    }
+    isListening = false;
+    var btn = $('aiVoiceBtn');
+    if (btn) {
+      btn.classList.remove('listening');
+      btn.innerHTML = '<span id="aiMicIcon">🎙️</span>';
+    }
+  }
+
+  function toggleVoice() {
+    if (isListening) {
+      stopVoice();
+      return;
+    }
+    var SpeechAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var t = I18N[currentLang] || I18N.en;
+    if (!SpeechAPI) {
+      setStatus(currentLang === 'hi' ? 'आपके ब्राउज़र में आवाज़ इनपुट समर्थित नहीं है।' : 'Voice input is not supported in this browser.');
+      return;
+    }
+    try {
+      speechRecognizer = new SpeechAPI();
+      speechRecognizer.lang = getSpeechLang();
+      speechRecognizer.interimResults = true;
+      speechRecognizer.continuous = false;
+
+      speechRecognizer.onstart = function(){
+        isListening = true;
+        var btn = $('aiVoiceBtn');
+        if (btn) {
+          btn.classList.add('listening');
+          btn.innerHTML = '<span id="aiMicIcon">⏹</span>';
+        }
+        setStatus(t.listening);
+      };
+      speechRecognizer.onresult = function(ev){
+        var text = '';
+        for (var i = 0; i < ev.results.length; i++) text += ev.results[i][0].transcript;
+        var inp = $('aiInput');
+        if (inp) {
+          inp.value = text;
+          inp.style.height = 'auto';
+          inp.style.height = Math.min(inp.scrollHeight, 110) + 'px';
+        }
+      };
+      speechRecognizer.onerror = function(ev){
+        stopVoice();
+        if (ev.error === 'not-allowed') setStatus(t.micDenied);
+        else if (ev.error === 'no-speech') setStatus(t.noSpeech);
+        else setStatus('Voice error: ' + ev.error);
+      };
+      speechRecognizer.onend = function(){
+        stopVoice();
+      };
+      speechRecognizer.start();
+    } catch(err) {
+      stopVoice();
+      setStatus('Could not start microphone.');
+    }
+  }
+
+  // File / Image Attachment
+  function clearAttachedFile() {
+    attachedFile = null;
+    attachedFileDataUrl = null;
+    var p = $('aiFilePreview');
+    if (p) {
+      p.innerHTML = '';
+      p.style.display = 'none';
+    }
+    var fInput = $('aiFileInput');
+    if (fInput) fInput.value = '';
+  }
+
+  function handleFileSelected(file) {
+    if (!file) return;
+    if (file.size > 12 * 1024 * 1024) {
+      setStatus(currentLang === 'hi' ? 'फ़ाइल बहुत बड़ी है (अधिकतम 12 MB)।' : 'File is too large (max 12 MB).');
+      return;
+    }
+    attachedFile = file;
+    var p = $('aiFilePreview');
+    if (!p) return;
+
+    p.innerHTML = '';
+    p.style.display = 'flex';
+
+    var isImg = file.type.startsWith('image/');
+    if (isImg) {
+      var reader = new FileReader();
+      reader.onload = function(e){
+        attachedFileDataUrl = e.target.result;
+        p.innerHTML = '<img src="' + attachedFileDataUrl + '" alt="preview">' +
+          '<span class="ai-file-name">' + escapeHtml(file.name) + ' (' + Math.ceil(file.size/1024) + ' KB)</span>' +
+          '<button type="button" class="ai-remove-file" id="aiRemoveFileBtn">✕</button>';
+        $('aiRemoveFileBtn').onclick = clearAttachedFile;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      p.innerHTML = '<span>📄</span>' +
+        '<span class="ai-file-name">' + escapeHtml(file.name) + ' (' + Math.ceil(file.size/1024) + ' KB)</span>' +
+        '<button type="button" class="ai-remove-file" id="aiRemoveFileBtn">✕</button>';
+      $('aiRemoveFileBtn').onclick = clearAttachedFile;
+    }
+    setStatus(currentLang === 'hi' ? 'फ़ाइल संलग्न की गई।' : 'File attached.');
+  }
+
+  // Hybrid Send Handler: Local Calculation Engine First -> Linked AI Model Second
+  async function sendQuestion() {
+    var inp = $('aiInput');
+    var q = inp ? inp.value.trim() : '';
+    var btn = $('aiSendBtn');
+    var t = I18N[currentLang] || I18N.en;
+    var mathL = NowProMathEngine.labels[currentLang] || NowProMathEngine.labels.en;
+
+    if (!q && !attachedFile) {
+      if (inp) {
+        inp.focus();
+        inp.style.borderColor = '#ef4444';
+        setTimeout(function(){ inp.style.borderColor = ''; }, 1200);
+      }
+      setStatus(currentLang === 'hi' ? 'कृपया कोई प्रश्न लिखें या सुझाव चुनें।' : 'Please type a question or choose a suggestion.');
+      return;
+    }
+
+    var imgData = attachedFileDataUrl;
+    var fileName = attachedFile ? attachedFile.name : null;
+
+    lastQuestion = q;
+    if (btn) btn.disabled = true;
+
+    var displayUserText = q;
+    if (fileName && !displayUserText) {
+      displayUserText = (currentLang === 'hi' ? 'कृपया इस संलग्न दस्तावेज़/इमेज को समझाइए।' : 'Please explain this attached document/image.');
+    }
+    addUserMessage(displayUserText, imgData);
+
+    if (inp) {
+      inp.value = '';
+      inp.style.height = 'auto';
+    }
+
+    // STEP 1: Check if our local calculation engine can solve this question directly
+    // (0 latency, saves AI credits, and works 100% offline!)
+    if (!attachedFile && q) {
+      try {
+        var mathSolution = NowProMathEngine.solve(q, currentLang);
+        if (mathSolution) {
+          clearAttachedFile();
+          var isOffline = navigator.onLine === false;
+          var detectedLang = NowProMathEngine.detectLanguage(q, currentLang);
+          var ansL = NowProMathEngine.labels[detectedLang] || mathL;
+          var badgeName = isOffline ? ansL.badgeOffline : ansL.badge;
+          var finalMathText = mathSolution;
+          if (isOffline) {
+            finalMathText += '\n\n' + ansL.offlineEngineNote;
+          }
+          addAssistantMessage(finalMathText, badgeName);
+          conversationHistory.push({ role: 'user', content: q });
+          conversationHistory.push({ role: 'assistant', content: mathSolution });
+          if (conversationHistory.length > 12) conversationHistory = conversationHistory.slice(-12);
+          setStatus(t.statusDefault);
+          if (btn) btn.disabled = false;
+          return;
+        }
+      } catch(mathErr) {
+        console.warn('Local Math Engine skipped, forwarding to AI:', mathErr);
+      }
+    }
+
+    // STEP 2: If offline and not a calculation solvable locally, show localized offline notice
+    if (navigator.onLine === false) {
+      clearAttachedFile();
+      addAssistantMessage(mathL.offlineGeneralNotice, '⚠️ Offline Mode');
+      setStatus(currentLang === 'hi' ? 'ऑफ़लाइन: केवल गणितीय प्रश्न तुरंत हल हो सकते हैं।' : 'Offline: Mathematical questions only.');
+      if (btn) btn.disabled = false;
+      return;
+    }
+
+    // STEP 3: Forward complex / conceptual / general questions to linked DeepSeek AI model
+    var promptForAI = q;
+    if (fileName) {
+      promptForAI = '[Attached File: ' + fileName + '] ' + (q || 'Please explain or solve this.');
+    }
+    clearAttachedFile();
+
+    conversationHistory.push({ role: 'user', content: promptForAI });
+    var recentTurns = conversationHistory.slice(-8);
+    var contextualQuestion = recentTurns.map(function(turn){
+      return (turn.role === 'assistant' ? 'Assistant' : 'User') + ': ' + turn.content;
+    }).join('\n\n') + '\n\nAssistant: Answer in ' + (currentLang === 'hi' ? 'Hindi' : (currentLang === 'en' ? 'English' : currentLang)) + ' with clear step-by-step formatting.';
+
+    showThinking();
+    setStatus(t.generating);
+
+    try {
+      var payload = {
+        question: contextualQuestion,
+        model: 'deepseek-v4.1-flash:free'
+      };
+
+      var res = await fetch(SUPABASE_URL + '/functions/v1/ai-question-answer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY
+        },
+        body: JSON.stringify(payload),
+        cache: 'no-store'
+      });
+
+      var data;
+      try { data = await res.json(); } catch(parseErr){ throw new Error('Invalid JSON from AI endpoint.'); }
+
+      hideThinking();
+
+      if (!res.ok || !data || data.success !== true || typeof data.answer !== 'string') {
+        var msg = data && data.error ? data.error : ('AI service error (HTTP ' + res.status + ')');
+        throw new Error(msg);
+      }
+
+      addAssistantMessage(data.answer.trim(), data.model || 'DeepSeek AI');
+      conversationHistory.push({ role: 'assistant', content: data.answer.trim() });
+      if (conversationHistory.length > 12) conversationHistory = conversationHistory.slice(-12);
+      setStatus(t.statusDefault);
+
+    } catch(err) {
+      console.error('NowPro AI Request Error:', err);
+      hideThinking();
+
+      var fallbackMath = null;
+      try { fallbackMath = NowProMathEngine.solve(q, currentLang); } catch(e){}
+
+      if (fallbackMath) {
+        addAssistantMessage(fallbackMath + '\n\n' + mathL.offlineEngineNote, mathL.badgeOffline);
+        setStatus(t.statusDefault);
+      } else {
+        var errStr = err && err.message ? err.message : (currentLang === 'hi' ? 'नेटवर्क या सर्वर समस्या के कारण उत्तर नहीं मिल सका।' : 'Could not get response from AI.');
+        if (navigator.onLine === false) {
+          errStr = mathL.offlineGeneralNotice;
+        }
+        addErrorMessage(errStr, q);
+        setStatus('Response error.');
+      }
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  // Close Action
+  function closeApp() {
+    stopVoice();
+    if (window.parent && window.parent !== window) {
+      try {
+        window.parent.postMessage({ type: 'cb-ai-chat-close' }, '*');
+      } catch(e){}
+    } else {
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = 'index.html';
+    }
+  }
+
+  // Sync directly from parent window if same-origin
+  function syncFromParentWindow(){
+    try {
+      if (window.parent && window.parent !== window && window.parent.document) {
+        var pDoc = window.parent.document;
+        var pBody = pDoc.body;
+        var pRoot = pDoc.documentElement;
+        if (pBody) {
+          var isDark = pBody.classList.contains('dark') || (pRoot && pRoot.classList.contains('dark'));
+          if (document.body.classList.contains('dark') !== isDark) {
+            applyThemeState(isDark);
+          }
+        }
+        var pSel = pDoc.getElementById('langSelect');
+        if (pSel && pSel.value && pSel.value !== currentLang) {
+          setLanguage(pSel.value);
+        }
+      }
+    } catch(e){}
+  }
+
+  // Bind Event Listeners
+  function bindUI() {
+    $('aiRotateBtn').onclick = rotateSuggestions;
+    $('aiClearBtn').onclick = clearChat;
+    $('aiCloseBtn').onclick = closeApp;
+    $('aiSendBtn').onclick = sendQuestion;
+    $('aiVoiceBtn').onclick = toggleVoice;
+    $('aiAttachBtn').onclick = function(){ $('aiFileInput').click(); };
+
+    $('aiFileInput').onchange = function(){
+      if (this.files && this.files[0]) handleFileSelected(this.files[0]);
+    };
+
+    var inp = $('aiInput');
+    if (inp) {
+      inp.onkeydown = function(e){
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendQuestion();
+        }
+      };
+      inp.oninput = function(){
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 110) + 'px';
+      };
+    }
+
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeApp();
+      }
+    });
+
+    // Smooth mobile visualViewport keyboard handling
+    if (window.visualViewport) {
+      var updateViewport = function(){
+        var appEl = document.querySelector('.ai-app');
+        if (appEl && window.innerWidth <= 640) {
+          appEl.style.height = window.visualViewport.height + 'px';
+          scrollToBottom();
+        } else if (appEl) {
+          appEl.style.height = '100%';
+        }
+      };
+      window.visualViewport.addEventListener('resize', updateViewport, { passive: true });
+      window.visualViewport.addEventListener('scroll', updateViewport, { passive: true });
+    }
+
+    // Online / Offline listeners
+    window.addEventListener('online', function(){
+      syncNetworkStatus();
+      setStatus(I18N[currentLang] ? I18N[currentLang].statusDefault : 'Connected');
+    });
+    window.addEventListener('offline', function(){
+      syncNetworkStatus();
+      setStatus(currentLang === 'hi' ? 'ऑफ़लाइन: गणित के सवाल तुरंत हल होंगे।' : 'Offline: Math calculations active.');
+    });
+
+    // PostMessage listener from index.html
+    window.addEventListener('message', function(e){
+      if (!e.data) return;
+      if (e.data.type === 'cb-ai-chat-settings' || e.data.type === 'cb-community-settings') {
+        if (e.data.lang && e.data.lang !== currentLang) setLanguage(e.data.lang);
+        if (typeof e.data.dark === 'boolean') {
+          applyThemeState(e.data.dark, e.data.tokens);
+        }
+      } else if (e.data.type === 'cb-ai-chat-ask' && e.data.question) {
+        var inputEl = $('aiInput');
+        if (inputEl) {
+          inputEl.value = e.data.question;
+          sendQuestion();
+        }
+      }
+    });
+
+    // Storage event listener for cross-tab/frame theme & language changes
+    window.addEventListener('storage', function(e){
+      if (e.key === 'cbDark') {
+        applyThemeState(e.newValue === '1');
+      } else if (e.key === 'cbLang' && e.newValue) {
+        setLanguage(e.newValue);
+      }
+    });
+
+    // Continuous lightweight sync check with parent & localStorage
+    setInterval(function(){
+      if (document.visibilityState === 'hidden') return;
+      syncFromParentWindow();
+      try {
+        var dVal = localStorage.getItem('cbDark');
+        if (dVal !== null) {
+          var isDark = (dVal === '1');
+          if (document.body.classList.contains('dark') !== isDark) {
+            applyThemeState(isDark);
+          }
+        }
+        var lVal = localStorage.getItem('cbLang');
+        if (lVal && lVal !== currentLang) {
+          setLanguage(lVal);
+        }
+      } catch(e){}
+      syncNetworkStatus();
+    }, 400);
+
+    // Notify parent frame ready
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'cb-ai-chat-ready' }, '*');
+      }
+    } catch(e){}
+  }
+
+  // Initialize Language & Theme from Parent, URL params, or LocalStorage
+  function init() {
+    var storedLang = 'hi';
+    var storedDark = false;
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var paramLang = params.get('lang');
+      var paramDark = params.get('dark');
+      storedLang = paramLang || localStorage.getItem('cbLang') || 'hi';
+      var lsDark = localStorage.getItem('cbDark');
+      if (paramDark !== null) {
+        storedDark = (paramDark === '1' || paramDark === 'true');
+      } else if (lsDark !== null) {
+        storedDark = (lsDark === '1');
+      }
+    } catch(e){}
+
+    applyThemeState(storedDark);
+    bindUI();
+    setLanguage(storedLang);
+    syncFromParentWindow();
+    syncNetworkStatus();
+  }
+
+  window.NowProMathEngine = NowProMathEngine;
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+
+})();
+</script>
+</body>
+</html>
