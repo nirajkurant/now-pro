@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NowPro Social Card Studio V25 — Multi &amp; Primary Profiles</title>
+<style>
+:root{color-scheme:dark;--bg:#111116;--panel:#1b1b23;--line:#343440;--text:#f5f5fa;--muted:#aaaab9;--accent:#8065ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:760px;margin:auto;padding:20px 15px 36px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:800}
+.brand-mark{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,#8d75ff,#4930b7);overflow:hidden;color:#fff}
+.brand-mark img,.nowpro-mark img{width:100%;height:100%;object-fit:contain;display:block}
+.muted{color:var(--muted)}
+.btn{border:1px solid var(--line);border-radius:10px;padding:10px 13px;background:#25252f;color:var(--text);font-weight:650}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:white}
+.platforms{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+.platform-btn{padding:7px 3px 8px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);font-weight:650;font-size:12px;min-height:62px;position:relative;isolation:isolate;overflow:hidden;transition:background .22s ease,border-color .22s ease,box-shadow .22s ease,transform .16s ease}
+.platform-btn:active{transform:translateY(1px)}
+.platform-btn span{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;margin:0 auto 3px;background:#ffffff08;transition:background .2s ease,transform .2s ease}
+.platform-btn span svg{width:23px;height:23px;fill:currentColor;stroke:currentColor;stroke-width:0}
+.platform-btn[data-platform="Instagram"] span svg,#front-symbol[data-platform="Instagram"] svg,.account-icon[data-platform="Instagram"] svg{fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.platform-btn.active span{background:#ffffff24;transform:translateY(-1px)}
+.platform-btn.active[data-platform="Instagram"]{background:linear-gradient(135deg,#833AB4 0%,#E1306C 56%,#FCAF45 100%)!important;border-color:#f4a0c4!important;box-shadow:0 0 0 1px #f4a0c455,0 7px 22px #e1306c44!important;color:#fff!important}
+.platform-btn.active{position:relative;border:2px solid var(--tab-border,#a18fff);background:linear-gradient(135deg,var(--tab-c1,#1746a2),var(--tab-c2,#2478e7));box-shadow:0 0 0 2px color-mix(in srgb,var(--tab-border,#a18fff) 25%,transparent),0 7px 20px color-mix(in srgb,var(--tab-c2,#2478e7) 28%,transparent);color:#fff}
+.platform-btn:focus-visible,.btn:focus-visible{outline:3px solid #a18fff;outline-offset:2px}
+.stage{position:relative;overflow:hidden;padding:16px 12px 18px;border-radius:20px;background:linear-gradient(145deg,#292735,#101014)}
+.stage:before{content:"";position:absolute;width:230px;height:230px;left:30%;top:10%;border-radius:50%;background:var(--glow,#7055ec);filter:blur(95px);opacity:.34;pointer-events:none}
+.stage-head{position:relative;display:flex;justify-content:space-between;gap:8px;margin-bottom:20px;color:#c5c2d5;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.scene{position:relative;width:100%;max-width:430px;margin:auto;perspective:1100px}
+.motion{position:relative;transform-style:preserve-3d}
+.motion.float{animation:float 4s ease-in-out infinite}
+.motion.spin{animation:spin 7s linear infinite}
+.flipper{position:relative;width:100%;aspect-ratio:1.62;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.2,.7,.2,1);cursor:pointer;touch-action:pan-y}
+.flipper.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;padding:clamp(13px,4vw,20px);border:1px solid #ffffff35;border-radius:19px;box-shadow:0 20px 45px #0008;backface-visibility:hidden;-webkit-backface-visibility:hidden;color:white}
+.front{background:linear-gradient(125deg,var(--c1,#1746a2) 0%,var(--c2,#2478e7) 54%,var(--c3,#17264e) 100%)}
+.back{transform:rotateY(180deg);background:linear-gradient(135deg,color-mix(in srgb,var(--back-c1,#243e8b) 68%,#08080c),color-mix(in srgb,var(--back-c2,#6154d9) 66%,#08080c) 55%,color-mix(in srgb,var(--back-c3,#cf4d99) 62%,#08080c))}
+.front:after,.back:after{content:"";position:absolute;z-index:0;inset:0;width:100%;height:100%;background-image:var(--profile-texture);background-size:auto 100%;background-repeat:no-repeat;background-position:right center;pointer-events:none;transform:scaleX(1)}
+.front:after{opacity:.28;mask-image:linear-gradient(90deg,transparent 0%,transparent 32%,rgba(0,0,0,.06) 39%,rgba(0,0,0,.18) 46%,rgba(0,0,0,.42) 55%,rgba(0,0,0,.76) 67%,#000 80%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 32%,rgba(0,0,0,.06) 39%,rgba(0,0,0,.18) 46%,rgba(0,0,0,.42) 55%,rgba(0,0,0,.76) 67%,#000 80%)}
+.front[data-platform="Instagram"]:after{opacity:.19}
+.back:after{opacity:.10;filter:grayscale(1);mask-image:linear-gradient(90deg,transparent 0%,transparent 34%,rgba(0,0,0,.06) 42%,rgba(0,0,0,.22) 53%,rgba(0,0,0,.62) 70%,#000 84%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 34%,rgba(0,0,0,.06) 42%,rgba(0,0,0,.22) 53%,rgba(0,0,0,.62) 70%,#000 84%)}
+.ribbon-svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+.card-top,.card-bottom{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.platform-label{font-size:10px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase}
+.symbol{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#ffffff15;border:1px solid #ffffff38;box-shadow:0 4px 14px #0002;color:#fff}
+.symbol svg{width:23px;height:23px}
+.name{font-size:clamp(17px,4.5vw,25px);font-weight:850;letter-spacing:-.5px;line-height:1.12;overflow-wrap:anywhere}
+.handle{font-size:12px;color:#ffffffd9;margin-top:5px;overflow-wrap:anywhere}
+.bio{font-size:10px;line-height:1.5;color:#ffffffdf;margin-top:7px;overflow-wrap:anywhere}
+.avatar{width:58px;height:58px;flex-shrink:0;display:grid;place-items:center;overflow:hidden;border:2px solid #ffffffaa;border-radius:50%;background:#ffffff30;font-size:24px;font-weight:800}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.back-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.back-avatar{width:48px;height:48px;border:2px solid #ffffffcc;box-shadow:0 0 0 3px #ffffff25;filter:saturate(.7)}
+.nowpro-mark{width:34px;height:34px;flex-shrink:0;display:grid;place-items:center;border-radius:10px;background:linear-gradient(135deg,#8d75ff,#4930b7);color:#fff;font-size:21px;font-weight:900;box-shadow:0 3px 10px #0003}
+.contact{font-size:10px;line-height:1.65;color:#ffffffdf;overflow-wrap:anywhere;min-width:0;flex:1}
+.qr-block{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0}
+.qr-code{width:clamp(48px,13vw,68px);height:clamp(48px,13vw,68px);padding:4px;border-radius:7px;background:#fff;object-fit:contain;display:block}
+.qr-label{font-size:8px;letter-spacing:.8px;font-weight:800;color:#ffffffd9}
+.controls{position:relative;display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:17px}
+.controls .btn{background:#ffffff12;border-color:#ffffff30;color:white;font-size:12px}
+.controls .btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.icon-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px 8px;margin:22px auto 0;max-width:560px;width:100%;align-items:start!important}
+.icon-action{display:flex!important;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;width:100%;padding:0;border:0;background:transparent;color:#f6f4ff;font-weight:700;line-height:1.2;min-height:104px}
+.icon-action .action-orb{width:72px!important;height:72px!important;min-width:72px!important;min-height:72px!important;display:grid!important;place-items:center;border-radius:50%;border:2px solid #a9a7b9;background:linear-gradient(145deg,#24242e,#15151c);box-shadow:0 4px 0 #08080c,0 8px 18px #0005;color:#f6f4ff!important;margin:0 auto;transition:transform .16s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease}
+.icon-action svg{width:32px!important;height:32px!important;display:block!important;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon-action .action-label{font-size:14px;text-align:center;overflow-wrap:anywhere;color:inherit!important}
+.icon-action:active .action-orb{transform:translateY(2px) scale(.98);box-shadow:0 1px 0 #08080c,0 3px 8px #0004}
+.icon-action:disabled{opacity:.65;cursor:wait}
+.share-action .action-orb{background:linear-gradient(145deg,#9274ff,#6942ed)!important;border-color:#c4b5ff!important;box-shadow:0 4px 0 #4022ad,0 8px 20px #7350f555!important;color:#fff!important}
+.panel{margin-top:16px;padding:15px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.panel-head strong{font-size:16px}
+.account-list{display:grid;gap:8px}
+.account{display:flex;align-items:center;gap:9px;padding:10px;border:1px solid var(--line);border-radius:11px;cursor:pointer;transition:border-color .18s ease,background .18s ease}
+.account.selected{border-color:#927cff;background:#8065ff18}
+.account-icon{position:relative;overflow:hidden;border:1px solid #ffffff35;box-shadow:0 3px 9px #0002;display:grid;place-items:center;width:32px;height:32px;flex-shrink:0;border-radius:9px;color:#fff!important;font-weight:800}
+.account-icon svg{width:20px;height:20px}
+.account-icon[data-platform="Instagram"]{background:linear-gradient(135deg,#833AB4,#E1306C 58%,#FCAF45)!important;box-shadow:0 3px 12px #e1306c35}
+.account-main{flex:1;min-width:0}
+.account-main strong,.account-main small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.account-main strong{font-size:13px;display:flex;align-items:center;gap:6px}
+.account-main small{font-size:11px;color:var(--muted)}
+.primary-badge{display:inline-flex;align-items:center;padding:1px 6px;border-radius:99px;background:#8065ff28;border:1px solid #927cff66;color:#c4b5ff;font-size:9px;font-weight:700;letter-spacing:.3px;flex-shrink:0}
+.mini{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#25252f;color:var(--text);font-size:12px;font-weight:650}
+.account.selected .mini{background:var(--accent);border-color:var(--accent);color:#fff}
+.notice{margin-top:12px;padding:10px;border-radius:9px;background:#8065ff16;color:var(--muted);font-size:12px}
+.hidden{display:none!important}
+.footer{display:flex;justify-content:space-between;gap:10px;margin-top:17px;color:var(--muted);font-size:11px}
+@keyframes float{0%,100%{transform:rotateY(-7deg) rotateX(3deg) translateY(0)}50%{transform:rotateY(7deg) rotateX(-2deg) translateY(-5px)}}
+@keyframes spin{from{transform:rotateY(0)}to{transform:rotateY(360deg)}}
+@media(max-width:520px){.app{padding:14px 12px 28px}.header{gap:8px}.brand{font-size:17px}.brand-mark{width:36px;height:36px}.platforms{gap:6px}.platform-btn{min-width:0;padding:9px 2px;font-size:11px}.stage{padding:14px 10px 16px}.stage-head{font-size:10px;letter-spacing:.7px}.account{gap:8px;padding:9px}.header .btn{padding:9px 8px;font-size:12px}}
+@media(max-width:420px){.face{border-radius:14px}.avatar{width:55px;height:55px;font-size:19px}.back-avatar{width:38px;height:38px}.name{font-size:16px}.handle{font-size:10px}.bio{font-size:9px}}
+@media(max-width:380px){.icon-actions{gap:10px 4px}.icon-action .action-orb{width:60px!important;height:60px!important;min-width:60px!important;min-height:60px!important}.icon-action svg{width:28px!important;height:28px!important}.icon-action .action-label{font-size:12px}}
+@media(min-width:760px){.app{padding-top:26px}.stage{padding:20px 18px}.scene{max-width:500px}}
+@media(min-width:900px){.app{max-width:1180px}.stage{display:grid;grid-template-columns:112px minmax(0,1fr);grid-template-areas:"head head" "actions scene" "actions controls" "help help";column-gap:22px;row-gap:12px;align-items:center;overflow:visible}.stage-head{grid-area:head;margin-bottom:4px}.scene{grid-area:scene;width:100%;max-width:760px;justify-self:center}.controls{grid-area:controls;margin:8px 0 0;justify-content:center}.icon-actions{grid-area:actions;display:flex!important;flex-direction:column;align-items:stretch;justify-content:center;gap:20px;width:100%;max-width:none;margin:0;align-self:center}.icon-action{width:100%;min-height:0!important;align-items:center;justify-content:flex-start;gap:7px}.icon-action .action-orb{width:66px!important;height:66px!important;min-width:66px!important;min-height:66px!important}.icon-action .action-label{font-size:12px;white-space:normal}.card-help{grid-area:help;margin-top:6px!important}}
+html[data-theme="light"],html:has(body[data-theme="light"]){color-scheme:light;background:#f4f5fb}
+html[data-theme="dark"],html:has(body[data-theme="dark"]){color-scheme:dark;background:#111116}
+body[data-theme="light"]{color-scheme:light;background:#f4f5fb!important;color:#20212b!important;--bg:#f4f5fb;--panel:#fff;--line:#d9dce7;--text:#20212b;--muted:#626879;--accent:#6747e8}
+body[data-theme="dark"]{color-scheme:dark;background:#111116!important;color:#f5f5fa!important;--bg:#111116;--panel:#1b1b23;--line:#343440;--text:#f5f5fa;--muted:#aaaab9;--accent:#8065ff}
+body[data-theme="light"] .app{background:transparent;color:#20212b}
+body[data-theme="light"] .header,body[data-theme="light"] .brand,body[data-theme="light"] .panel-head,body[data-theme="light"] .footer{color:#20212b}
+body[data-theme="light"] .muted,body[data-theme="light"] .stage-head,body[data-theme="light"] .footer,body[data-theme="light"] .card-help,body[data-theme="light"] .account-main small{color:#5a6072!important}
+body[data-theme="light"] .account-main strong{color:#1c1d29!important}
+body[data-theme="light"] .primary-badge{background:#eeeaff;border-color:#b6a4ff;color:#5535d9}
+body[data-theme="light"] .stage{background:linear-gradient(145deg,#ececf5,#f8f9fd)!important;border:1px solid #e0e2ed;box-shadow:0 10px 28px #25254a12}
+body[data-theme="light"] .panel{background:#fff!important;border-color:#d9dce7!important;color:#20212b!important;box-shadow:0 4px 16px #25254a08}
+body[data-theme="light"] .account{background:#fff!important;border-color:#d9dce7!important;color:#20212b!important}
+body[data-theme="light"] .account.selected{background:#f0edff!important;border-color:#8267ef!important}
+body[data-theme="light"] .btn,body[data-theme="light"] .mini{background:#fff;color:#252635;border-color:#d5d8e3;box-shadow:0 2px 6px #25254a0a}
+body[data-theme="light"] .account.selected .mini{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+body[data-theme="light"] .controls .btn:not(.active){background:#fff!important;color:#29283a!important;border-color:#cfd1df!important;box-shadow:0 2px 8px #25254a10}
+body[data-theme="light"] .controls .btn.active{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important;box-shadow:0 4px 14px #6747e840}
+body[data-theme="light"] .platform-btn:not(.active){background:#fff!important;color:#27283a!important;border-color:#d9dce7!important;box-shadow:0 2px 8px #25254a08}
+body[data-theme="light"] .platform-btn:not(.active) span{background:#f2f3f9}
+body[data-theme="light"] .platform-btn.active{border:2px solid var(--tab-border,#a18fff)!important;background:linear-gradient(135deg,var(--tab-c1,#1746a2),var(--tab-c2,#2478e7))!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--tab-border,#a18fff) 25%,transparent),0 7px 20px color-mix(in srgb,var(--tab-c2,#2478e7) 32%,transparent)!important;color:#fff!important}
+body[data-theme="light"] .platform-btn.active span{background:#ffffff26!important}
+body[data-theme="light"] .icon-action,body[data-theme="light"] .icon-action .action-label,body[data-theme="light"] #download-btn .action-label,body[data-theme="light"] #share-btn .action-label,body[data-theme="light"] #copy-btn .action-label{color:#232433!important;font-weight:700}
+body[data-theme="light"] #download-btn .action-orb,body[data-theme="light"] #copy-btn .action-orb{background:linear-gradient(145deg,#fff,#e9eaf4)!important;border-color:#9da0b5!important;box-shadow:0 4px 0 #d0d1de,0 8px 18px #25254a12!important;color:#28263a!important}
+body[data-theme="light"] #share-btn .action-orb{background:linear-gradient(145deg,#9274ff,#6942ed)!important;border-color:#b6a4ff!important;color:#fff!important;box-shadow:0 4px 0 #4022ad,0 8px 20px #7350f535!important}
+body[data-theme="light"] .notice{background:#eeeaff!important;color:#55536a!important}
+body[data-theme="dark"] #download-btn .action-label,body[data-theme="dark"] #share-btn .action-label,body[data-theme="dark"] #copy-btn .action-label{color:#f6f4ff!important}
+.platform-btn svg,.symbol svg,.account-icon svg,.icon-action svg{color:inherit}
+.platform-btn svg path,.symbol svg path,.account-icon svg path{fill:currentColor}
+.platform-btn[data-platform="Instagram"] svg,.symbol[data-platform="Instagram"] svg,.account-icon[data-platform="Instagram"] svg{fill:none;stroke:currentColor}
+body[data-theme="light"] .platform-btn:not(.active) svg{color:#222331}
+body[data-theme="dark"] .platform-btn:not(.active) svg{color:#f6f4ff}
+.platform-btn.active svg,.account-icon svg,.symbol svg{color:#fff!important}
+</style>
+</head>
+<body>
+<main class="app" id="app">
+<header class="header"><div class="brand"><div class="brand-mark" id="brand-mark">N</div><div>Social Card Studio<div class="muted" style="font-size:11px;font-weight:500">3D virtual visiting cards</div></div></div><div><button class="btn" id="theme-toggle" type="button" aria-label="Switch color theme">☀️ Light mode</button></div></header>
+<div class="muted" style="font-size:12px">Choose a platform to preview its custom card layout.</div>
+<nav class="platforms" id="platforms">
+<button class="platform-btn active" data-platform="Facebook"><span><svg viewBox="0 0 24 24"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8z"/></svg></span>Facebook</button>
+<button class="platform-btn" data-platform="Instagram"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.1" y="3.1" width="17.8" height="17.8" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.55" cy="6.55" r="1" fill="currentColor" stroke="none"/></svg></span>Instagram</button>
+<button class="platform-btn" data-platform="YouTube"><span><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg></span>YouTube</button>
+<button class="platform-btn" data-platform="X"><span><svg viewBox="0 0 24 24"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.9 5.8 22H2.6l7.3-8.4L1.9 2h6.5l4.5 6.7zm-1.1 17.9h1.7L7.4 4H5.6z"/></svg></span>X</button>
+</nav>
+<section class="stage" id="stage"><div class="stage-head"><span>● 3D live preview</span><span id="style-label">Facebook Blue</span></div>
+<div class="scene" id="scene"><div class="motion float" id="motion"><div class="flipper" id="flipper" aria-label="Swipe horizontally to flip; tap to open profile">
+<article class="face front" id="front"><svg class="ribbon-svg" viewBox="0 0 430 265" preserveAspectRatio="none" aria-hidden="true"><ellipse cx="225" cy="148" rx="250" ry="82" transform="rotate(-24 225 148)" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="18"/><ellipse cx="280" cy="160" rx="145" ry="148" transform="rotate(30 280 160)" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="18"/></svg><div class="card-top"><span class="platform-label" id="front-platform">FACEBOOK / PROFILE</span><span class="symbol" id="front-symbol" aria-label="Social platform icon"></span></div><div class="card-bottom"><div style="min-width:0;flex:1"><div class="name" id="front-name">Your Name</div><div class="handle" id="front-handle">@yourusername</div><div class="bio" id="front-bio">Creator · Building something great</div></div><div class="avatar" id="front-avatar">Y</div></div></article>
+<article class="face back" id="back"><div class="card-top"><span class="platform-label" id="back-heading">CONNECT WITH ME</span><span class="nowpro-mark" id="card-brand-logo" aria-label="Website logo">N</span></div><div><div class="name" id="back-name">Your Name</div><div class="handle" id="back-handle">@yourusername</div></div><div class="card-bottom"><div class="contact" id="back-contact">Your social profile<br>Connect · Follow · Subscribe</div><div class="back-right"><div class="avatar back-avatar" id="back-avatar">Y</div><div class="qr-block"><img class="qr-code" id="back-qr" alt="QR code for social profile"><span class="qr-label">SCAN TO VISIT</span></div></div></div></article>
+</div></div></div>
+<div class="controls" id="controls"><button class="btn" id="flip-btn">↻ Flip card</button><button class="btn" id="spin-btn">▶ Auto 3D</button><button class="btn" id="reset-btn">Reset view</button></div>
+<div class="icon-actions" id="icon-actions"><button class="icon-action download-action" id="download-btn" aria-label="Download card as PNG"><span class="action-orb"><svg viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 17v3h14v-3"/></svg></span><span class="action-label">Download</span></button><button class="icon-action share-action" id="share-btn" aria-label="Share profile"><span class="action-orb"><svg viewBox="0 0 24 24"><path d="M12 15V3m-5 5 5-5 5 5M5 13v7h14v-7"/></svg></span><span class="action-label">Share</span></button><button class="icon-action copy-action" id="copy-btn" aria-label="Copy profile link"><span class="action-orb"><svg viewBox="0 0 24 24"><path d="M9.5 14.5 7 17a4 4 0 0 1-5.7-5.7l4-4A4 4 0 0 1 11 7m3.5 2.5L17 7a4 4 0 0 1 5.7 5.7l-4 4A4 4 0 0 1 13 17m-6-5 10-0"/></svg></span><span class="action-label">Copy link</span></button></div>
+<div class="card-help" style="text-align:center;color:#b8b5c9;font-size:11px;margin-top:12px">Swipe horizontally to flip. Tap the card to open the social profile.</div></section>
+<section class="panel" id="public-panel"><div class="panel-head"><strong>My social profiles</strong><span class="muted" style="font-size:11px">Tap any card below to preview</span></div><div class="account-list" id="public-accounts"></div></section>
+<footer class="footer"><span>NOWPRO · SOCIAL IDENTITY</span><span id="count">0 accounts</span></footer><p id="data-source-status" class="muted" style="font-size:11px;text-align:center;margin:8px 0" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const themes = {
+Facebook:{colors:['#1746a2','#2478e7','#17264e'],symbol:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8z"/></svg>',label:'Facebook Blue',title:'FACEBOOK / PROFILE'},
+Instagram:{colors:['#833AB4','#E1306C','#FCAF45'],symbol:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.1" y="3.1" width="17.8" height="17.8" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.55" cy="6.55" r="1" fill="currentColor" stroke="none"/></svg>',label:'Instagram Gradient',title:'INSTAGRAM / CREATOR'},
+YouTube:{colors:['#791923','#e62117','#29121b'],symbol:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg>',label:'YouTube Red',title:'YOUTUBE / CHANNEL'},
+X:{colors:['#050505','#282a30','#111116'],symbol:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.9 5.8 22H2.6l7.3-8.4L1.9 2h6.5l4.5 6.7zm-1.1 17.9h1.7L7.4 4H5.6z"/></svg>',label:'X Monochrome',title:'X / PROFILE'}
+};
+let accounts=[],currentId=null,selectedPlatform='Facebook',flipped=false,spinning=false,siteLogoUrl='';
+const SUPABASE_URL='https://akmnecnvbcyjaforsijz.supabase.co';
+const SUPABASE_KEY='sb_publishable_p92ofrykqrrEx96BGB61Zw_BqsuDPHg';
+let dataSourceStatus='Loading published NowPro social cards…';
+function getPlatformAccounts(platform){return accounts.filter(item=>item.platform===platform).sort((a,b)=>(b.primary===true?1:0)-(a.primary===true?1:0));}
+function getDefaultAccountForPlatform(platform){return getPlatformAccounts(platform)[0]||null;}
+function resolveFrontHeading(a){const titles=Object.values(themes).map(t=>t.title.toUpperCase());const raw=(a.frontHeading||'').trim();if(!raw)return themes[a.platform].title;if(titles.includes(raw.toUpperCase())&&raw.toUpperCase()!==themes[a.platform].title.toUpperCase())return themes[a.platform].title;return raw;}
+async function loadPublishedSocialCards(){
+try{
+if(!window.supabase){await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';s.onload=res;s.onerror=()=>rej(new Error('Supabase client failed to load'));document.head.appendChild(s);});}
+const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+const {data,error}=await client.from('site_published_config').select('config').eq('id',1).maybeSingle();
+if(error)throw error;
+const page=data?.config?.settings?.socialPage;
+if(!page){dataSourceStatus='No published Social Card settings found. Publish from Admin first.';render();return;}
+accounts=(Array.isArray(page.accounts)?page.accounts:[]).filter(a=>a&&a.visible!==false&&themes[a.platform]).map((a,i)=>({id:a.id??i+1,platform:a.platform,primary:a.primary===true||a.isPrimary===true,name:a.name||'Your Name',handle:a.handle||'@username',bio:a.bio||'',avatar:a.avatar||'',shape:a.shape||'circle',label:a.label||'Profile',url:a.url||'',frontHeading:a.frontHeading||a.frontTitle||'',backHeading:a.backHeading||a.backTitle||'CONNECT WITH ME',colors:Array.isArray(a.colors)&&a.colors.length>=3?a.colors:[...themes[a.platform].colors]}));
+siteLogoUrl=page.siteLogoUrl||'';
+const primary=accounts.find(a=>a.primary===true),plats=accounts.map(a=>a.platform);
+if(primary){selectedPlatform=primary.platform;currentId=primary.id;}else{if(!plats.includes(selectedPlatform))selectedPlatform=plats[0]||'Facebook';currentId=getDefaultAccountForPlatform(selectedPlatform)?.id??accounts[0]?.id??null;}
+dataSourceStatus='Loaded published cards from NowPro.';
+}catch(e){console.error('NowPro Social published config load failed:',e);dataSourceStatus='Could not load published cards. Check internet and Supabase public SELECT policy.';}
+render();
+}
+const themeToggle=$('theme-toggle');let pageTheme='dark';try{pageTheme=localStorage.getItem('nowpro-social-theme')==='light'?'light':'dark';}catch{}
+function applyPageTheme(){document.documentElement.dataset.theme=pageTheme;document.documentElement.style.colorScheme=pageTheme;document.body.dataset.theme=pageTheme;document.body.style.colorScheme=pageTheme;if(themeToggle){themeToggle.textContent=pageTheme==='dark'?'☀️ Light mode':'🌙 Dark mode';themeToggle.setAttribute('aria-label',pageTheme==='dark'?'Switch to light theme':'Switch to dark theme');}}
+applyPageTheme();themeToggle?.addEventListener('click',()=>{pageTheme=pageTheme==='dark'?'light':'dark';applyPageTheme();try{localStorage.setItem('nowpro-social-theme',pageTheme);}catch{}});
+const current=()=>accounts.find(a=>String(a.id)===String(currentId))||null;
+const safe=val=>String(val??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const validImageUrl=val=>{try{const u=new URL(val);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}};
+function avatarContent(a){const url=validImageUrl(a.avatar);return url?`<img src="${safe(url)}" alt="Profile picture">`:safe((a.name||'Y').slice(0,1).toUpperCase());}
+function applyShape(element,shape){const styles={circle:{clipPath:'none',borderRadius:'50%'},rounded:{clipPath:'none',borderRadius:'22%'},square:{clipPath:'none',borderRadius:'3px'},diamond:{clipPath:'polygon(50% 0%,100% 50%,50% 100%,0% 50%)',borderRadius:'0'},hexagon:{clipPath:'polygon(25% 6%,75% 6%,100% 50%,75% 94%,25% 94%,0% 50%)',borderRadius:'0'}};const style=styles[shape]||styles.circle;element.style.clipPath=style.clipPath;element.style.borderRadius=style.borderRadius;const image=element.querySelector('img');if(image){image.style.clipPath=style.clipPath;image.style.borderRadius=style.borderRadius;}}
+function getProfileLink(a){if(!a)return '';const entered=validImageUrl(a.url);if(entered)return entered;const h=(a.handle||'').replace(/^@+/,'').trim();if(!h)return '';return ({Facebook:`https://www.facebook.com/${h}`,Instagram:`https://www.instagram.com/${h}/`,YouTube:`https://www.youtube.com/@${h}`,X:`https://x.com/${h}`})[a.platform]||'';}
+function render(){
+const list=getPlatformAccounts(selectedPlatform);let a=current();if(!a||a.platform!==selectedPlatform){a=list[0]||null;currentId=a?a.id:null;}
+const tabTheme=themes[selectedPlatform]||themes.Facebook;
+$('platforms').querySelectorAll('[data-platform]').forEach(button=>{const selected=button.dataset.platform===selectedPlatform;button.classList.toggle('active',selected);button.setAttribute('aria-pressed',String(selected));if(selected){button.style.setProperty('--tab-c1',tabTheme.colors[0]);button.style.setProperty('--tab-c2',tabTheme.colors[1]);button.style.setProperty('--tab-border',tabTheme.colors[1]);}else{button.style.removeProperty('--tab-c1');button.style.removeProperty('--tab-c2');button.style.removeProperty('--tab-border');}});
+$('public-accounts').innerHTML=list.length?list.map(item=>{const sel=String(item.id)===String(currentId);return `<div class="account ${sel?'selected':''}" data-select="${safe(item.id)}"><div class="account-icon" data-platform="${safe(item.platform)}" style="background:${safe(item.colors[1])}">${themes[item.platform].symbol}</div><div class="account-main"><strong>${safe(item.name||'Your Name')}${item.primary?'<span class="primary-badge">★ Primary</span>':''}</strong><small>${safe(item.platform)} · ${safe(item.label||'Profile')} · ${safe(item.handle||'@username')}</small></div><button class="mini" type="button" data-select="${safe(item.id)}">${sel?'Viewing':'View'}</button></div>`;}).join(''):`<div class="notice">No ${safe(selectedPlatform)} cards yet. Cards are managed by the NowPro Admin panel.</div>`;
+$('count').textContent=`${list.length} ${selectedPlatform} card${list.length===1?'':'s'}`;const status=$('data-source-status');if(status&&dataSourceStatus)status.textContent=dataSourceStatus;
+if(!a){$('style-label').textContent=tabTheme.label;$('stage').style.setProperty('--glow',tabTheme.colors[1]);$('scene').classList.add('hidden');$('controls').classList.add('hidden');$('icon-actions').classList.add('hidden');return;}
+$('scene').classList.remove('hidden');$('controls').classList.remove('hidden');$('icon-actions').classList.remove('hidden');
+const theme=themes[a.platform];$('front').dataset.platform=a.platform;$('stage').style.setProperty('--glow',a.colors[1]);a.colors.forEach((color,i)=>{$('front').style.setProperty('--c'+(i+1),color);$('back').style.setProperty('--back-c'+(i+1),color);});$('front').style.background=`linear-gradient(125deg, ${a.colors[0]} 0%, ${a.colors[1]} 54%, ${a.colors[2]} 100%)`;
+$('front-platform').textContent=resolveFrontHeading(a);$('back-heading').textContent=(a.backHeading||'CONNECT WITH ME').trim();$('front-symbol').innerHTML=theme.symbol;$('front-symbol').dataset.platform=a.platform;$('style-label').textContent=theme.label;$('front-name').textContent=$('back-name').textContent=a.name||'Your Name';$('front-handle').textContent=$('back-handle').textContent=a.handle||'@username';$('front-bio').textContent=a.bio||'Your social identity';
+const texture=validImageUrl(a.avatar),textureCss=texture?`url("${texture.replace(/["\\]/g,'')}")`:'none';$('front').style.setProperty('--profile-texture',textureCss);$('back').style.setProperty('--profile-texture',textureCss);
+const logo=validImageUrl(siteLogoUrl);$('card-brand-logo').innerHTML=logo?`<img src="${safe(logo)}" alt="Website logo">`:'N';$('brand-mark').innerHTML=logo?`<img src="${safe(logo)}" alt="Website logo">`:'N';
+$('front-avatar').innerHTML=avatarContent(a);$('back-avatar').innerHTML=avatarContent(a);applyShape($('front-avatar'),a.shape||'circle');applyShape($('back-avatar'),a.shape||'circle');$('front-avatar').querySelector('img')?.addEventListener('error',()=>{$('front-avatar').textContent=(a.name||'Y').slice(0,1).toUpperCase();},{once:true});
+const link=getProfileLink(a);$('back-contact').innerHTML=`${safe(a.platform)} · ${safe(a.label||'Profile')}<br>Scan to open profile`;const qr=$('back-qr');if(link){qr.src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=2&data='+encodeURIComponent(link);qr.alt=`QR code for ${a.platform} profile`;qr.style.visibility='visible';}else{qr.removeAttribute('src');qr.alt='Add a username or profile link to generate a QR code';qr.style.visibility='hidden';}
+$('flipper').classList.toggle('flipped',flipped);$('motion').classList.toggle('spin',spinning);$('motion').classList.toggle('float',!spinning);$('flip-btn').classList.toggle('active',flipped);$('flip-btn').textContent=flipped?'✓ Back side shown':'↻ Flip card';$('flip-btn').setAttribute('aria-pressed',String(flipped));$('spin-btn').classList.toggle('active',spinning);$('spin-btn').textContent=spinning?'⏸ Stop Auto 3D':'▶ Auto 3D';$('spin-btn').setAttribute('aria-pressed',String(spinning));
+}
+$('flip-btn').addEventListener('click',()=>{flipped=!flipped;render();});$('spin-btn').addEventListener('click',()=>{spinning=!spinning;render();});$('reset-btn').addEventListener('click',()=>{spinning=false;flipped=false;render();});
+let swipeStart=null,suppressClick=false;$('flipper').addEventListener('pointerdown',e=>{swipeStart={x:e.clientX,y:e.clientY};suppressClick=false;});$('flipper').addEventListener('pointerup',e=>{if(!swipeStart)return;const dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.25){flipped=!flipped;suppressClick=true;render();setTimeout(()=>{suppressClick=false;},350);}swipeStart=null;});$('flipper').addEventListener('click',e=>{if(suppressClick){e.preventDefault();e.stopPropagation();return;}const link=getProfileLink(current());if(link)window.open(link,'_blank','noopener,noreferrer');});
+$('platforms').addEventListener('click',e=>{const button=e.target.closest('button[data-platform]');if(!button||!themes[button.dataset.platform])return;selectedPlatform=button.dataset.platform;const acc=getDefaultAccountForPlatform(selectedPlatform);currentId=acc?acc.id:null;flipped=false;spinning=false;render();});
+$('public-accounts').addEventListener('click',e=>{const target=e.target.closest('[data-select]');if(!target)return;currentId=target.dataset.select;const chosen=current();if(chosen)selectedPlatform=chosen.platform;flipped=false;render();$('stage')?.scrollIntoView({behavior:'smooth',block:'nearest'});});
+function flashButton(id,message){const el=$(id)?.querySelector('.action-label')||$(id);if(!el)return;const old=el.textContent;el.textContent=message;setTimeout(()=>el.textContent=old,1600);}
+$('copy-btn').addEventListener('click',async()=>{const link=getProfileLink(current());if(!link){flashButton('copy-btn','Add username/link first');return;}try{await navigator.clipboard.writeText(link);flashButton('copy-btn','✓ Link copied');}catch{window.prompt('Copy your profile link:',link);}});
+$('share-btn').addEventListener('click',async()=>{const a=current(),link=getProfileLink(a);if(!link){flashButton('share-btn','Add username/link first');return;}const data={title:`${a.name||'My'} · ${a.platform}`,text:`${a.name||'My profile'} on ${a.platform}`,url:link};if(navigator.share){try{await navigator.share(data);}catch(err){if(err.name!=='AbortError')window.prompt('Copy this profile link:',link);}}else{try{await navigator.clipboard.writeText(link);flashButton('share-btn','✓ Link copied');}catch{window.prompt('Share your profile link:',link);}}});
+function mixDarkHex(hex,ratio){const clean=String(hex||'#243e8b').replace('#','');const num=parseInt(clean.length===3?clean.split('').map(c=>c+c).join(''):clean,16)||0x243e8b;const r=Math.round(((num>>16)&255)*ratio+8*(1-ratio)),g=Math.round(((num>>8)&255)*ratio+8*(1-ratio)),b=Math.round((num&255)*ratio+12*(1-ratio));return `rgb(${r}, ${g}, ${b})`;}
+$('download-btn').addEventListener('click',async()=>{const btn=$('download-btn'),card=flipped?$('back'):$('front'),a=current();if(!a)return;const label=btn.querySelector('.action-label'),oldLabel=label?.textContent||'Download';let clone,holder;if(label)label.textContent='Preparing…';btn.disabled=true;try{
+if(!window.html2canvas){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=resolve;s.onerror=()=>reject(new Error('PNG export library could not load'));document.head.appendChild(s);});}
+const rect=card.getBoundingClientRect();clone=card.cloneNode(true);clone.classList.remove('flipped');clone.style.transform='none';clone.style.direction='ltr';clone.style.position='relative';clone.style.inset='auto';clone.style.width=rect.width+'px';clone.style.height=rect.height+'px';clone.style.aspectRatio='auto';clone.style.backfaceVisibility='visible';clone.style.webkitBackfaceVisibility='visible';
+const cols=Array.isArray(a.colors)&&a.colors.length>=3?a.colors:themes[a.platform].colors;if(flipped)clone.style.background=`linear-gradient(135deg, ${mixDarkHex(cols[0],.68)} 0%, ${mixDarkHex(cols[1],.66)} 55%, ${mixDarkHex(cols[2],.62)} 100%)`;else clone.style.background=`linear-gradient(125deg, ${cols[0]} 0%, ${cols[1]} 54%, ${cols[2]} 100%)`;
+const proxyImageUrl=raw=>{try{const u=new URL(raw,location.href);if(!/^https?:$/.test(u.protocol))return raw;return 'https://images.weserv.nl/?url='+encodeURIComponent(u.host+u.pathname+u.search)+'&output=png';}catch{return raw;}};
+clone.style.setProperty('--profile-texture','none');const rawAvatar=validImageUrl(a.avatar);if(rawAvatar){const wrap=document.createElement('div');wrap.style.cssText='position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:inherit;';const c=document.createElement('canvas'),cw=Math.round(rect.width*2),ch=Math.round(rect.height*2);c.width=cw;c.height=ch;c.style.cssText='width:100%;height:100%;display:block;';await new Promise(resolve=>{const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{try{const ctx=c.getContext('2d'),drawH=ch,drawW=(img.naturalWidth/(img.naturalHeight||1))*drawH,drawX=cw-drawW;ctx.save();if(flipped)ctx.filter='grayscale(1)';ctx.globalAlpha=flipped?.10:(a.platform==='Instagram'?.19:.28);ctx.drawImage(img,drawX,0,drawW,drawH);ctx.globalCompositeOperation='destination-in';ctx.globalAlpha=1;const grad=ctx.createLinearGradient(0,0,cw,0);grad.addColorStop(0,'rgba(0,0,0,0)');grad.addColorStop(.32,'rgba(0,0,0,0)');grad.addColorStop(.46,'rgba(0,0,0,.18)');grad.addColorStop(.67,'rgba(0,0,0,.76)');grad.addColorStop(.82,'rgba(0,0,0,1)');grad.addColorStop(1,'rgba(0,0,0,1)');ctx.fillStyle=grad;ctx.fillRect(0,0,cw,ch);ctx.restore();}catch{}resolve();};img.onerror=()=>resolve();img.src=proxyImageUrl(rawAvatar);setTimeout(resolve,4500);});wrap.appendChild(c);clone.insertBefore(wrap,clone.firstChild);}
+holder=document.createElement('div');holder.style.cssText='position:fixed;left:-10000px;top:0;z-index:-1;background:transparent;padding:0;pointer-events:none;';holder.appendChild(clone);document.body.appendChild(holder);
+const images=Array.from(clone.querySelectorAll('img'));images.forEach(img=>{const raw=img.getAttribute('src');if(!raw)return;const proxied=proxyImageUrl(raw);img.removeAttribute('src');img.crossOrigin='anonymous';img.loading='eager';img.src=proxied;});
+await Promise.all(images.map(img=>new Promise(resolve=>{if(img.complete&&img.naturalWidth>0)return resolve();const done=()=>resolve();img.addEventListener('load',done,{once:true});img.addEventListener('error',done,{once:true});setTimeout(done,5000);})));
+const canvas=await window.html2canvas(clone,{scale:3,backgroundColor:null,useCORS:true,allowTaint:false,logging:false,width:clone.offsetWidth,height:clone.offsetHeight,imageTimeout:10000});
+const link=document.createElement('a');link.download=`NowPro-${(a.platform||'Social').replace(/[^a-z0-9]/gi,'-')}-${(a.name||'card').replace(/[^a-z0-9]/gi,'-')}.png`;link.href=canvas.toDataURL('image/png');document.body.appendChild(link);link.click();link.remove();if(label)label.textContent='✓ Downloaded';
+}catch(err){console.error('Social card PNG export failed:',err);alert('PNG export failed. Check your internet connection and retry.');}finally{holder?.remove();btn.disabled=false;setTimeout(()=>{if(label)label.textContent=oldLabel;},1700);}});
+render();loadPublishedSocialCards();
+})();
+</script>
+</body>
+</html>
