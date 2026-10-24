@@ -1,0 +1,1406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#f6f8fc">
+<title>NowPro — Community</title>
+<style>
+:root{
+  --bg:#f6f8fc;--card:#ffffff;--soft:#eef2f7;--text:#111827;--muted:#64748b;
+  --line:#e2e8f0;--p:#4f46e5;--p2:#7c3aed;--good:#10b981;--bad:#ef4444;
+  --shadow:0 8px 24px rgba(15,23,42,.055);
+  --app-max:680px;
+  --font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+html.dark,body.dark{
+  --bg:#0b1020;--card:#111827;--soft:#182235;--text:#f8fafc;--muted:#94a3b8;
+  --line:#263449;--p:#4f46e5;--p2:#7c3aed;--good:#10b981;--bad:#ef4444;
+  --shadow:0 8px 25px rgba(0,0,0,.24);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;min-height:100%;background:var(--bg);color:var(--text);
+  font-family:var(--font);
+  transition:background-color .22s ease,color .22s ease,border-color .22s ease;
+}
+html{color-scheme:light}
+html.dark{color-scheme:dark}
+body{overflow-x:hidden}
+button,input{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.app{
+  width:min(100%,100%);margin:auto;
+  padding:10px 14px calc(74px + env(safe-area-inset-bottom));
+}
+.hidden{display:none!important}
+
+/* COMMUNITY HOME / GROUP LIST */
+.integrated-demo-note{
+  font-size:12px;line-height:1.5;padding:10px 12px;
+  border:1px solid var(--line);border-radius:12px;color:var(--muted);
+  background:var(--card);margin-bottom:10px;
+}
+.section-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:12px 2px 10px;
+}
+.section-title{font-size:14px;font-weight:850}
+.count{font-size:10.5px;font-weight:750;color:var(--muted);background:var(--soft);padding:5px 10px;border-radius:999px;border:1px solid var(--line)}
+
+.groups{display:grid;gap:10px}
+@media(min-width:700px){.groups{grid-template-columns:1fr 1fr}}
+.group{
+  position:relative;isolation:isolate;overflow:hidden;
+  width:100%;min-width:0;display:flex;align-items:center;gap:12px;padding:14px;
+  text-align:left;background:linear-gradient(135deg,color-mix(in srgb,var(--card) 96%,var(--p) 4%),var(--card));
+  color:var(--text);border:1px solid color-mix(in srgb,var(--line) 82%,var(--p) 18%);
+  border-radius:19px;box-shadow:var(--shadow);
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.group::before{
+  content:"";position:absolute;z-index:-1;right:-25px;top:-34px;width:92px;height:92px;border-radius:50%;
+  background:color-mix(in srgb,var(--p) 7%,transparent);pointer-events:none
+}
+.group:nth-child(4n+1){border-color:color-mix(in srgb,var(--line) 58%,#477dff 42%);background:linear-gradient(135deg,color-mix(in srgb,var(--card) 93%,#477dff 7%),var(--card));}
+.group:nth-child(4n+2){border-color:color-mix(in srgb,var(--line) 58%,#8b5cf6 42%);background:linear-gradient(135deg,color-mix(in srgb,var(--card) 93%,#8b5cf6 7%),var(--card));}
+.group:nth-child(4n+3){border-color:color-mix(in srgb,var(--line) 62%,#14b8a6 38%);background:linear-gradient(135deg,color-mix(in srgb,var(--card) 94%,#14b8a6 6%),var(--card));}
+.group:nth-child(4n){border-color:color-mix(in srgb,var(--line) 60%,#f59e0b 40%);background:linear-gradient(135deg,color-mix(in srgb,var(--card) 94%,#f59e0b 6%),var(--card));}
+.group:nth-child(4n+1) .group-arrow{color:#6d8cff;border-color:color-mix(in srgb,var(--line) 55%,#477dff 45%)}
+.group:nth-child(4n+2) .group-arrow{color:#a78bfa;border-color:color-mix(in srgb,var(--line) 55%,#8b5cf6 45%)}
+.group:nth-child(4n+3) .group-arrow{color:#2dd4bf;border-color:color-mix(in srgb,var(--line) 55%,#14b8a6 45%)}
+.group:nth-child(4n) .group-arrow{color:#fbbf24;border-color:color-mix(in srgb,var(--line) 55%,#f59e0b 45%)}
+.group:focus-visible{outline:2px solid var(--p);outline-offset:2px}
+.group:active{transform:scale(.992)}
+.group-icon{
+  width:48px;height:48px;flex:0 0 48px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(99,102,241,0.18),rgba(139,92,246,0.18));
+  border:1px solid rgba(99,102,241,0.32);
+  display:grid;place-items:center;font-size:22px;position:relative;
+}
+.group-info{min-width:0;flex:1}
+.group-name{font-size:15px;font-weight:850;line-height:1.3;overflow-wrap:anywhere}
+.members{font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px}
+.group-arrow{
+  width:32px;height:32px;flex:0 0 32px;border-radius:11px;
+  display:grid;place-items:center;color:var(--p);background:color-mix(in srgb,var(--soft) 86%,var(--p) 14%);
+  border:1px solid color-mix(in srgb,var(--line) 80%,var(--p) 20%);font-size:19px;
+}
+.empty{
+  text-align:center;padding:30px 15px;border:1px dashed var(--line);
+  border-radius:18px;color:var(--muted);font-size:12px;
+}
+
+/* =====================================================================
+   AI QUESTION ANSWER STYLE CHAT INTERFACE FOR COMMUNITY GROUP CHAT
+   Matches screenshot 207815.jpg (rectangular rounded-corner cards & bar)
+   ===================================================================== */
+body.in-chat{
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+}
+body.in-chat .app{
+  padding:0!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+}
+body.in-chat #chatPage{
+  position:fixed!important;
+  inset:0!important;
+  width:100%!important;
+  max-width:680px!important;
+  margin:0 auto!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  display:flex!important;
+  flex-direction:column!important;
+  background:var(--card)!important;
+  overflow:hidden!important;
+  z-index:20!important;
+}
+
+/* Hide legacy extra top bar in chat so header is identical to AI Question Answer */
+#chatPage > .top{
+  display:none!important;
+}
+
+/* AI-Style Top Header */
+.chat-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding:12px 16px!important;
+  background:color-mix(in srgb,var(--card) 88%,var(--soft))!important;
+  border-bottom:1px solid var(--line)!important;
+  flex-shrink:0!important;
+  z-index:30!important;
+}
+.chat-head-left{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+  flex:1 1 auto;
+}
+.chat-group-icon-wrap{
+  position:relative;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:linear-gradient(135deg,rgba(99,102,241,0.22),rgba(139,92,246,0.22));
+  border:1px solid rgba(99,102,241,0.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  flex-shrink:0;
+}
+.chat-group-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
+.chat-online-dot{
+  position:absolute;
+  bottom:-2px;
+  right:-2px;
+  width:10px;
+  height:10px;
+  background:#10b981;
+  border:2px solid var(--card);
+  border-radius:50%;
+  box-shadow:0 0 6px #10b981;
+}
+.chat-title{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  flex:1 1 auto;
+}
+.chat-name{
+  font-size:15.5px;
+  font-weight:850;
+  color:var(--text);
+  line-height:1.2;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.chat-subtitle-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:3px;
+  flex-wrap:wrap;
+}
+.chat-badge-pill{
+  display:inline-block;
+  padding:1px 7px;
+  border-radius:6px;
+  background:color-mix(in srgb,var(--p) 14%,transparent);
+  color:var(--p);
+  font-weight:800;
+  font-size:10px;
+  border:1px solid color-mix(in srgb,var(--p) 25%,transparent);
+  white-space:nowrap;
+}
+.chat-status-live{
+  color:#10b981;
+  font-weight:800;
+  font-size:10.5px;
+  white-space:nowrap;
+}
+.chat-head-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-shrink:0;
+}
+.group-join-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:6px 11px;
+  border-radius:10px;
+  font-size:11.5px;
+  font-weight:800;
+  background:var(--soft);
+  border:1px solid var(--line);
+  color:var(--p);
+  cursor:pointer;
+  transition:all .15s;
+  white-space:nowrap;
+}
+.group-join-btn:hover,.group-join-btn:active{
+  background:color-mix(in srgb,var(--line) 40%,var(--soft));
+  border-color:var(--p);
+}
+.group-join-btn.joined{
+  background:var(--soft);
+  color:var(--muted);
+}
+.group-join-btn.leave{
+  color:#ef4444;
+  border-color:color-mix(in srgb,#ef4444 35%,var(--line));
+}
+.chat-close-btn{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--soft);
+  color:var(--muted);
+  font-size:15px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:all .15s;
+  flex-shrink:0;
+}
+.chat-close-btn:hover,.chat-close-btn:active{
+  background:color-mix(in srgb,#ef4444 15%,var(--soft));
+  color:#ef4444;
+  border-color:#ef4444;
+}
+
+/* Scrollable Chat Messages Stream (Matches .ai-body & .ai-thread) */
+.chat-messages{
+  flex:1 1 auto!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:16px!important;
+  padding-bottom:96px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:13px!important;
+  scroll-behavior:smooth!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  background:var(--card)!important;
+}
+
+@keyframes aiMsgFadeIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Incoming / Member / Admin Message Card — Rectangular Rounded-Corner UI (Screenshot 207815.jpg) */
+.msg{
+  display:flex;
+  flex-direction:column;
+  align-self:flex-start;
+  width:min(100%,520px);
+  max-width:92%;
+  background:var(--soft);
+  border:1.5px dashed color-mix(in srgb,var(--p) 48%,var(--line));
+  color:var(--text);
+  border-radius:18px 18px 18px 4px!important;
+  padding:11px 14px;
+  font-size:13.5px;
+  line-height:1.55;
+  word-break:break-word;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
+  animation:aiMsgFadeIn .22s ease-out;
+}
+.msg.admin-msg{
+  border:1.5px dashed color-mix(in srgb,var(--p) 65%,var(--line));
+  background:linear-gradient(145deg,color-mix(in srgb,var(--p) 7%,var(--soft)),var(--soft));
+}
+.msg-card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:7px;
+  font-size:11.5px;
+  font-weight:850;
+  color:var(--p);
+}
+.msg-sender-wrap{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  flex-wrap:wrap;
+}
+.msg-mini-avatar{
+  width:20px;
+  height:20px;
+  border-radius:6px;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  font-size:10.5px;
+  font-weight:900;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.msg-sender-name{
+  font-weight:850;
+  color:var(--p);
+}
+.msg-role-pill{
+  display:inline-block;
+  padding:1px 7px;
+  border-radius:6px;
+  background:color-mix(in srgb,var(--p) 14%,transparent);
+  color:var(--p);
+  font-weight:800;
+  font-size:10px;
+  border:1px solid color-mix(in srgb,var(--p) 25%,transparent);
+}
+.msg-role-pill.admin{
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  border-color:transparent;
+}
+.msg-head-time{
+  font-size:10.5px;
+  font-weight:600;
+  opacity:.85;
+  color:var(--muted);
+  white-space:nowrap;
+}
+/* Inner Rounded Pill Box inside the rectangular card (matches circled box in 207815.jpg) */
+.msg-inner-box{
+  display:block;
+  width:100%;
+  padding:8px 12px;
+  background:color-mix(in srgb,var(--p) 8%,var(--card));
+  border-radius:12px;
+  border:1px solid color-mix(in srgb,var(--p) 20%,transparent);
+  color:var(--text);
+  font-size:13.5px;
+  line-height:1.5;
+}
+
+/* User's Own Message Bubble — Right-Aligned Purple Rounded Rectangle (Matches "તમે / Hi" in 207815.jpg) */
+.msg.mine{
+  align-self:flex-end!important;
+  width:auto!important;
+  max-width:86%!important;
+  min-width:68px;
+  background:linear-gradient(135deg,var(--p),var(--p2))!important;
+  border:0!important;
+  color:#fff!important;
+  border-radius:18px 18px 4px 18px!important;
+  padding:10px 14px!important;
+  font-size:13.5px!important;
+  line-height:1.5!important;
+  box-shadow:0 4px 14px rgba(99,102,241,0.25)!important;
+}
+.msg.mine .chat-role{
+  font-size:10px;
+  font-weight:850;
+  opacity:.84;
+  margin-bottom:3px;
+  text-align:right;
+  text-transform:uppercase;
+  color:#fff;
+}
+.msg.mine .text{
+  font-size:13.5px;
+  line-height:1.5;
+  color:#fff;
+  text-align:left;
+}
+.msg.mine .time{
+  font-size:9.5px;
+  color:rgba(255,255,255,.76);
+  text-align:right;
+  margin-top:4px;
+}
+
+/* Practice Result Card inside Chat — Styled in the same Rectangular Rounded-Corner Card */
+.practice-wrap{
+  display:flex;
+  flex-direction:column;
+  align-self:flex-start;
+  width:min(100%,520px);
+  max-width:92%;
+  background:var(--soft);
+  border:1.5px dashed color-mix(in srgb,var(--p) 48%,var(--line));
+  border-radius:18px 18px 18px 4px;
+  padding:11px 14px;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
+  animation:aiMsgFadeIn .22s ease-out;
+}
+.practice{
+  width:100%;
+  padding:10px 12px;
+  background:color-mix(in srgb,var(--p) 8%,var(--card));
+  border:1px solid color-mix(in srgb,var(--p) 20%,transparent);
+  border-radius:12px;
+}
+.practice-title{font-size:14.5px;font-weight:850;color:var(--text);margin-bottom:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media(max-width:420px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{text-align:center;padding:7px 4px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.stat b{display:block;font-size:15px;line-height:1.1;color:var(--p)}
+.stat span{display:block;font-size:9px;color:var(--muted);margin-top:3px;font-weight:700}
+
+/* AI-Style Bottom Composer Bar (Matches bottom bar of 207815.jpg) */
+.chat-composer{
+  position:fixed!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  bottom:0!important;
+  width:min(100%,680px)!important;
+  z-index:100!important;
+  display:flex!important;
+  flex-direction:column!important;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
+  background:color-mix(in srgb,var(--card) 92%,var(--soft))!important;
+  border-top:1px solid var(--line)!important;
+  flex-shrink:0!important;
+}
+body.in-chat.cb-keyboard-open .chat-composer{
+  bottom:var(--cb-keyboard-offset,0px)!important;
+}
+.ai-composer-bar{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  width:100%;
+  background:var(--card);
+  border:1.5px solid var(--line);
+  border-radius:18px;
+  padding:4px 7px 4px 12px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.ai-composer-bar:focus-within{
+  border-color:var(--p);
+  box-shadow:0 0 0 3px rgba(99,102,241,0.14);
+}
+.composer-box{
+  position:relative;
+  flex:1 1 auto;
+  min-width:0;
+  display:flex;
+  align-items:center;
+}
+.composer-input{
+  width:100%;
+  height:34px;
+  border:0!important;
+  outline:none!important;
+  background:transparent!important;
+  color:var(--text)!important;
+  padding:4px 44px 4px 2px!important;
+  font-size:14px!important;
+  line-height:1.45!important;
+  box-shadow:none!important;
+}
+.composer-count{
+  position:absolute;
+  right:6px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+  font-size:9.5px;
+  font-weight:700;
+  pointer-events:none;
+}
+.send-btn{
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  border-radius:11px;
+  border:0;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  font-weight:800;
+  box-shadow:0 3px 10px rgba(99,102,241,0.32);
+  transition:all .18s;
+}
+.send-btn:hover:not(:disabled){
+  transform:translateY(-1px);
+  box-shadow:0 5px 14px rgba(99,102,241,0.42);
+}
+.send-btn:active{transform:scale(.94)}
+.send-btn:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
+.ai-composer-foot{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  width:100%;
+  margin-top:6px;
+  padding:0 4px;
+  font-size:10.5px;
+  color:var(--muted);
+}
+.integrated-chat-demo{
+  font-size:10.5px;
+  color:var(--muted);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  flex:1 1 auto;
+}
+.ai-secure-tag{
+  font-size:10.5px;
+  color:var(--muted);
+  flex-shrink:0;
+}
+
+/* GUEST BAR (Home Screen only) */
+.guest{
+  position:fixed;left:50%;bottom:0;z-index:30;transform:translateX(-50%);
+  width:min(100%,100%);min-height:56px;padding:8px 14px calc(8px + env(safe-area-inset-bottom));
+  display:grid;place-items:center;text-align:center;
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
+  border-top:1px solid var(--line);backdrop-filter:blur(12px);
+  color:var(--muted);font-size:12px;
+}
+.guest button{border:0;background:none;color:inherit}
+
+/* LOGIN MODAL / PAGE */
+.overlay{
+  position:fixed;inset:0;z-index:60;display:none;align-items:flex-end;
+  justify-content:center;padding:12px;background:rgba(2,6,23,.42);backdrop-filter:blur(4px)
+}
+.overlay.show{display:flex}
+.sheet{
+  width:min(440px,100%);background:var(--card);border:1px solid var(--line);
+  border-radius:22px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.22)
+}
+.sheet h3{margin:0 0 6px;font-size:18px}
+.sheet p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.actions button{height:43px;border-radius:13px;font-weight:800}
+.cancel{border:1px solid var(--line);background:var(--soft);color:var(--text)}
+.login{border:0;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}
+
+.login-page{
+  position:fixed;inset:0;z-index:200;
+  overflow:auto;display:grid;place-items:center;
+  padding:20px;background:var(--bg);
+}
+.login-card{
+  width:min(420px,100%);margin:auto;
+  padding:24px 20px 20px;
+  border:1px solid var(--line);border-radius:24px;
+  background:var(--card);box-shadow:0 22px 70px rgba(15,23,42,.13);
+  text-align:center;
+}
+.login-mark{
+  width:58px;height:58px;margin:0 auto 14px;border-radius:18px;
+  display:grid;place-items:center;font-size:25px;
+  background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;
+  box-shadow:0 10px 24px rgba(79,70,229,.25);
+}
+.login-card h2{margin:0;font-size:22px;letter-spacing:-.4px}
+.login-card>p{margin:7px 0 19px;color:var(--muted);font-size:13px;line-height:1.5}
+.login-primary,.login-secondary{
+  width:100%;height:45px;border-radius:13px;font-weight:850;margin-top:12px;
+}
+.login-primary{border:0;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}
+.login-secondary{border:1px solid var(--line);background:var(--soft);color:var(--text)}
+
+#chatComposer.hidden,
+body:not(.in-chat) #chatComposer,
+body.in-login #chatComposer{
+  display:none!important;
+}
+body.in-chat .guest,
+body.in-login .guest,
+body.is-demo-session .guest{
+  display:none!important;
+}
+body.in-login #homePage,
+body.in-login #chatPage{
+  display:none!important;
+}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- COMMUNITY HOME / GROUP LIST -->
+  <section id="homePage">
+    <p class="integrated-demo-note" id="languageFallback" hidden></p>
+    <div class="section-head">
+      <div class="section-title" id="sectionTitle">Groups</div>
+      <div class="count" id="groupCount">0 groups</div>
+    </div>
+    <section class="groups" id="groups"></section>
+  </section>
+
+  <!-- GROUP CHAT (AI QUESTION ANSWER UI STYLE) -->
+  <section id="chatPage" class="chat-page hidden">
+    <header class="top">
+      <div class="brand">NowPro</div>
+    </header>
+
+    <div class="chat-head">
+      <div class="chat-head-left">
+        <div class="chat-group-icon-wrap">
+          <div class="chat-group-icon" id="chatIcon">📚</div>
+          <span class="chat-online-dot" title="Active"></span>
+        </div>
+        <div class="chat-title">
+          <div class="chat-name" id="chatName"></div>
+          <div class="chat-subtitle-row">
+            <span class="chat-badge-pill" id="chatMembers"></span>
+            <span class="chat-status-live">● Active</span>
+          </div>
+        </div>
+      </div>
+      <div class="chat-head-actions">
+        <button type="button" class="group-join-btn" id="groupJoinBtn">Join</button>
+        <button type="button" class="chat-close-btn" id="chatBack" title="Back to groups" aria-label="Back to groups">✕</button>
+      </div>
+    </div>
+
+    <section class="chat-messages" id="messages" aria-live="polite"></section>
+  </section>
+</main>
+
+<!-- AI-Style Bottom Composer -->
+<footer class="chat-composer hidden" id="chatComposer" aria-hidden="true">
+  <div class="ai-composer-bar">
+    <div class="composer-box">
+      <input id="messageInput"
+             class="composer-input"
+             type="text"
+             name="community_message"
+             inputmode="text"
+             autocomplete="off"
+             autocapitalize="sentences"
+             autocorrect="on"
+             spellcheck="true"
+             maxlength="500"
+             placeholder="Type a message...">
+      <span class="composer-count" id="composerCount">0/500</span>
+    </div>
+    <button class="send-btn" id="sendBtn" type="button" aria-label="Send message">➤</button>
+  </div>
+  <div class="ai-composer-foot">
+    <span id="demoNotice" class="integrated-chat-demo" role="status"></span>
+    <span class="ai-secure-tag">🔒 Private &amp; Secure</span>
+  </div>
+</footer>
+
+<div class="guest">
+  <button id="guestBtn">🔒 &nbsp;Login to join this group and participate.</button>
+</div>
+
+<section class="login-page hidden" id="loginPage" aria-label="Login page">
+  <div class="login-card">
+    <div class="login-mark">🔐</div>
+    <h2 id="loginPageTitle">Login to continue</h2>
+    <p id="loginPageText">Login is required to send messages and participate in community discussions.</p>
+    <button class="login-primary" id="loginPrimary" type="button">Login</button>
+    <button class="login-secondary" id="loginBack" type="button">Back to chat</button>
+  </div>
+</section>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <h3 id="loginTitle">Login required</h3>
+    <p id="loginText">Login to join a group and participate in the discussion. Guests can view community content.</p>
+    <div class="actions">
+      <button class="cancel" id="cancel">Cancel</button>
+      <button class="login" id="login">Login</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const GROUPS = [
+  {
+    id:"ssc-chsl", icon:"📚", members:1248,
+    name:{
+      en:"SSC CHSL Aspirants",hi:"SSC CHSL अभ्यर्थी",bn:"SSC CHSL পরীক্ষার্থী",
+      mr:"SSC CHSL उमेदवार",ta:"SSC CHSL தேர்வர்கள்",te:"SSC CHSL అభ్యర్థులు",
+      gu:"SSC CHSL ઉમેદવારો",ur:"SSC CHSL امیدوار",as:"SSC CHSL প্ৰাৰ্থী"
+    },
+    messages:[
+      {type:"text",initial:"A",name:"Aman",key:"practiceText",time:"10:12 AM"},
+      {type:"text",initial:"P",name:"Priya",key:"fast",time:"10:18 AM"},
+      {type:"text",initial:"N",name:"NowPro",role:"admin",key:"adminWelcome",time:"10:22 AM"},
+      {type:"text",mine:true,key:"timed",time:"10:24 AM"},
+      {type:"practice",initial:"R",name:"Rahul",time:"10:31 AM"}
+    ]
+  },
+  {
+    id:"math", icon:"🧮", members:864,
+    name:{
+      en:"Math Practice",hi:"गणित अभ्यास",bn:"গণিত অনুশীলন",
+      mr:"गणित सराव",ta:"கணிதப் பயிற்சி",te:"గణిత సాధన",
+      gu:"ગણિત પ્રેક્ટિસ",ur:"ریاضی کی مشق",as:"গণিত অনুশীলন"
+    },
+    messages:[
+      {type:"text",initial:"S",name:"Sahil",key:"math1",time:"9:42 AM"},
+      {type:"text",initial:"N",name:"Neha",key:"math2",time:"9:50 AM"}
+    ]
+  },
+  {
+    id:"reasoning", icon:"🧠", members:692,
+    name:{
+      en:"Reasoning Aspirants",hi:"रीजनिंग अभ्यर्थी",bn:"রিজনিং পরীক্ষার্থী",
+      mr:"रीझनिंग उमेदवार",ta:"தர்க்கத் திறன் தேர்வர்கள்",te:"రీజనింగ్ అభ్యర్థులు",
+      gu:"રીઝનિંગ ઉમેદવારો",ur:"ریزننگ امیدوار",as:"ৰিজনিং প্ৰাৰ্থী"
+    },
+    messages:[
+      {type:"text",initial:"K",name:"Kunal",key:"reasoning",time:"8:35 AM"}
+    ]
+  },
+  {
+    id:"gk", icon:"🌍", members:531,
+    name:{
+      en:"GK & Current Affairs",hi:"GK और करेंट अफेयर्स",bn:"GK ও কারেন্ট অ্যাফেয়ার্স",
+      mr:"GK आणि चालू घडामोडी",ta:"GK மற்றும் நடப்பு நிகழ்வுகள்",te:"GK & ప్రస్తుత వ్యవహారాలు",
+      gu:"GK અને કરંટ અફેર્સ",ur:"جی کے اور حالات حاضرہ",as:"GK আৰু সাম্প্ৰতিক ঘটনা"
+    },
+    messages:[
+      {type:"text",initial:"A",name:"Ankit",key:"gk",time:"8:10 AM"}
+    ]
+  }
+];
+
+const I18N = {
+  en:{
+    code:"EN", name:"English", you:"You", community:"Community",
+    tagline:"Practice, discuss and learn with other NowPro users.", groups:"Groups", group:"group", groupsPlural:"groups", members:"members",
+    back:"Back", chatBack:"Back to groups", language:"Language", choose:"Choose your preferred language.",
+    guestHome:"Login to join groups and participate.", guestChat:"Login to join this group and participate.", loginRequired:"Login required",
+    loginText:"Login to join a group and participate in the discussion. Guests can view community content.",
+    cancel:"Cancel", login:"Login", close:"Close", noGroups:"No groups found.",
+    practice:"PRACTICE RESULT", questions:"Questions", correct:"Correct",
+    accuracy:"Accuracy", streak:"Streak", expires:"Sample",
+    msgs:{
+      practiceText:"Aaj percentage ke 50 questions practice kiye.",
+      adminWelcome:"Welcome to the group! Keep discussions focused on practice and exam preparation.",
+      practice:"PRACTICE RESULT",
+      fast:"15% of 240 = 36. Fast method bhi batao.",
+      timed:"Calculation speed improve karne ke liye daily timed practice useful hai.",
+      math1:"Aaj simplification ke questions solve kiye.",
+      math2:"LCM/HCF ke shortcuts discuss karte hain.",
+      reasoning:"Coding-decoding ka practice set complete hua.",
+      gk:"Aaj ke important current affairs discuss karte hain."
+    }
+  },
+  hi:{
+    code:"हि", name:"हिन्दी", you:"आप", community:"कम्युनिटी",
+    tagline:"NowPro के अन्य उपयोगकर्ताओं के साथ अभ्यास करें, चर्चा करें और सीखें।", groups:"ग्रुप", group:"ग्रुप", groupsPlural:"ग्रुप", members:"सदस्य",
+    back:"वापस", chatBack:"ग्रुप पर वापस", language:"भाषा", choose:"अपनी पसंदीदा भाषा चुनें।",
+    guestHome:"ग्रुप में शामिल होने और भाग लेने के लिए लॉगिन करें।", guestChat:"इस ग्रुप में शामिल होने और भाग लेने के लिए लॉगिन करें।", loginRequired:"लॉगिन आवश्यक है",
+    loginText:"ग्रुप में शामिल होकर चर्चा में भाग लेने के लिए लॉगिन करें। अतिथि कम्युनिटी देख सकते हैं।",
+    cancel:"रद्द करें", login:"लॉगिन", close:"बंद करें", noGroups:"कोई ग्रुप नहीं मिला।",
+    practice:"अभ्यास परिणाम", questions:"प्रश्न", correct:"सही", accuracy:"सटीकता", streak:"स्ट्रीक", expires:"नमूना",
+    msgs:{
+      practiceText:"आज प्रतिशत के 50 प्रश्नों का अभ्यास किया।",
+      adminWelcome:"ग्रुप में आपका स्वागत है! चर्चा को अभ्यास और परीक्षा की तैयारी तक सीमित रखें।",
+      practice:"अभ्यास परिणाम",
+      fast:"15% of 240 = 36। इसका तेज तरीका भी बताओ।",
+      timed:"Calculation speed बेहतर करने के लिए रोज़ timed practice उपयोगी है।",
+      math1:"आज simplification के प्रश्न हल किए।",
+      math2:"LCM/HCF के shortcuts पर चर्चा करते हैं।",
+      reasoning:"Coding-decoding का practice set पूरा हुआ।",
+      gk:"आज के महत्वपूर्ण current affairs पर चर्चा करते हैं।"
+    }
+  },
+  bn:{
+    code:"বা", name:"বাংলা", you:"আপনি", community:"কমিউনিটি",
+    tagline:"NowPro ব্যবহারকারীদের সঙ্গে অনুশীলন, আলোচনা ও শেখা।", groups:"গ্রুপ", group:"গ্রুপ", groupsPlural:"গ্রুপ", members:"সদস্য",
+    back:"ফিরে যান", chatBack:"গ্রুপে ফিরে যান", language:"ভাষা", choose:"আপনার পছন্দের ভাষা বেছে নিন।",
+    guestHome:"গ্রুপে যোগ দিতে ও অংশ নিতে লগইন করুন।", guestChat:"এই গ্রুপে যোগ দিতে ও অংশ নিতে লগইন করুন।", loginRequired:"লগইন প্রয়োজন",
+    loginText:"গ্রুপে যোগ দিয়ে আলোচনায় অংশ নিতে লগইন করুন। অতিথিরা কমিউনিটি দেখতে পারবেন।",
+    cancel:"বাতিল", login:"লগইন", close:"বন্ধ", noGroups:"কোনও গ্রুপ পাওয়া যায়নি।",
+    practice:"অনুশীলনের ফলাফল", questions:"প্রশ্ন", correct:"সঠিক", accuracy:"নির্ভুলতা", streak:"স্ট্রিক", expires:"নমুনা",
+    msgs:{
+      practiceText:"আজ শতাংশের ৫০টি প্রশ্ন অনুশীলন করেছি।",
+      adminWelcome:"গ্রুপে স্বাগতম! আলোচনা অনুশীলন ও পরীক্ষার প্রস্তুতির মধ্যে রাখুন।",
+      practice:"অনুশীলনের ফলাফল",
+      fast:"15% of 240 = 36। দ্রুত পদ্ধতিটিও বলুন।",
+      timed:"গণনার গতি বাড়াতে প্রতিদিন timed practice উপকারী।",
+      math1:"আজ simplification-এর প্রশ্ন সমাধান করেছি।",
+      math2:"LCM/HCF shortcuts নিয়ে আলোচনা করি।",
+      reasoning:"Coding-decoding practice set সম্পূর্ণ হয়েছে।",
+      gk:"আজকের গুরুত্বপূর্ণ current affairs নিয়ে আলোচনা করি।"
+    }
+  },
+  mr:{
+    code:"म", name:"मराठी", you:"तुम्ही", community:"कम्युनिटी",
+    tagline:"NowPro वापरकर्त्यांसोबत सराव करा, चर्चा करा आणि शिका.", groups:"ग्रुप", group:"ग्रुप", groupsPlural:"ग्रुप", members:"सदस्य",
+    back:"मागे", chatBack:"ग्रुपकडे परत", language:"भाषा", choose:"तुमची पसंतीची भाषा निवडा.",
+    guestHome:"ग्रुपमध्ये सहभागी होण्यासाठी लॉगिन करा.", guestChat:"या ग्रुपमध्ये सहभागी होण्यासाठी लॉगिन करा.", loginRequired:"लॉगिन आवश्यक",
+    loginText:"ग्रुपमध्ये सहभागी होऊन चर्चेत भाग घेण्यासाठी लॉगिन करा. अतिथी कम्युनिटी पाहू शकतात.",
+    cancel:"रद्द करा", login:"लॉगिन", close:"बंद", noGroups:"कोणतेही ग्रुप सापडले नाहीत.",
+    practice:"सरावाचा निकाल", questions:"प्रश्न", correct:"बरोबर", accuracy:"अचूकता", streak:"स्ट्रीक", expires:"नमुना",
+    msgs:{
+      practiceText:"आज टक्केवारीचे ५० प्रश्न सरावले.",
+      adminWelcome:"ग्रुपमध्ये स्वागत आहे! चर्चा सराव आणि परीक्षेच्या तयारीपुरती ठेवा.",
+      practice:"सरावाचा निकाल",
+      fast:"15% of 240 = 36. जलद पद्धतही सांगा.",
+      timed:"गणनेचा वेग वाढवण्यासाठी दररोज timed practice उपयुक्त आहे.",
+      math1:"आज simplification चे प्रश्न सोडवले.",
+      math2:"LCM/HCF shortcuts वर चर्चा करूया.",
+      reasoning:"Coding-decoding practice set पूर्ण झाला.",
+      gk:"आजच्या महत्त्वाच्या current affairs वर चर्चा करूया."
+    }
+  },
+  ta:{
+    code:"த", name:"தமிழ்", you:"நீங்கள்", community:"சமூகம்",
+    tagline:"NowPro பயனர்களுடன் பயிற்சி, கலந்துரையாடல் மற்றும் கற்றல்.", groups:"குழுக்கள்", group:"குழு", groupsPlural:"குழுக்கள்", members:"உறுப்பினர்கள்",
+    back:"பின்", chatBack:"குழுக்களுக்குத் திரும்பு", language:"மொழி", choose:"உங்கள் விருப்ப மொழியைத் தேர்வு செய்யுங்கள்.",
+    guestHome:"குழுக்களில் சேர்ந்து பங்கேற்க உள்நுழையவும்.", guestChat:"இந்தக் குழுவில் சேர்ந்து பங்கேற்க உள்நுழையவும்.", loginRequired:"உள்நுழைவு தேவை",
+    loginText:"குழுவில் சேர்ந்து கலந்துரையாடலில் பங்கேற்க உள்நுழையவும். விருந்தினர்கள் சமூகத்தைப் பார்க்கலாம்.",
+    cancel:"ரத்து", login:"உள்நுழை", close:"மூடு", noGroups:"குழுக்கள் எதுவும் இல்லை.",
+    practice:"பயிற்சி முடிவு", questions:"கேள்விகள்", correct:"சரி", accuracy:"துல்லியம்", streak:"தொடர்", expires:"மாதிரி",
+    msgs:{
+      practiceText:"இன்று சதவீதத்தில் 50 கேள்விகள் பயிற்சி செய்தேன்.",
+      adminWelcome:"குழுவிற்கு வரவேற்கிறோம்! கலந்துரையாடலை பயிற்சி மற்றும் தேர்வு தயாரிப்பில் கவனம் செலுத்துங்கள்.",
+      practice:"பயிற்சி முடிவு",
+      fast:"15% of 240 = 36. வேகமான முறையையும் சொல்லுங்கள்.",
+      timed:"கணக்கீட்டு வேகத்தை மேம்படுத்த தினசரி timed practice பயனுள்ளதாகும்.",
+      math1:"இன்று simplification கேள்விகளைத் தீர்த்தேன்.",
+      math2:"LCM/HCF shortcuts பற்றி விவாதிப்போம்.",
+      reasoning:"Coding-decoding practice set முடிந்தது.",
+      gk:"இன்றைய முக்கிய current affairs பற்றி விவாதிப்போம்."
+    }
+  },
+  te:{
+    code:"తె", name:"తెలుగు", you:"మీరు", community:"కమ్యూనిటీ",
+    tagline:"NowPro వినియోగదారులతో సాధన, చర్చ మరియు అభ్యాసం.", groups:"గ్రూప్‌లు", group:"గ్రూప్", groupsPlural:"గ్రూప్‌లు", members:"సభ్యులు",
+    back:"వెనుకకు", chatBack:"గ్రూప్‌లకు తిరిగి", language:"భాష", choose:"మీకు ఇష్టమైన భాషను ఎంచుకోండి.",
+    guestHome:"గ్రూప్‌లలో చేరి పాల్గొనడానికి లాగిన్ చేయండి.", guestChat:"ఈ గ్రూప్‌లో చేరి పాల్గొనడానికి లాగిన్ చేయండి.", loginRequired:"లాగిన్ అవసరం",
+    loginText:"గ్రూప్‌లో చేరి చర్చలో పాల్గొనడానికి లాగిన్ చేయండి. అతిథులు కమ్యూనిటీని చూడవచ్చు.",
+    cancel:"రద్దు", login:"లాగిన్", close:"మూసివేయి", noGroups:"గ్రూప్‌లు ఏవీ లేవు.",
+    practice:"ప్రాక్టీస్ ఫలితం", questions:"ప్రశ్నలు", correct:"సరైనవి", accuracy:"ఖచ్చితత్వం", streak:"స్ట్రీక్", expires:"నమూనా",
+    msgs:{
+      practiceText:"ఈరోజు శాతాల్లో 50 ప్రశ్నలు సాధన చేశాను.",
+      adminWelcome:"గ్రూప్‌కు స్వాగతం! చర్చను సాధన మరియు పరీక్షా సిద్ధతపై కేంద్రీకరించండి.",
+      practice:"ప్రాక్టీస్ ఫలితం",
+      fast:"15% of 240 = 36. వేగవంతమైన పద్ధతిని కూడా చెప్పండి.",
+      timed:"లెక్కల వేగాన్ని మెరుగుపరచడానికి రోజువారీ timed practice ఉపయోగకరం.",
+      math1:"ఈరోజు simplification ప్రశ్నలు పూర్తి చేశాను.",
+      math2:"LCM/HCF shortcuts గురించి చర్చిద్దాం.",
+      reasoning:"Coding-decoding practice set పూర్తైంది.",
+      gk:"ఈరోజు ముఖ్యమైన current affairs గురించి చర్చిద్దాం."
+    }
+  },
+  gu:{
+    code:"ગુ", name:"ગુજરાતી", you:"તમે", community:"કોમ્યુનિટી",
+    tagline:"અન્ય NowPro વપરાશકર્તાઓ સાથે પ્રેક્ટિસ કરો, ચર્ચા કરો અને શીખો.", groups:"ગ્રુપ", group:"ગ્રુપ", groupsPlural:"ગ્રુપ", members:"સભ્યો",
+    back:"પાછા", chatBack:"ગ્રુપ પર પાછા", language:"ભાષા", choose:"તમારી પસંદગીની ભાષા પસંદ કરો.",
+    guestHome:"ગ્રુપમાં જોડાવા અને ભાગ લેવા માટે લોગિન કરો.", guestChat:"આ ગ્રુપમાં જોડાવા અને ભાગ લેવા માટે લોગિન કરો.", loginRequired:"લોગિન જરૂરી છે",
+    loginText:"ગ્રુપમાં જોડાવા અને ચર્ચામાં ભાગ લેવા માટે લોગિન કરો.",
+    cancel:"રદ કરો", login:"લોગિન", close:"બંધ કરો", noGroups:"કોઈ ગ્રુપ મળ્યું નથી.",
+    practice:"પ્રેક્ટિસ પરિણામ", questions:"પ્રશ્નો", correct:"સાચા", accuracy:"ચોકસાઈ", streak:"સ્ટ્રીક", expires:"નમૂનો",
+    msgs:{
+      practiceText:"આજે ટકાવારીના 50 પ્રશ્નોની પ્રેક્ટિસ કરી.",
+      adminWelcome:"ગ્રુપમાં તમારું સ્વાગત છે! ચર્ચાને પ્રેક્ટિસ અને પરીક્ષાની તૈયારી પર કેન્દ્રિત રાખો.",
+      practice:"પ્રેક્ટિસ પરિણામ",
+      fast:"15% of 240 = 36. આની ઝડપી રીત પણ જણાવો.",
+      timed:"ગણતરીની ઝડપ વધારવા માટે દરરોજ timed practice ઉપયોગી છે.",
+      math1:"આજે simplification ના પ્રશ્નો ઉકેલ્યા.",
+      math2:"LCM/HCF ના shortcuts પર ચર્ચા કરીએ.",
+      reasoning:"Coding-decoding નો પ્રેક્ટિસ સેટ પૂર્ણ થયો.",
+      gk:"આજના મહત્વપૂર્ણ current affairs પર ચર્ચા કરીએ."
+    }
+  },
+  ur:{
+    code:"ار", name:"اردو", you:"آپ", community:"کمیونٹی",
+    tagline:"دیگر NowPro صارفین کے ساتھ مشق کریں، گفتگو کریں اور سیکھیں۔", groups:"گروپس", group:"گروپ", groupsPlural:"گروپس", members:"اراکین",
+    back:"واپس", chatBack:"گروپس پر واپس", language:"زبان", choose:"اپنی پسندیدہ زبان منتخب کریں۔",
+    guestHome:"گروپس میں شامل ہونے کے لیے لاگ ان کریں۔", guestChat:"اس گروپ میں شامل ہونے کے لیے لاگ ان کریں۔", loginRequired:"لاگ ان ضروری ہے",
+    loginText:"گروپ میں شامل ہونے اور بحث میں حصہ لینے کے لیے لاگ ان کریں۔",
+    cancel:"منسوخ", login:"لاگ ان", close:"بند کریں", noGroups:"کوئی گروپ نہیں ملا۔",
+    practice:"مشق کا نتیجہ", questions:"سوالات", correct:"درست", accuracy:"درستگی", streak:"اسٹریک", expires:"نمونہ",
+    msgs:{
+      practiceText:"آج فیصد کے 50 سوالات کی مشق کی۔",
+      adminWelcome:"گروپ میں خوش آمدید! گفتگو کو مشق اور امتحان کی تیاری تک محدود رکھیں۔",
+      practice:"مشق کا نتیجہ",
+      fast:"15% of 240 = 36۔ اس کا تیز طریقہ بھی بتائیں۔",
+      timed:"حساب کی رفتار بڑھانے کے لیے روزانہ ٹائمڈ پریکٹس مفید ہے۔",
+      math1:"آج سادہ کاری کے سوالات حل کیے۔",
+      math2:"LCM/HCF کے شارٹ کٹس پر بات کرتے ہیں۔",
+      reasoning:"کوڈنگ ڈیکوڈنگ کا پریکٹس سیٹ مکمل ہوا۔",
+      gk:"آج کے اہم حالات حاضرہ پر بات کرتے ہیں۔"
+    }
+  },
+  as:{
+    code:"অ", name:"অসমীয়া", you:"আপুনি", community:"কমিউনিটি",
+    tagline:"আন NowPro ব্যৱহাৰকাৰীসকলৰ সৈতে অনুশীলন আৰু আলোচনা কৰক।", groups:"গোটসমূহ", group:"গোট", groupsPlural:"গোটসমূহ", members:"সদস্য",
+    back:"পিছলৈ", chatBack:"গোটলৈ উভতি যাওক", language:"ভাষা", choose:"আপোনাৰ পছন্দৰ ভাষা বাছনি কৰক।",
+    guestHome:"গোটত যোগদান কৰিবলৈ লগইন কৰক।", guestChat:"এই গোটত যোগদান কৰিবলৈ লগইন কৰক।", loginRequired:"লগইন প্ৰয়োজন",
+    loginText:"গোটত যোগদান কৰি আলোচনাত অংশ ল’বলৈ লগইন কৰক।",
+    cancel:"বাতিল", login:"লগইন", close:"বন্ধ কৰক", noGroups:"কোনো গোট পোৱা নগ’ল।",
+    practice:"অনুশীলনৰ ফলাফল", questions:"প্ৰশ্ন", correct:"শুদ্ধ", accuracy:"সঠিকতা", streak:"ষ্ট্ৰিক", expires:"নমুনা",
+    msgs:{
+      practiceText:"আজি শতাংশৰ ৫০টা প্ৰশ্ন অনুশীলন কৰিলোঁ।",
+      adminWelcome:"গোটলৈ স্বাগতম! আলোচনা অনুশীলন আৰু পৰীক্ষাৰ প্ৰস্তুতিৰ মাজত ৰাখক।",
+      practice:"অনুশীলনৰ ফলাফল",
+      fast:"15% of 240 = 36। ইয়াৰ দ্ৰুত পদ্ধতিটোও কওক।",
+      timed:"গণনাৰ গতি বঢ়াবলৈ দৈনিক timed practice উপকাৰী।",
+      math1:"আজি সৰলীকৰণৰ প্ৰশ্ন সমাধান কৰিলোঁ।",
+      math2:"LCM/HCF ৰ শ্বৰ্টকাটসমূহ আলোচনা কৰোঁ আহক।",
+      reasoning:"Coding-decoding ৰ অনুশীলন ছেট সম্পূৰ্ণ হ’ল।",
+      gk:"আজিৰ গুৰুত্বপূৰ্ণ সাম্প্ৰতিক ঘটনাৰ বিষয়ে আলোচনা কৰোঁ।"
+    }
+  }
+};
+
+const V7_TEXT = {
+  en:{type:"Type your message here...",loginTitle:"Login to continue",loginText:"Login is required to send messages and participate in community discussions.",email:"Email",password:"Password",login:"Login",back:"Back to chat"},
+  hi:{type:"अपना संदेश यहाँ लिखें...",loginTitle:"जारी रखने के लिए लॉगिन करें",loginText:"संदेश भेजने और कम्युनिटी चर्चा में भाग लेने के लिए लॉगिन आवश्यक है।",email:"ईमेल",password:"पासवर्ड",login:"लॉगिन",back:"चैट पर वापस"},
+  bn:{type:"আপনার বার্তা এখানে লিখুন...",loginTitle:"চালিয়ে যেতে লগইন করুন",loginText:"বার্তা পাঠাতে এবং কমিউনিটি আলোচনায় অংশ নিতে লগইন প্রয়োজন।",email:"ইমেল",password:"পাসওয়ার্ড",login:"লগইন",back:"চ্যাটে ফিরে যান"},
+  mr:{type:"तुमचा संदेश येथे लिहा...",loginTitle:"पुढे जाण्यासाठी लॉगिन करा",loginText:"संदेश पाठवण्यासाठी आणि कम्युनिटी चर्चेत सहभागी होण्यासाठी लॉगिन आवश्यक आहे.",email:"ईमेल",password:"पासवर्ड",login:"लॉगिन",back:"चॅटकडे परत"},
+  ta:{type:"உங்கள் செய்தியை இங்கே எழுதுங்கள்...",loginTitle:"தொடர உள்நுழையவும்",loginText:"செய்தி அனுப்பவும் சமூக விவாதத்தில் பங்கேற்கவும் உள்நுழைவு தேவை.",email:"மின்னஞ்சல்",password:"கடவுச்சொல்",login:"உள்நுழை",back:"அரட்டைக்குத் திரும்பு"},
+  te:{type:"మీ సందేశాన్ని ఇక్కడ టైప్ చేయండి...",loginTitle:"కొనసాగించడానికి లాగిన్ చేయండి",loginText:"సందేశాలు పంపడానికి మరియు కమ్యూనిటీ చర్చల్లో పాల్గొనడానికి లాగిన్ అవసరం.",email:"ఈమెయిల్",password:"పాస్‌వర్డ్",login:"లాగిన్",back:"చాట్‌కు తిరిగి"},
+  gu:{type:"તમારો સંદેશ અહીં લખો...",loginTitle:"આગળ વધવા માટે લોગિન કરો",loginText:"સંદેશ મોકલવા અને ચર્ચામાં ભાગ લેવા માટે લોગિન જરૂરી છે.",email:"ઈમેલ",password:"પાસવર્ડ",login:"લોગિન",back:"ચેટ પર પાછા"},
+  ur:{type:"اپنا پیغام یہاں لکھیں...",loginTitle:"جاری رکھنے کے لیے لاگ ان کریں",loginText:"پیغام بھیجنے اور بحث میں حصہ لینے کے لیے لاگ ان ضروری ہے۔",email:"ای میل",password:"پاس ورڈ",login:"لاگ ان",back:"چیٹ پر واپس"},
+  as:{type:"আপোনাৰ বাৰ্তা ইয়াত লিখক...",loginTitle:"আগবাঢ়িবলৈ লগইন কৰক",loginText:"বাৰ্তা পঠিয়াবলৈ আৰু আলোচনাত অংশ ল’বলৈ লগইন প্ৰয়োজন।",email:"ইমেইল",password:"পাছৱৰ্ড",login:"লগইন",back:"চেটলৈ উভতি যাওক"}
+};
+
+const $ = id => document.getElementById(id);
+const home = $("homePage");
+const chat = $("chatPage");
+const groupsEl = $("groups");
+
+let lang = "hi";
+let sharedDark = false;
+let requestedLanguage = "hi";
+let pendingAction = null;
+const joinedGroups = new Set();
+let currentGroup = null;
+
+function tr(){ return I18N[lang] || I18N.en; }
+function groupName(g){ return g.name[lang] || g.name.en; }
+function memberText(n){ return `${n.toLocaleString()} ${tr().members}`; }
+function messageText(key){ return tr().msgs[key] || I18N.en.msgs[key]; }
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,ch=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+
+function renderGroups(){
+  const list = GROUPS;
+  $("groupCount").textContent = `${list.length} ${list.length === 1 ? tr().group : tr().groupsPlural}`;
+  groupsEl.innerHTML = "";
+
+  if(!list.length){
+    groupsEl.innerHTML = `<div class="empty">${tr().noGroups}</div>`;
+    return;
+  }
+
+  list.forEach(g=>{
+    const b = document.createElement("button");
+    b.className = "group";
+    b.type = "button";
+    b.innerHTML = `
+      <div class="group-icon">${g.icon}<span class="chat-online-dot"></span></div>
+      <div class="group-info">
+        <div class="group-name">${groupName(g)}</div>
+        <div class="members"><span class="chat-badge-pill">${memberText(g.members)}</span><span class="chat-status-live">● Active</span></div>
+      </div>
+      <div class="group-arrow">›</div>
+    `;
+    b.addEventListener("click",()=>openGroup(g.id));
+    groupsEl.appendChild(b);
+  });
+}
+
+function openGroup(id){
+  currentGroup = GROUPS.find(g=>g.id===id);
+  if(!currentGroup) return;
+
+  $("chatIcon").textContent = currentGroup.icon;
+  $("chatName").textContent = groupName(currentGroup);
+  $("chatMembers").textContent = memberText(currentGroup.members);
+  $("chatIcon").setAttribute("aria-label", groupName(currentGroup));
+  $("chatName").title = groupName(currentGroup);
+  updateJoinLeaveButton();
+
+  setChatState(true);
+  home.classList.add("hidden");
+  chat.classList.remove("hidden");
+  renderMessages();
+  $("guestBtn").textContent = "🔒  " + tr().guestChat;
+  if(window.CB_UPDATE_KEYBOARD_VIEWPORT) window.CB_UPDATE_KEYBOARD_VIEWPORT();
+  const messages=$("messages");
+  requestAnimationFrame(()=>{ if(messages) messages.scrollTop=messages.scrollHeight; });
+}
+
+function renderMessages(){
+  if(!currentGroup) return;
+  const el = $("messages");
+  el.innerHTML = "";
+
+  currentGroup.messages.forEach(m=>{
+    if(m.type === "practice"){
+      el.insertAdjacentHTML("beforeend",`
+        <div class="practice-wrap">
+          <div class="msg-card-head">
+            <span class="msg-sender-wrap">
+              <span class="msg-mini-avatar">${m.initial}</span>
+              <span class="msg-sender-name">${escapeHtml(m.name)}</span>
+              <span class="msg-role-pill">📊 ${escapeHtml(tr().practice)}</span>
+            </span>
+            <span class="msg-head-time">${escapeHtml(m.time)} · ${escapeHtml(tr().expires)}</span>
+          </div>
+          <div class="practice">
+            <div class="practice-title">Mixed Calculation</div>
+            <div class="stats">
+              <div class="stat"><b>50</b><span>${escapeHtml(tr().questions)}</span></div>
+              <div class="stat"><b>43</b><span>${escapeHtml(tr().correct)}</span></div>
+              <div class="stat"><b>86%</b><span>${escapeHtml(tr().accuracy)}</span></div>
+              <div class="stat"><b>12</b><span>${escapeHtml(tr().streak)}</span></div>
+            </div>
+          </div>
+        </div>
+      `);
+      return;
+    }
+
+    const mine = !!m.mine;
+    const isAdmin = m.role === "admin";
+    const bodyText = m.text != null ? escapeHtml(m.text) : escapeHtml(messageText(m.key));
+
+    if(mine){
+      el.insertAdjacentHTML("beforeend",`
+        <div class="msg mine">
+          <div class="chat-role">${escapeHtml(tr().you || "You")}</div>
+          <div class="text">${bodyText}</div>
+          <div class="time">${escapeHtml(m.time)} · ${escapeHtml(tr().expires)}</div>
+        </div>
+      `);
+      return;
+    }
+
+    const badgeText = isAdmin ? "🛡 ADMIN" : groupName(currentGroup);
+    const badgeClass = isAdmin ? "msg-role-pill admin" : "msg-role-pill";
+    const avatarIcon = isAdmin ? "🤖" : escapeHtml(m.initial || "👤");
+
+    el.insertAdjacentHTML("beforeend",`
+      <div class="msg ${isAdmin ? "admin-msg" : ""}">
+        <div class="msg-card-head">
+          <span class="msg-sender-wrap">
+            <span class="msg-mini-avatar">${avatarIcon}</span>
+            <span class="msg-sender-name">${escapeHtml(m.name)}</span>
+            <span class="${badgeClass}">${escapeHtml(badgeText)}</span>
+          </span>
+          <span class="msg-head-time">${escapeHtml(m.time)} · ${escapeHtml(tr().expires)}</span>
+        </div>
+        <div class="msg-inner-box">${bodyText}</div>
+      </div>
+    `);
+  });
+  applyIntegratedCopy();
+}
+
+function setChatState(on){
+  parent.postMessage({type:"cb-community-mode",chat:!!on},"*");
+  document.body.classList.toggle("in-chat",!!on);
+  const composer=$("chatComposer");
+  if(composer){
+    composer.classList.toggle("hidden",!on);
+    composer.setAttribute("aria-hidden", on ? "false" : "true");
+  }
+  if(on) document.body.classList.remove("in-login");
+}
+
+function openLoginPage(action){
+  pendingAction=action||null;
+  document.body.classList.add("in-login");
+  document.body.classList.remove("cb-keyboard-open");
+  $("loginPage").classList.remove("hidden");
+  $("chatComposer").classList.add("hidden");
+  $("chatComposer").setAttribute("aria-hidden","true");
+  updateLocalLoginButton();
+  $("messageInput").blur();
+}
+
+function closeLoginPage(){
+  pendingAction=null;
+  document.body.classList.remove("in-login");
+  $("loginPage").classList.add("hidden");
+  if(currentGroup){
+    $("chatComposer").classList.remove("hidden");
+    $("chatComposer").setAttribute("aria-hidden","false");
+    setChatState(true);
+    if(window.CB_UPDATE_KEYBOARD_VIEWPORT) window.CB_UPDATE_KEYBOARD_VIEWPORT();
+  }
+}
+
+function addLocalMessage(text){
+  if(!currentGroup || !text.trim()) return;
+  const now=new Date();
+  const time=now.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+  currentGroup.messages.push({
+    type:"text",
+    mine:true,
+    name:tr().you || "You",
+    initial:"Y",
+    key:null,
+    text:text.trim(),
+    time
+  });
+
+  renderMessages();
+  $("messageInput").value="";
+  updateComposer();
+
+  const el=$("messages");
+  requestAnimationFrame(()=>{ el.scrollTop=el.scrollHeight; });
+}
+
+function isGroupJoined(group){
+  return !!group && joinedGroups.has(group.id);
+}
+function setGroupJoined(group,joined){
+  if(!group) return;
+  if(joined) joinedGroups.add(group.id);
+  else joinedGroups.delete(group.id);
+}
+function updateJoinLeaveButton(){
+  const btn=$("groupJoinBtn");
+  if(!btn || !currentGroup) return;
+  const joined=isGroupJoined(currentGroup);
+  btn.classList.toggle("joined",joined);
+  btn.classList.toggle("leave",joined);
+  btn.textContent=joined?(lang==="hi"?"🗑️ डेमो छोड़ें":"🗑️ Leave demo"):(lang==="hi"?"➕ डेमो जुड़ें":"➕ Join demo");
+}
+function handleJoinLeave(){
+  if(!currentGroup) return;
+  if(!document.body.classList.contains("is-demo-session")){
+    openLoginPage("join");
+    return;
+  }
+  const joined=isGroupJoined(currentGroup);
+  setGroupJoined(currentGroup,!joined);
+  updateJoinLeaveButton();
+}
+
+function sendCommunityMessage(){
+  const input=$("messageInput");
+  if(!currentGroup) return;
+  const text=input.value.trim();
+  if(!text) return;
+
+  if(document.body.classList.contains("is-demo-session")){
+    addLocalMessage(text);
+    return;
+  }
+  openLoginPage("send");
+}
+
+function updateComposer(){
+  const input=$("messageInput");
+  const count=input.value.length;
+  $("composerCount").textContent=`${count}/500`;
+  $("sendBtn").disabled=!input.value.trim();
+}
+
+function showHome(){
+  currentGroup = null;
+  setChatState(false);
+  document.documentElement.style.setProperty("--cb-keyboard-offset","0px");
+  document.body.classList.remove("cb-keyboard-open");
+  chat.classList.add("hidden");
+  home.classList.remove("hidden");
+  $("guestBtn").textContent = "🔒  " + tr().guestHome;
+  $("guestBtn").style.display = document.body.classList.contains("is-demo-session") ? "none" : "";
+  if(document.scrollingElement) document.scrollingElement.scrollTop=0;
+}
+
+function applyLanguage(){
+  const x = tr();
+  $("sectionTitle").textContent = x.groups;
+  $("guestBtn").textContent = "🔒  " + (currentGroup ? x.guestChat : x.guestHome);
+  if(document.body.classList.contains("is-demo-session")){
+    $("guestBtn").style.display="none";
+  }
+  $("cancel").textContent = x.cancel;
+  $("login").textContent = x.login;
+  $("loginTitle").textContent = x.loginRequired;
+  $("loginText").textContent = x.loginText;
+  const v7=V7_TEXT[lang]||V7_TEXT.en;
+  $("messageInput").placeholder=v7.type;
+  $("loginPageTitle").textContent=v7.loginTitle;
+  $("loginPageText").textContent=v7.loginText;
+  $("loginPrimary").textContent=v7.login;
+  $("loginBack").textContent=v7.back;
+
+  $("chatBack").setAttribute("aria-label",x.chatBack);
+  renderGroups();
+
+  if(currentGroup && !chat.classList.contains("hidden")){
+    $("chatName").textContent = groupName(currentGroup);
+    $("chatMembers").textContent = memberText(currentGroup.members);
+    updateJoinLeaveButton();
+    renderMessages();
+  }
+
+  applyIntegratedCopy();
+  updateComposer();
+}
+
+function syncDocumentTheme(){
+  document.documentElement.classList.toggle("dark",sharedDark);
+  document.body.classList.toggle("dark",sharedDark);
+}
+$("chatBack").addEventListener("click",showHome);
+$("groupJoinBtn").addEventListener("click",handleJoinLeave);
+$("guestBtn").addEventListener("click",()=>{});
+$("cancel").addEventListener("click",()=>$("overlay").classList.remove("show"));
+$("overlay").addEventListener("click",e=>{
+  if(e.target.id === "overlay") $("overlay").classList.remove("show");
+});
+
+function updateLocalLoginButton(){ $("loginPrimary").disabled=false; }
+$("messageInput").addEventListener("input",updateComposer);
+$("messageInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter" && !e.shiftKey){
+    e.preventDefault();
+    sendCommunityMessage();
+  }
+});
+$("sendBtn").addEventListener("click",sendCommunityMessage);
+$("loginBack").addEventListener("click",closeLoginPage);
+$("loginPrimary").addEventListener("click",()=>{
+  const action=pendingAction;
+  document.body.classList.add("is-demo-session");
+  closeLoginPage();
+  $("guestBtn").style.display="none";
+  if(currentGroup && action==="join"){setGroupJoined(currentGroup,true);updateJoinLeaveButton();}
+  if(currentGroup && action==="send" && $("messageInput").value.trim()) addLocalMessage($("messageInput").value);
+  applyIntegratedCopy();
+});
+setChatState(false);
+updateComposer();
+updateLocalLoginButton();
+
+function applyIntegratedCopy(){
+  const hi=lang==="hi";
+  const note=hi?"Instant Community Chat • इन-मेमोरी डेमो चैट":"Instant Community Chat • In-memory Demo Chat";
+  $("demoNotice").textContent=note;
+  $("demoNotice").hidden=false;
+  const unsupported=!I18N[requestedLanguage];
+  $("languageFallback").hidden=!unsupported;
+  $("languageFallback").textContent="Community translations for this language are not available yet; this section uses English.";
+  $("guestBtn").textContent=hi?"डेमो संदेश केवल इस खुले पेज में रहते हैं।":"Demo messages exist only in this open page.";
+  $("loginPageTitle").textContent=hi?"Frontend डेमो आज़माएँ":"Try the frontend demo";
+  $("loginPageText").textContent=hi?"यह असली लॉगिन नहीं है। कोई ईमेल या पासवर्ड नहीं चाहिए। संदेश और सदस्यता केवल इस पेज का नमूना हैं; refresh पर मिटेंगे।":"This is not a real login. No email or password is needed. Messages and membership are page-only samples and reset on refresh.";
+  $("loginPrimary").textContent=hi?"डेमो आज़माएँ":"Try demo";
+  $("loginBack").textContent=hi?"वापस":"Back";
+  if(currentGroup){
+    $("groupJoinBtn").textContent=isGroupJoined(currentGroup)?(hi?"🗑️ डेमो छोड़ें":"🗑️ Leave demo"):(hi?"➕ डेमो जुड़ें":"➕ Join demo");
+  }
+  $("sendBtn").setAttribute("aria-label",hi?"डेमो संदेश भेजें":"Send demo message");
+}
+
+window.addEventListener("resize",applyIntegratedCopy);
+
+window.addEventListener("message",e=>{
+  if(!e.data) return;
+  if(e.data.type==="cb-community-back" && currentGroup){
+    showHome();
+    return;
+  }
+  if(e.data.type!=="cb-community-settings" && e.data.type!=="cb-ai-chat-settings") return;
+  requestedLanguage=String(e.data.lang||"hi");
+  lang=I18N[requestedLanguage]?requestedLanguage:"en";
+  sharedDark=!!e.data.dark;
+  syncDocumentTheme();
+  const tokens=e.data.tokens||{};
+  ["bg","card","soft","text","muted","line","p","p2"].forEach(k=>{if(typeof tokens[k]==="string" && tokens[k])document.body.style.setProperty("--"+k,tokens[k]);});
+  document.documentElement.lang=requestedLanguage;
+  document.documentElement.dir=["ar","ur"].includes(requestedLanguage)?"rtl":"ltr";
+  applyLanguage();
+  syncThemeColor();
+});
+
+// Also sync from localStorage / parent frame directly
+function syncFromStorageOrParent(){
+  try{
+    const lsDark = localStorage.getItem("cbDark");
+    if(lsDark !== null){
+      const d = (lsDark === "1");
+      if(sharedDark !== d){ sharedDark = d; syncDocumentTheme(); syncThemeColor(); }
+    }
+    const lsLang = localStorage.getItem("cbLang");
+    if(lsLang && I18N[lsLang] && lsLang !== lang){
+      requestedLanguage = lsLang; lang = lsLang; applyLanguage();
+    }
+  }catch(e){}
+}
+window.addEventListener("storage", syncFromStorageOrParent);
+setInterval(()=>{ if(document.visibilityState !== "hidden") syncFromStorageOrParent(); }, 450);
+
+parent.postMessage({type:"cb-community-ready"},"*");
+function syncThemeColor(){
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content",
+    document.documentElement.classList.contains("dark") ? "#0b1020" : "#f6f8fc"
+  );
+}
+
+syncFromStorageOrParent();
+applyLanguage();
+syncDocumentTheme();
+syncThemeColor();
+</script>
+
+<script id="community-v17-keyboard-js">
+(function(){
+  const vv=window.visualViewport;
+  const root=document.documentElement;
+
+  function updateKeyboardViewport(){
+    if(!vv) return;
+    const layoutH=document.documentElement.clientHeight || window.innerHeight;
+    const visibleBottom=vv.height + Math.max(0,vv.offsetTop);
+    const keyboard=Math.max(0,layoutH-visibleBottom);
+
+    root.style.setProperty("--cb-keyboard-offset",keyboard+"px");
+    document.body.classList.toggle("cb-keyboard-open",keyboard>80);
+
+    if(document.body.classList.contains("in-chat")){
+      const sc=document.scrollingElement;
+      if(sc) sc.scrollTop=0;
+      const msgBox=document.getElementById("messages");
+      if(msgBox) msgBox.scrollTop=msgBox.scrollHeight;
+    }
+  }
+
+  if(vv){
+    vv.addEventListener("resize",updateKeyboardViewport,{passive:true});
+    vv.addEventListener("scroll",updateKeyboardViewport,{passive:true});
+  }
+  window.addEventListener("resize",updateKeyboardViewport,{passive:true});
+  window.addEventListener("orientationchange",()=>setTimeout(updateKeyboardViewport,100),{passive:true});
+
+  document.addEventListener("focusin",e=>{
+    if(e.target && e.target.id==="messageInput"){
+      setTimeout(updateKeyboardViewport,50);
+      setTimeout(updateKeyboardViewport,180);
+    }
+  },true);
+
+  document.addEventListener("focusout",e=>{
+    if(e.target && e.target.id==="messageInput"){
+      setTimeout(updateKeyboardViewport,150);
+    }
+  },true);
+
+  window.CB_UPDATE_KEYBOARD_VIEWPORT=updateKeyboardViewport;
+  setTimeout(updateKeyboardViewport,0);
+})();
+</script>
+</body>
+</html>

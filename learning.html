@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NowPro — Learning</title>
+<style>
+:root{
+  --bg:#f6f8fc;
+  --card:#ffffff;
+  --soft:#eef2f7;
+  --text:#111827;
+  --muted:#64748b;
+  --line:#e2e8f0;
+  --p:#4f46e5;
+  --p2:#7c3aed;
+  --shadow:0 10px 28px rgba(15,23,42,.07);
+  --section-gap:12px;
+  --module-gap:10px;
+  --folder-pad:16px;
+  --folder-radius:22px;
+}
+body.dark{
+  --bg:#0b1020;
+  --card:#111827;
+  --soft:#1b2638;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --line:#273449;
+  --p:#818cf8;
+  --p2:#a855f7;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  background:transparent;
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+[hidden]{display:none!important}
+.learning-root{
+  width:100%;
+  padding:2px 0 12px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:16px;
+  box-shadow:var(--shadow);
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.folder-card{
+  position:relative;
+  margin:0 0 var(--section-gap);
+  padding:var(--folder-pad);
+  border:1px solid var(--line);
+  border-radius:var(--folder-radius);
+  background:linear-gradient(145deg,var(--card),var(--soft));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  min-width:0;
+}
+body.dark .folder-card{
+  background:linear-gradient(145deg,#121b2d,#0b1220);
+  border-color:#2b3a52;
+}
+.folder-card:before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:var(--folder-accent,#6366f1);
+}
+.folder-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  position:relative;
+  z-index:2;
+}
+.folder-head>div:first-child{
+  flex:1;
+  min-width:0;
+}
+.folder-head-actions{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex:0 0 auto;
+  margin-left:auto;
+}
+.folder-kicker{
+  font-size:10px;
+  letter-spacing:.14em;
+  font-weight:950;
+  color:var(--folder-accent,#6366f1);
+  margin-bottom:3px;
+}
+.folder-card .section-title{
+  font-size:21px;
+  font-weight:950;
+  margin:0;
+  color:var(--text);
+}
+.folder-card .section-subtitle{
+  font-size:12px;
+  color:var(--muted);
+  margin:3px 0 0;
+  line-height:1.4;
+  max-width:600px;
+}
+.folder-subject-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:5px 13px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  background:color-mix(in srgb,var(--p) 14%,var(--card));
+  color:var(--p);
+  border:1px solid color-mix(in srgb,var(--p) 35%,var(--line));
+  box-shadow:0 2px 8px color-mix(in srgb,var(--p) 12%,transparent);
+}
+.folder-body{
+  margin-top:14px;
+}
+.mods{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(165px,1fr));
+  gap:var(--module-gap);
+  align-items:stretch;
+}
+.mod{
+  width:100%;
+  min-height:92px;
+  border:1px solid color-mix(in srgb,var(--mod-accent,#6366f1) 28%,var(--line));
+  border-radius:17px;
+  padding:14px;
+  text-align:left;
+  font-weight:850;
+  background:linear-gradient(145deg,var(--card),color-mix(in srgb,var(--mod-accent,#6366f1) 7%,var(--card)));
+  color:var(--text);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  min-width:0;
+  overflow-wrap:anywhere;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+body.dark .mod{
+  background:linear-gradient(145deg,#172236,#0f1828);
+  border-color:color-mix(in srgb,var(--mod-accent,#6366f1) 35%,#334155);
+}
+.mod:before{
+  content:"";
+  position:absolute;
+  right:-20px;
+  top:-24px;
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:color-mix(in srgb,currentColor 9%,transparent);
+  pointer-events:none;
+}
+.mod:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 24px rgba(15,23,42,.14);
+}
+.mod:active{
+  transform:scale(.985);
+}
+.mod:focus-visible{
+  outline:3px solid var(--p);
+  outline-offset:3px;
+}
+.mod>span{
+  font-size:24px;
+  line-height:1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  color:var(--mod-accent,#6366f1);
+  margin-bottom:6px;
+}
+body.dark .mod>span{
+  background:rgba(255,255,255,.06);
+}
+.mod b{
+  display:block;
+  color:var(--text);
+  font-size:14px;
+}
+.mod small{
+  display:block;
+  color:var(--muted);
+  font-weight:600;
+  font-size:11px;
+  margin-top:4px;
+  line-height:1.35;
+}
+.mod-blue{--mod-accent:#3b82f6}
+.mod-purple{--mod-accent:#8b5cf6}
+.mod-orange{--mod-accent:#f97316}
+.mod-green{--mod-accent:#10b981}
+.mod-cyan{--mod-accent:#06b6d4}
+.mod-indigo{--mod-accent:#6366f1}
+.mod-teal{--mod-accent:#14b8a6}
+.mod-pink{--mod-accent:#ec4899}
+.mod-amber,.memory-game{--mod-accent:#f59e0b}
+.mod-violet{--mod-accent:#7c3aed}
+.mod-rose{--mod-accent:#f43f5e}
+.mod-sky{--mod-accent:#0ea5e9}
+.mod-lime{--mod-accent:#84cc16}
+.mod-slate{--mod-accent:#64748b}
+.mod-fuchsia{--mod-accent:#d946ef}
+.mod-yellow{--mod-accent:#eab308}
+
+.cb-learning-tables-screen,.cb-learning-lesson-screen{
+  display:grid;
+  gap:10px;
+  margin-top:2px;
+}
+.cb-learning-tables-head{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:12px 13px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+.cb-learning-back{
+  width:44px;
+  min-width:44px;
+  height:44px;
+  flex:0 0 44px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  font-size:30px;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 7px 18px rgba(79,70,229,.24);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.cb-learning-back:hover{
+  transform:translateY(-1px);
+}
+.cb-learning-back:active{
+  transform:scale(.97);
+}
+.cb-learning-kicker{
+  font-size:10px;
+  letter-spacing:.12em;
+  font-weight:900;
+  color:var(--p);
+  margin-bottom:2px;
+}
+.cb-learning-tables-head h2{
+  margin:0;
+  font-size:21px;
+  color:var(--text);
+}
+.cb-learning-tables-head p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.45;
+}
+.cb-learning-range-card,.cb-learning-table-focus{
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+.cb-learning-lesson-screen h3{
+  font-size:16px;
+  margin:0 0 10px;
+  color:var(--text);
+}
+.cb-learning-lesson-screen p{
+  font-size:14px;
+  line-height:1.7;
+  margin:0;
+  color:var(--text);
+}
+.cb-lesson-equation{
+  direction:ltr;
+  text-align:left;
+  overflow-wrap:anywhere;
+  padding:14px;
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--p);
+  font-size:clamp(16px,4vw,22px);
+  font-weight:850;
+  line-height:1.7;
+}
+.cb-learning-section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  font-weight:900;
+  font-size:13px;
+  color:var(--text);
+  margin-bottom:9px;
+}
+.cb-learning-count{
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+}
+.cb-learning-range-row{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:7px;
+}
+.cb-learning-range,.cb-learning-table-chip{
+  min-height:40px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--text);
+  font-weight:900;
+  cursor:pointer;
+}
+.cb-learning-range.active,.cb-learning-table-chip.active{
+  border-color:transparent;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  box-shadow:0 7px 18px rgba(79,70,229,.22);
+}
+.cb-learning-table-picker{
+  display:grid;
+  grid-template-columns:repeat(10,minmax(0,1fr));
+  gap:7px;
+}
+.cb-learning-table-chip{
+  min-height:38px;
+  font-size:12px;
+}
+.cb-learning-focus-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:8px;
+}
+.cb-learning-focus-title h3{
+  margin:0;
+  font-size:17px;
+  color:var(--text);
+}
+.cb-learning-focus-badge{
+  font-size:10px;
+  font-weight:900;
+  color:#fff;
+  padding:5px 8px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+}
+.cb-learning-multiples{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+}
+.cb-learning-multiple{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:9px 11px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--text);
+  font-weight:850;
+  font-size:13px;
+}
+.cb-learning-multiple strong{
+  color:var(--p);
+  font-size:14px;
+}
+body.dark .cb-learning-multiple strong{
+  color:#a5b4fc;
+}
+.cb-learning-tip{
+  margin-top:9px;
+  padding:10px 11px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+.btn{
+  width:100%;
+  min-height:46px;
+  border:0;
+  border-radius:13px;
+  padding:11px 16px;
+  font-weight:900;
+  font-size:14px;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  box-shadow:0 8px 20px rgba(79,70,229,.22);
+  transition:transform .15s ease,filter .15s ease;
+}
+.btn:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.04);
+}
+.btn:active{
+  transform:scale(.985);
+}
+.cb-learning-faq{
+  margin-top:10px;
+}
+.cb-learning-faq h2{
+  font-size:18px;
+  margin:0 0 8px;
+  color:var(--text);
+}
+.cb-learning-faq details{
+  border-top:1px solid var(--line);
+  padding:9px 0;
+}
+.cb-learning-faq summary{
+  cursor:pointer;
+  font-size:12px;
+  font-weight:900;
+  color:var(--text);
+}
+.cb-learning-faq p{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.5;
+  margin:7px 0 0;
+}
+.learning-root:has(#cbLearningTablesScreen:not([hidden])) > .cb-learning-faq,
+.learning-root:has(#cbLearningLessonScreen:not([hidden])) > .cb-learning-faq{
+  display:none!important;
+}
+@media(min-width:700px){
+  .mods{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(min-width:1100px){
+  .mods{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .mod{min-height:102px}
+}
+@media(max-width:520px){
+  :root{--section-gap:10px;--module-gap:8px;--folder-pad:13px}
+  .mods{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .mod{padding:11px;min-height:84px;border-radius:16px}
+  .folder-card .section-title{font-size:18px}
+  .folder-card .section-subtitle{font-size:11px}
+  .cb-learning-range-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cb-learning-table-picker{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .cb-learning-tables-head h2{font-size:19px}
+}
+@media(max-width:360px){
+  .cb-learning-range-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cb-learning-multiples{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="learning-root" id="cbPanelLearning">
+  <div class="cb-learning-grid" id="cbLearningToolGrid">
+    <div class="folder-card calculation-folder">
+      <div class="folder-head">
+        <div>
+          <div class="folder-kicker" id="cbLearningKicker">📚 LEARNING</div>
+          <div class="section-title" id="cbLearningFolderTitle">Learn Calculation</div>
+          <div class="section-subtitle" id="cbLearningFolderSub">Choose a tool to explore its method and examples.</div>
+        </div>
+        <div class="folder-head-actions">
+          <span class="folder-subject-badge" id="cbLearningSubjectBadge">Maths</span>
+        </div>
+      </div>
+      <div class="folder-body">
+        <div class="mods">
+          <button type="button" class="mod mod-blue cb-learning-tables-entry" id="cbLearningTablesEntry" aria-controls="cbLearningTablesScreen"><span>🔢</span><b id="learnTablesTitle">Tables</b><small id="learnTablesText">Learn tables 1–50</small></button>
+          <button type="button" class="mod mod-purple" data-learning-tool="addition" aria-controls="cbLearningLessonScreen"><span>＋</span><b>Addition</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-orange" data-learning-tool="subtraction" aria-controls="cbLearningLessonScreen"><span>−</span><b>Subtraction</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-green" data-learning-tool="multiplication" aria-controls="cbLearningLessonScreen"><span>×</span><b>Multiplication</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-cyan" data-learning-tool="division" aria-controls="cbLearningLessonScreen"><span>÷</span><b>Division</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-indigo" data-learning-tool="square" aria-controls="cbLearningLessonScreen"><span>²</span><b>Squares</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-teal" data-learning-tool="root" aria-controls="cbLearningLessonScreen"><span>√</span><b>Square Root</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-pink" data-learning-tool="cube" aria-controls="cbLearningLessonScreen"><span>³</span><b>Cube</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-amber" data-learning-tool="cuberoot" aria-controls="cbLearningLessonScreen"><span>∛</span><b>Cube Root</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-violet" data-learning-tool="mixed" aria-controls="cbLearningLessonScreen"><span>↔</span><b>Mixed Calculation</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-rose" data-learning-tool="percentage" aria-controls="cbLearningLessonScreen"><span>%</span><b>Percentage</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-sky" data-learning-tool="fraction" aria-controls="cbLearningLessonScreen"><span>½</span><b>Fraction</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-lime" data-learning-tool="average" aria-controls="cbLearningLessonScreen"><span>μ</span><b>Average</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-violet" data-learning-tool="ratio" aria-controls="cbLearningLessonScreen"><span>↔</span><b>Ratio</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-slate" data-learning-tool="lcmhcf" aria-controls="cbLearningLessonScreen"><span>#</span><b>LCM/HCF</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-fuchsia" data-learning-tool="simplification" aria-controls="cbLearningLessonScreen"><span>≡</span><b>Simplification</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-yellow" data-learning-tool="approximation" aria-controls="cbLearningLessonScreen"><span>≈</span><b>Approximation</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod memory-game memory-feature-main" data-learning-tool="memorycalculation" aria-controls="cbLearningLessonScreen"><span>⚡</span><b>Calculation Memory</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-indigo falling-tool-card" data-learning-tool="fallingcalculation" aria-controls="cbLearningLessonScreen"><span>🎯</span><b>Falling Calculation</b><small>Learn the method and examples</small></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="cbLearningLessonScreen" class="cb-learning-lesson-screen" hidden aria-hidden="true" aria-label="Learning tool"></section>
+
+  <div class="cb-learning-tables-screen" id="cbLearningTablesScreen" hidden aria-hidden="true">
+    <div class="cb-learning-tables-head">
+      <button class="cb-learning-back" id="cbLearningTablesBack" type="button" aria-label="Back to learning">‹</button>
+      <div>
+        <div class="cb-learning-kicker">🔢 LEARNING</div>
+        <h2>Multiplication tables</h2>
+        <p>Tables from 1 to 50: choose a range, then a table.</p>
+      </div>
+    </div>
+    <div class="cb-learning-range-card">
+      <div class="cb-learning-section-title" id="cbLearningRangeLabel">Table Range</div>
+      <div class="cb-learning-range-row" role="group" aria-label="Table range">
+        <button type="button" class="cb-learning-range active" data-table-range="1-10">1–10</button>
+        <button type="button" class="cb-learning-range" data-table-range="11-20">11–20</button>
+        <button type="button" class="cb-learning-range" data-table-range="21-30">21–30</button>
+        <button type="button" class="cb-learning-range" data-table-range="31-40">31–40</button>
+        <button type="button" class="cb-learning-range" data-table-range="41-50">41–50</button>
+      </div>
+    </div>
+    <div class="cb-learning-range-card">
+      <div class="cb-learning-section-title"><span id="cbLearningRangeTitle">Tables 1–10</span><span class="cb-learning-count" id="cbLearningRangeCount">10 tables</span></div>
+      <div class="cb-learning-table-picker" id="cbLearningTablePicker" role="group"></div>
+    </div>
+    <div class="cb-learning-table-focus" id="cbLearningTableFocus"></div>
+  </div>
+
+  <section aria-labelledby="learningFaqTitle" class="card cb-learning-faq" id="cbLearningFaqSection">
+    <h2 id="learningFaqTitle">Calculation Practice FAQ</h2>
+    <details><summary id="faqQ1">What is NowPro?</summary><p id="faqA1">NowPro is a free web-based practice platform for improving number skills, arithmetic speed and calculation accuracy.</p></details>
+    <details><summary id="faqQ2">What can I practice?</summary><p id="faqA2">You can practice tables, addition, subtraction, multiplication, division, squares, square roots, cubes, cube roots, mixed calculation and common exam topics.</p></details>
+    <details><summary id="faqQ3">How should I improve calculation speed?</summary><p id="faqA3">Start with accurate answers, choose a suitable difficulty, practice regularly and increase speed gradually instead of sacrificing accuracy.</p></details>
+  </section>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var currentLang='en';
+  var activeTool=null;
+  var previousTrigger=null;
+  var activeRange='1-10';
+  var activeTable=1;
+  var hasRenderedTables=false;
+  var focusHeading=null;
+  var focusTip=null;
+
+  var RANGES={'1-10':[1,10],'11-20':[11,20],'21-30':[21,30],'31-40':[31,40],'41-50':[41,50]};
+
+  var TOOL_NAMES={
+    addition:{hi:'जोड़',en:'Addition',gu:'સરવાળો',mr:'बेरीज',bn:'যোগ',ta:'கூட்டல்',te:'కూడిక',ur:'جمع',as:'যোগ'},
+    subtraction:{hi:'घटाव',en:'Subtraction',gu:'બાદબાકી',mr:'वजाबाकी',bn:'বিয়োগ',ta:'கழித்தல்',te:'తీసివేత',ur:'تفریق',as:'বিয়োগ'},
+    multiplication:{hi:'गुणा',en:'Multiplication',gu:'ગુણાકાર',mr:'गुणाकार',bn:'গুণ',ta:'பெருக்கல்',te:'గుణకారం',ur:'ضرب',as:'পূৰণ'},
+    division:{hi:'भाग',en:'Division',gu:'ભાગાકાર',mr:'भागाकार',bn:'ভাগ',ta:'வகுத்தல்',te:'భాగహారం',ur:'تقسیم',as:'ভাগ'},
+    square:{hi:'वर्ग',en:'Squares',gu:'વર્ગ',mr:'वर्ग',bn:'বর্গ',ta:'வர்க்கம்',te:'వర్గాలు',ur:'مربع',as:'বৰ্গ'},
+    root:{hi:'वर्गमूल',en:'Square Root',gu:'વર્ગમૂળ',mr:'वर्गमूळ',bn:'বর্গমূল',ta:'வர்க்கமூலம்',te:'వర్గమూలం',ur:'مربع جذر',as:'বৰ্গমূল'},
+    cube:{hi:'घन',en:'Cube',gu:'ઘન',mr:'घन',bn:'ঘন',ta:'கனசதுரம்',te:'ఘనం',ur:'مکعب',as:'ঘন'},
+    cuberoot:{hi:'घनमूल',en:'Cube Root',gu:'ઘનમૂળ',mr:'घनमूळ',bn:'ঘনমূল',ta:'கனமூலம்',te:'ఘనమూలం',ur:'مکعب جذر',as:'ঘনমূল'},
+    mixed:{hi:'मिश्रित गणना',en:'Mixed Calculation',gu:'મિશ્ર ગણતરી',mr:'मिश्र गणित',bn:'মিশ্র গণনা',ta:'கலப்பு கணக்கீடு',te:'మిశ్రమ గణన',ur:'مخلوط حساب',as:'মিশ্ৰ গণনা'},
+    percentage:{hi:'प्रतिशत',en:'Percentage',gu:'ટકાવારી',mr:'टक्केवारी',bn:'শতাংশ',ta:'சதவீதம்',te:'శాతం',ur:'فیصد',as:'শতাংশ'},
+    fraction:{hi:'भिन्न',en:'Fraction',gu:'અપૂર્ણાંક',mr:'अपूर्णांक',bn:'ভগ্নাংশ',ta:'பின்னம்',te:'భిన్నం',ur:'کسر',as:'ভগ্নাংশ'},
+    average:{hi:'औसत',en:'Average',gu:'સરેરાશ',mr:'सरासरी',bn:'গড়',ta:'சராசரி',te:'సగటు',ur:'اوسط',as:'গড়'},
+    ratio:{hi:'अनुपात',en:'Ratio',gu:'ગુણોત્તર',mr:'प्रमाण',bn:'অনুপাত',ta:'விகிதம்',te:'నిష్పత్తి',ur:'تناسب',as:'অনুপাত'},
+    lcmhcf:{hi:'ल.स.प./म.स.प.',en:'LCM/HCF',gu:'LCM / HCF',mr:'LCM / HCF',bn:'LCM / HCF',ta:'LCM / HCF',te:'LCM / HCF',ur:'LCM / HCF',as:'ল.সা.গু. / গ.সা.গু.'},
+    simplification:{hi:'सरलीकरण',en:'Simplification',gu:'સરળીકરણ',mr:'सुलभीकरण',bn:'সরলীকরণ',ta:'எளிமைப்படுத்தல்',te:'సరళీకరణ',ur:'سادہ کاری',as:'সৰলীকৰণ'},
+    approximation:{hi:'सन्निकटन',en:'Approximation',gu:'અંદાજ',mr:'अंदाज',bn:'আনুমানিক',ta:'தோராயம்',te:'సన్నికరణ',ur:'تقریب',as:'আনুমানিক মান'},
+    memorycalculation:{hi:'गणना स्मृति',en:'Calculation Memory',gu:'ગણતરી સ્મૃતિ',mr:'गणना स्मृती',bn:'গণনা স্মৃতি',ta:'கணக்கீட்டு நினைவகம்',te:'గణన జ్ఞాపకం',ur:'حسابی یادداشت',as:'গণনা স্মৃতি'},
+    fallingcalculation:{hi:'गिरती गणना',en:'Falling Calculation',gu:'Falling Calculation',mr:'Falling Calculation',bn:'Falling Calculation',ta:'Falling Calculation',te:'Falling Calculation',ur:'Falling Calculation',as:'Falling Calculation'}
+  };
+
+  var UI_PACK={
+    en:{
+      kicker:'📚 LEARNING',subject:'Mathematics',folderTitle:'Learn Calculation',folderSub:'Choose a tool to explore its method and examples.',
+      cardSub:'Learn the method and examples',lessonKicker:'LEARN • CALCULATION',methodTitle:'Understand the method',exampleTitle:'Worked example',
+      refTitle:'1–30 reference list',practiceBtn:'Practice this topic',backLabel:'Back to learning tools',
+      faq:'Calculation Practice FAQ',q1:'What is NowPro?',a1:'NowPro is a free web-based practice platform for improving number skills, arithmetic speed and calculation accuracy.',
+      q2:'What can I practice?',a2:'You can practice tables, addition, subtraction, multiplication, division, squares, square roots, cubes, cube roots, mixed calculation and common exam topics.',
+      q3:'How should I improve calculation speed?',a3:'Start with accurate answers, choose a suitable difficulty, practice regularly and increase speed gradually instead of sacrificing accuracy.'
+    },
+    hi:{
+      kicker:'📚 सीखें',subject:'गणित',folderTitle:'गणना सीखें',folderSub:'कोई tool चुनें — उसका तरीका और उदाहरण अंदर मिलेंगे।',
+      cardSub:'तरीका और उदाहरण सीखें',lessonKicker:'सीखें • गणना',methodTitle:'तरीका समझें',exampleTitle:'हल किया हुआ उदाहरण',
+      refTitle:'1–30 संदर्भ सूची',practiceBtn:'इस विषय का अभ्यास करें',backLabel:'Learning tools पर वापस जाएँ',
+      faq:'गणना अभ्यास के सामान्य प्रश्न',q1:'NowPro क्या है?',a1:'NowPro number skills, calculation speed और accuracy सुधारने के लिए एक free web-based practice platform है।',
+      q2:'मैं क्या practice कर सकता हूँ?',a2:'आप tables, addition, subtraction, multiplication, division, squares, square roots, cubes, cube roots, mixed calculation और common exam topics practice कर सकते हैं।',
+      q3:'Calculation speed कैसे बढ़ाएँ?',a3:'पहले accuracy पर ध्यान दें, सही difficulty चुनें, नियमित practice करें और accuracy खोए बिना speed धीरे-धीरे बढ़ाएँ।'
+    },
+    gu:{
+      kicker:'📚 શીખો',subject:'ગણિત',folderTitle:'ગણતરી શીખો',folderSub:'પદ્ધતિ અને ઉદાહરણો જોવા માટે કોઈ ટૂલ પસંદ કરો.',
+      cardSub:'પદ્ધતિ અને ઉદાહરણો શીખો',lessonKicker:'શીખો • ગણતરી',methodTitle:'પદ્ધતિ સમજો',exampleTitle:'ઉકેલેલું ઉદાહરણ',
+      refTitle:'1–30 સંદર્ભ યાદી',practiceBtn:'આ વિષયનો અભ્યાસ કરો',backLabel:'પાછા જાઓ',
+      faq:'Calculation Practice FAQ',q1:'NowPro શું છે?',a1:'NowPro નંબર skills, calculation speed અને accuracy સુધારવા માટેનું free web-based practice platform છે.',
+      q2:'હું શું practice કરી શકું?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation અને exam topicsનો અભ્યાસ કરી શકો છો.',
+      q3:'Calculation speed કેવી રીતે વધારવી?',a3:'Accuracyથી શરૂઆત કરો, યોગ્ય difficulty પસંદ કરો અને નિયમિત practiceથી ધીમે ધીમે speed વધારો.'
+    },
+    mr:{
+      kicker:'📚 शिका',subject:'गणित',folderTitle:'गणना शिका',folderSub:'पद्धत आणि उदाहरणे पाहण्यासाठी एखादे टूल निवडा.',
+      cardSub:'पद्धत आणि उदाहरणे शिका',lessonKicker:'शिका • गणना',methodTitle:'पद्धत समजून घ्या',exampleTitle:'सोडवलेले उदाहरण',
+      refTitle:'1–30 संदर्भ यादी',practiceBtn:'या विषयाचा सराव करा',backLabel:'मागे जा',
+      faq:'Calculation Practice FAQ',q1:'NowPro म्हणजे काय?',a1:'NowPro हे number skills, calculation speed आणि accuracy सुधारण्यासाठीचे free web-based practice platform आहे.',
+      q2:'मी काय practice करू शकतो?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation आणि exam topics चा सराव करू शकता.',
+      q3:'Calculation speed कशी वाढवायची?',a3:'Accuracyपासून सुरुवात करा, योग्य difficulty निवडा आणि नियमित सरावाने हळूहळू speed वाढवा.'
+    },
+    bn:{
+      kicker:'📚 শিখুন',subject:'গণিত',folderTitle:'হিসাব শিখুন',folderSub:'পদ্ধতি এবং উদাহরণ দেখতে একটি টুল বেছে নিন।',
+      cardSub:'পদ্ধতি ও উদাহরণ শিখুন',lessonKicker:'শিখুন • হিসাব',methodTitle:'পদ্ধতি বুঝুন',exampleTitle:'সমাধান করা উদাহরণ',
+      refTitle:'1–30 রেফারেন্স তালিকা',practiceBtn:'এই বিষয়ের অনুশীলন করুন',backLabel:'ফিরে যান',
+      faq:'Calculation Practice FAQ',q1:'NowPro কী?',a1:'NowPro হলো number skills, calculation speed এবং accuracy উন্নত করার একটি free web-based practice platform।',
+      q2:'আমি কী practice করতে পারি?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation এবং exam topics practice করতে পারেন।',
+      q3:'Calculation speed কীভাবে বাড়াব?',a3:'Accuracy দিয়ে শুরু করুন, উপযুক্ত difficulty বেছে নিন এবং নিয়মিত practice করে ধীরে speed বাড়ান।'
+    },
+    ta:{
+      kicker:'📚 கற்க',subject:'கணிதம்',folderTitle:'கணக்கீடு கற்க',folderSub:'முறை மற்றும் எடுத்துக்காட்டுகளை அறிய ஒரு கருவியைத் தேர்ந்தெடுக்கவும்.',
+      cardSub:'முறை மற்றும் எடுத்துக்காட்டுகளைக் கற்க',lessonKicker:'கற்க • கணக்கீடு',methodTitle:'முறையைப் புரிந்துகொள்ளுங்கள்',exampleTitle:'தீர்க்கப்பட்ட எடுத்துக்காட்டு',
+      refTitle:'1–30 குறிப்புப் பட்டியல்',practiceBtn:'இந்தத் தலைப்பைப் பயிற்சி செய்க',backLabel:'திரும்பிச் செல்',
+      faq:'Calculation Practice FAQ',q1:'NowPro என்றால் என்ன?',a1:'NowPro என்பது number skills, calculation speed மற்றும் accuracy-ஐ மேம்படுத்தும் இலவச web-based practice platform.',
+      q2:'நான் என்ன practice செய்யலாம்?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation மற்றும் exam topics-ஐ practice செய்யலாம்.',
+      q3:'Calculation speed-ஐ எப்படி அதிகரிப்பது?',a3:'Accuracy-யில் தொடங்கி, சரியான difficulty-ஐ தேர்ந்தெடுத்து, தொடர்ந்து practice செய்து speed-ஐ படிப்படியாக அதிகரிக்கவும்.'
+    },
+    te:{
+      kicker:'📚 నేర్చుకోండి',subject:'గణితం',folderTitle:'గణన నేర్చుకోండి',folderSub:'పద్ధతి మరియు ఉదాహరణలను తెలుసుకోవడానికి ఒక టూల్ ఎంచుకోండి.',
+      cardSub:'పద్ధతి మరియు ఉదాహరణలు నేర్చుకోండి',lessonKicker:'నేర్చుకోండి • గణన',methodTitle:'పద్ధతిని అర్థం చేసుకోండి',exampleTitle:'సాధించిన ఉదాహరణ',
+      refTitle:'1–30 రిఫరెన్స్ జాబితా',practiceBtn:'ఈ అంశాన్ని ప్రాక్టీస్ చేయండి',backLabel:'తిరిగి వెళ్ళు',
+      faq:'Calculation Practice FAQ',q1:'NowPro అంటే ఏమిటి?',a1:'NowPro అనేది number skills, calculation speed మరియు accuracy మెరుగుపరచడానికి ఉచిత web-based practice platform.',
+      q2:'నేను ఏమి practice చేయగలను?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation మరియు exam topics practice చేయవచ్చు.',
+      q3:'Calculation speed ఎలా పెంచాలి?',a3:'Accuracyతో ప్రారంభించి, సరైన difficulty ఎంచుకుని, క్రమం తప్పకుండా practice చేస్తూ speed‌ను క్రమంగా పెంచండి.'
+    },
+    ur:{
+      kicker:'📚 سیکھیں',subject:'ریاضی',folderTitle:'حساب سیکھیں',folderSub:'طریقہ اور مثالیں دیکھنے کے لیے کوئی ٹول منتخب کریں۔',
+      cardSub:'طریقہ اور مثالیں سیکھیں',lessonKicker:'سیکھیں • حساب',methodTitle:'طریقہ سمجھیں',exampleTitle:'حل شدہ مثال',
+      refTitle:'1–30 حوالہ فہرست',practiceBtn:'اس موضوع کی مشق کریں',backLabel:'واپس جائیں',
+      faq:'Calculation Practice FAQ',q1:'NowPro کیا ہے؟',a1:'NowPro number skills، calculation speed اور accuracy بہتر بنانے کے لیے ایک free web-based practice platform ہے۔',
+      q2:'میں کیا practice کر سکتا ہوں؟',a2:'Tables، addition، subtraction، multiplication، division، squares، roots، cubes، mixed calculation اور exam topics کی practice کر سکتے ہیں۔',
+      q3:'Calculation speed کیسے بڑھائیں؟',a3:'Accuracy سے شروع کریں، مناسب difficulty منتخب کریں اور باقاعدہ practice سے speed آہستہ آہستہ بڑھائیں۔'
+    },
+    as:{
+      kicker:'📚 শিকক',subject:'গণিত',folderTitle:'গণনা শিকক',folderSub:'পদ্ধতি আৰু উদাহৰণ চাবলৈ এটা সঁজুলি বাছক।',
+      cardSub:'পদ্ধতি আৰু উদাহৰণ শিকক',lessonKicker:'শিকক • গণনা',methodTitle:'পদ্ধতি বুজক',exampleTitle:'সমাধান কৰা উদাহৰণ',
+      refTitle:'1–30 প্ৰসংগ তালিকা',practiceBtn:'এই বিষয়টো অনুশীলন কৰক',backLabel:'উভতি যাওক',
+      faq:'Calculation Practice FAQ',q1:'NowPro কি?',a1:'NowPro হৈছে number skills, calculation speed আৰু accuracy উন্নত কৰাৰ এটা free web-based practice platform।',
+      q2:'মই কি practice কৰিব পাৰোঁ?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation আৰু exam topics practice কৰিব পাৰি।',
+      q3:'Calculation speed কেনেকৈ বৃদ্ধি কৰিম?',a3:'Accuracy-ৰ পৰা আৰম্ভ কৰক, উপযুক্ত difficulty বাছক আৰু নিয়মিত practice-ৰ জৰিয়তে speed ধীৰে ধীৰে বৃদ্ধি কৰক।'
+    }
+  };
+
+  var TABLES_FIELDS=['title','text','learning','subtitle','back','range','rangeTables','count','table','tip1','tip2','tip5','tip10','tip'];
+  var TABLES_I18N={
+    hi:['पहाड़े','पहाड़े याद करें और गणना तेज़ करें।','सीखें','1 से 50 तक के पहाड़े: पहले समूह, फिर पहाड़ा चुनें।','सीखने के पृष्ठ पर वापस जाएँ','पहाड़ों का समूह','{range} के पहाड़े','{count} पहाड़े','{n} का पहाड़ा','1 से गुणा करने पर संख्या वही रहती है।','हर अगला उत्तर 2 से बढ़ता है।','उत्तर का आखिरी अंक 0 या 5 होता है।','पूर्ण संख्या के अंत में 0 जोड़ें।','हर पंक्ति बोलकर पढ़ें, फिर बिना देखे दोहराएँ।'],
+    en:['Multiplication tables','Learn tables and calculate faster.','Learn','Tables from 1 to 50: choose a range, then a table.','Back to learning','Table range','Tables {range}','{count} tables','Table of {n}','Multiplying by 1 leaves the number unchanged.','Each answer increases by 2.','Answers end in 0 or 5.','Add a zero to the end of the whole number.','Read each row aloud, then repeat without looking.'],
+    gu:['ઘડિયા','ઘડિયા યાદ કરો અને ગણતરી ઝડપી બનાવો.','શીખો','1 થી 50 સુધીના ઘડિયા: પહેલાં જૂથ, પછી ઘડિયો પસંદ કરો.','શીખવાના પૃષ્ઠ પર પાછા જાઓ','ઘડિયાનું જૂથ','{range} ના ઘડિયા','{count} ઘડિયા','{n} નો ઘડિયો','1 થી ગુણવાથી સંખ્યા બદલાતી નથી.','દરેક આગળનો જવાબ 2 થી વધે છે.','જવાબનો છેલ્લો અંક 0 અથવા 5 હોય છે.','પૂર્ણ સંખ્યાના અંતે 0 ઉમેરો.','દરેક પંક્તિ બોલીને વાંચો, પછી જોયા વિના દોહરાવો.'],
+    mr:['पाढे','पाढे पाठ करा आणि गणना वेगाने करा.','शिका','1 ते 50 पर्यंतचे पाढे: आधी गट, मग पाढा निवडा.','शिकण्याच्या पानावर परत जा','पाढ्यांचा गट','{range} चे पाढे','{count} पाढे','{n} चा पाढा','1 ने गुणल्यावर संख्या तीच राहते.','प्रत्येक पुढील उत्तर 2 ने वाढते.','उत्तराचा शेवटचा अंक 0 किंवा 5 असतो.','पूर्ण संख्येच्या शेवटी 0 जोडा.','प्रत्येक ओळ मोठ्याने वाचा, मग न पाहता पुन्हा म्हणा.'],
+    bn:['নামতা','নামতা শিখুন ও দ্রুত হিসাব করুন।','শিখুন','1 থেকে 50-এর নামতা: আগে পরিসর, তারপর নামতা বেছে নিন।','শেখার পাতায় ফিরুন','নামতার পরিসর','{range}-এর নামতা','{count}টি নামতা','{n}-এর নামতা','1 দিয়ে গুণ করলে সংখ্যা একই থাকে।','প্রতিটি পরের উত্তর 2 করে বাড়ে।','উত্তরের শেষ অঙ্ক 0 বা 5 হয়।','পূর্ণ সংখ্যার শেষে 0 যোগ করুন।','প্রতিটি সারি জোরে পড়ুন, তারপর না দেখে বলুন।'],
+    ta:['பெருக்கல் வாய்ப்பாடுகள்','வாய்ப்பாடுகளைக் கற்று வேகமாகக் கணக்கிடுங்கள்.','கற்க','1 முதல் 50 வரை: முதலில் வரம்பு, பிறகு வாய்ப்பாட்டைத் தேர்ந்தெடுக்கவும்.','கற்றல் பக்கத்திற்குத் திரும்பு','வாய்ப்பாட்டு வரம்பு','{range} வாய்ப்பாடுகள்','{count} வாய்ப்பாடுகள்','{n} வாய்ப்பாடு','1 ஆல் பெருக்கினால் எண் மாறாது.','ஒவ்வொரு அடுத்த விடையும் 2 அதிகரிக்கும்.','விடைகள் 0 அல்லது 5 இல் முடியும்.','முழு எண்ணின் இறுதியில் 0 சேர்க்கவும்.','ஒவ்வொரு வரியையும் உரக்கப் படித்து, பார்க்காமல் மீண்டும் சொல்லுங்கள்.'],
+    te:['ఎక్కాలు','ఎక్కాలు నేర్చుకుని వేగంగా లెక్కించండి.','నేర్చుకోండి','1 నుండి 50 వరకు: ముందు పరిధిని, తర్వాత ఎక్కాన్ని ఎంచుకోండి.','నేర్చుకునే పేజీకి తిరిగి వెళ్లండి','ఎక్కాల పరిధి','{range} ఎక్కాలు','{count} ఎక్కాలు','{n} ఎక్కం','1తో గుణిస్తే సంఖ్య మారదు.','ప్రతి తదుపరి జవాబు 2 పెరుగుతుంది.','జవాబులు 0 లేదా 5తో ముగుస్తాయి.','పూర్ణ సంఖ్య చివర 0 చేర్చండి.','ప్రతి వరుసను పైకి చదివి, చూడకుండా మళ్లీ చెప్పండి.'],
+    ur:['پہاڑے','پہاڑے سیکھیں اور تیزی سے حساب کریں۔','سیکھیں','1 سے 50 تک کے پہاڑے: پہلے حد، پھر پہاڑا منتخب کریں۔','سیکھنے کے صفحے پر واپس جائیں','پہاڑوں کی حد','{range} کے پہاڑے','{count} پہاڑے','{n} کا پہاڑا','1 سے ضرب دینے پر عدد نہیں بدلتا۔','ہر اگلا جواب 2 سے بڑھتا ہے۔','جواب کا آخری ہندسہ 0 یا 5 ہوتا ہے۔','صحیح عدد کے آخر میں 0 لگائیں۔','ہر سطر بلند آواز سے پڑھیں، پھر دیکھے بغیر دہرائیں۔'],
+    as:['নামতা','নামতা শিকক আৰু দ্ৰুত গণনা কৰক।','শিকক','1ৰ পৰা 50লৈ নামতা: প্ৰথমে পৰিসৰ, তাৰ পিছত নামতা বাছক।','শিকাৰ পৃষ্ঠালৈ উভতি যাওক','নামতাৰ পৰিসৰ','{range}ৰ নামতা','{count}টা নামতা','{n}ৰ নামতা','1ৰে পূৰণ কৰিলে সংখ্যাটো একেই থাকে।','প্ৰতিটো পৰৱৰ্তী উত্তৰ 2কৈ বাঢ়ে।','উত্তৰৰ শেষ অংক 0 বা 5 হয়।','পূৰ্ণ সংখ্যাৰ শেষত 0 যোগ কৰক।','প্ৰতিটো শাৰী সশব্দে পঢ়ক, তাৰ পিছত নোচোৱাকৈ আওৰাওক।']
+  };
+
+  var LESSONS={
+    addition:['जोड़','Addition','संख्याओं को दहाई और इकाई में बाँटकर जोड़ें।','Split numbers into tens and units, then combine them.','47 + 28 = (40 + 20) + (7 + 8) = 60 + 15 = 75','एक आसान संख्या तक पहुँचें: 49 + 26 = 50 + 25 = 75।','Bridge to a round number: 49 + 26 = 50 + 25 = 75.'],
+    subtraction:['घटाव','Subtraction','दोनों संख्याओं में बराबर बदलाव करने से उनका अंतर नहीं बदलता।','Changing both numbers by the same amount preserves their difference.','83 − 29 = 84 − 30 = 54','पहले बड़ी place value घटाएँ, फिर छोटी।','Subtract the larger place value first, then the smaller one.'],
+    multiplication:['गुणा','Multiplication','एक संख्या को सुविधाजनक हिस्सों में बाँटकर प्रत्येक हिस्से का गुणा करें।','Split a number into convenient parts and multiply each part.','23 × 12 = 23 × (10 + 2) = 230 + 46 = 276','गुणा बार-बार जोड़ने के बराबर है।','Multiplication is repeated addition.'],
+    division:['भाग','Division','भाग को उल्टे गुणा की तरह समझें। भाजक × भागफल = भाज्य।','Think of division as reverse multiplication: divisor × quotient = dividend.','144 ÷ 12 = 12, because 12 × 12 = 144','जाँच करें: भाजक × भागफल + शेष = भाज्य।','Check: divisor × quotient + remainder = dividend.'],
+    square:['वर्ग','Squares','किसी संख्या को उसी से गुणा करने पर उसका वर्ग मिलता है।','Multiply a number by itself to find its square.','23² = (20 + 3)² = 400 + 120 + 9 = 529','(a + b)² = a² + 2ab + b²; बीच वाला पद न भूलें।','(a + b)² = a² + 2ab + b²; do not omit the middle term.'],
+    root:['वर्गमूल','Square Root','वर्गमूल वह गैर-ऋणात्मक संख्या है जिसका वर्ग दी गई संख्या के बराबर है।','The square root is the nonnegative number whose square equals the given number.','√144 = 12, because 12 × 12 = 144','10² = 100 और 11² = 121, इसलिए √110 दोनों के बीच है।','10² = 100 and 11² = 121, so √110 lies between 10 and 11.'],
+    cube:['घन','Cubes','किसी संख्या को तीन बार गुणा करने पर उसका घन मिलता है।','Multiply a number by itself three times to find its cube.','12³ = 12 × 12 × 12 = 144 × 12 = 1728','(a + b)³ = a³ + 3a²b + 3ab² + b³','(a + b)³ = a³ + 3a²b + 3ab² + b³'],
+    cuberoot:['घनमूल','Cube Root','घनमूल वह संख्या है जिसका घन दी गई संख्या है।','A cube root is the number whose cube equals the given number.','∛1728 = 12, because 12³ = 1728','घनमूल ऋणात्मक भी हो सकता है: ∛(−27) = −3।','Cube roots can be negative: ∛(−27) = −3.'],
+    mixed:['मिश्रित गणना','Mixed Calculation','पहले कोष्ठक, फिर घात; गुणा/भाग और जोड़/घटाव को अपने स्तर पर बाएँ से दाएँ करें।','Brackets first, then powers; multiplication/division and addition/subtraction are each evaluated left to right.','18 − 6 ÷ 3 × 2 + 4 = 18 − 4 + 4 = 18','गुणा को हमेशा भाग से पहले करना गलत है; दोनों का समान स्तर है।','Multiplication does not always precede division; they have equal precedence.'],
+    percentage:['प्रतिशत','Percentage','प्रतिशत का अर्थ प्रति सौ है। p% of N = p × N ÷ 100।','Percent means per hundred. p% of N = p × N ÷ 100.','15% of 240 = 10% + 5% = 24 + 12 = 36','1% निकालने के लिए 100 से भाग करें; 10% के लिए 10 से।','Divide by 100 for 1%, and by 10 for 10%.'],
+    fraction:['भिन्न','Fractions','भिन्न जोड़ने के लिए समान हर बनाएँ और फिर अंश जोड़ें।','Use a common denominator before adding numerators.','1/3 + 1/4 = 4/12 + 3/12 = 7/12','सरल रूप के लिए अंश और हर को उनके HCF से भाग दें।','Divide numerator and denominator by their HCF to simplify.'],
+    average:['औसत','Average','औसत = सभी मानों का योग ÷ मानों की संख्या।','Average = sum of values ÷ number of values.','(12 + 18 + 24) ÷ 3 = 54 ÷ 3 = 18','अलग आकार के समूहों के औसत का सीधा औसत न लें; weighted average लें।','For unequal group sizes use a weighted average, not a simple average of averages.'],
+    ratio:['अनुपात','Ratio','अनुपात तुलना बताता है। कुल को हिस्सों में बाँटने के लिए पहले सभी हिस्से जोड़ें।','A ratio compares quantities. Add all ratio parts before sharing a total.','120 in 2 : 3 → 120 ÷ 5 = 24 → 48 : 72','अनुपात की दोनों राशियाँ समान इकाई में रखें।','Express both quantities in the same unit.'],
+    lcmhcf:['ल.स.प. / म.स.प.','LCM / HCF','HCF सबसे बड़ा साझा गुणनखंड और LCM सबसे छोटा साझा धनात्मक गुणज है।','HCF is the greatest common factor; LCM is the least positive common multiple.','12 = 2² × 3; 18 = 2 × 3² → HCF = 6; LCM = 36','दो धनात्मक पूर्णांकों के लिए HCF × LCM = दोनों का गुणनफल।','For two positive integers: HCF × LCM = their product.'],
+    simplification:['सरलीकरण','Simplification','BODMAS के क्रम में हल करें; समान प्राथमिकता वाले operations बाएँ से दाएँ करें।','Follow BODMAS and evaluate operations of equal precedence left to right.','(8 + 4) × 3 − 6 ÷ 2 = 36 − 3 = 33','पहले पूरा numerator और denominator समझें, फिर division करें।','Identify the complete numerator and denominator before dividing.'],
+    approximation:['अनुमान','Approximation','सुविधाजनक संख्या तक round करें; अनुमान exact answer नहीं है।','Round to convenient numbers; an estimate is not an exact answer.','198 × 51 ≈ 200 × 50 = 10000; exact = 10098','जितनी precision चाहिए, उसके अनुसार rounding चुनें।','Choose rounding precision according to the accuracy needed.'],
+    memorycalculation:['गणना स्मृति','Calculation Memory','संख्या और operation का क्रम याद रखते हुए running total बनाएँ।','Keep a running total while remembering the numbers and operations in order.','12 → + 8 → × 2 → − 5 : 12 → 20 → 40 → 35','यह क्रमिक स्मृति उदाहरण है: हर step पिछले result पर लागू होता है।','This is a sequential memory example: each step acts on the previous result.'],
+    fallingcalculation:['गिरती गणना','Falling Calculation','पहले सवाल पहचानें, फिर सही mental method चुनें; speed बाद में बढ़ाएँ।','Identify the operation first and choose a mental method; increase speed gradually.','19 × 5 = (20 × 5) − 5 = 95','समय से पहले सही उत्तर देना लक्ष्य है; अनुमान को exact answer न मानें।','Aim for a correct answer before time runs out; do not treat an estimate as exact.']
+  };
+
+  function normalizeLang(code){
+    var c=String(code||'en').toLowerCase().trim().split(/[-_]/)[0];
+    return UI_PACK[c]?c:'en';
+  }
+  function isToolOpen(){
+    var ts=$('cbLearningTablesScreen'),ls=$('cbLearningLessonScreen');
+    return !!(ts&&!ts.hidden)||!!(ls&&!ls.hidden);
+  }
+  function notifyHost(){
+    try{
+      var h=Math.max(document.documentElement.scrollHeight||0,document.body.scrollHeight||0,420);
+      window.parent.postMessage({
+        type:'cb-learning-state',
+        toolOpen:isToolOpen(),
+        activeTool:activeTool||(isToolOpen()?'tables':null),
+        height:h
+      },'*');
+    }catch(e){}
+  }
+  function applyTheme(dark,tokens){
+    var isDark=!!dark;
+    document.body.classList.toggle('dark',isDark);
+    document.documentElement.classList.toggle('dark',isDark);
+    if(tokens&&typeof tokens==='object'){
+      ['bg','card','soft','text','muted','line','p','p2'].forEach(function(k){
+        if(tokens[k])document.documentElement.style.setProperty('--'+k,tokens[k]);
+      });
+    }
+  }
+  function tTable(key,values){
+    var pack=TABLES_I18N[currentLang]||TABLES_I18N.en;
+    var val=pack[TABLES_FIELDS.indexOf(key)]||'';
+    return val.replace(/\{(n|range|count)\}/g,function(m,name){
+      return values&&values[name]!==undefined?String(values[name]):m;
+    });
+  }
+  function toolTitle(key){
+    var m=TOOL_NAMES[key];
+    if(m&&m[currentLang])return m[currentLang];
+    if(m&&m.en)return m.en;
+    return LESSONS[key]?LESSONS[key][currentLang==='hi'?0:1]:key;
+  }
+  function node(tag,cls,text){
+    var el=document.createElement(tag);
+    if(cls)el.className=cls;
+    if(text!==undefined)el.textContent=text;
+    return el;
+  }
+
+  /* Tables View */
+  function tipKey(n){
+    return (n===1||n===2||n===5||n===10)?'tip'+n:'tip';
+  }
+  function updateRanges(){
+    document.querySelectorAll('[data-table-range]').forEach(function(btn){
+      var sel=btn.getAttribute('data-table-range')===activeRange;
+      btn.classList.toggle('active',sel);
+      btn.setAttribute('aria-pressed',String(sel));
+    });
+  }
+  function updatePicker(){
+    var picker=$('cbLearningTablePicker');
+    if(!picker)return;
+    picker.querySelectorAll('[data-table-number]').forEach(function(btn){
+      var n=Number(btn.getAttribute('data-table-number'));
+      var sel=n===activeTable;
+      btn.classList.toggle('active',sel);
+      btn.setAttribute('aria-pressed',String(sel));
+      btn.setAttribute('aria-label',tTable('table',{n:n}));
+    });
+  }
+  function updateRenderedTablesText(){
+    var bounds=RANGES[activeRange];
+    if($('cbLearningRangeTitle'))$('cbLearningRangeTitle').textContent=tTable('rangeTables',{range:activeRange.replace('-','–')});
+    if($('cbLearningRangeCount'))$('cbLearningRangeCount').textContent=tTable('count',{count:bounds[1]-bounds[0]+1});
+    if(!hasRenderedTables)return;
+    updatePicker();
+    if(focusHeading)focusHeading.textContent=tTable('table',{n:activeTable});
+    if(focusTip)focusTip.textContent='💡 '+tTable(tipKey(activeTable));
+  }
+  function renderTableFocus(){
+    var focus=$('cbLearningTableFocus');
+    if(!focus)return;
+    focus.textContent='';
+    var title=node('div','cb-learning-focus-title');
+    focusHeading=node('h3','',tTable('table',{n:activeTable}));
+    title.appendChild(focusHeading);
+    title.appendChild(node('span','cb-learning-focus-badge','× 1–10'));
+    focus.appendChild(title);
+    var rows=node('div','cb-learning-multiples');
+    rows.setAttribute('dir','ltr');
+    for(var i=1;i<=10;i++){
+      var row=node('div','cb-learning-multiple');
+      row.appendChild(node('span','',activeTable+' × '+i));
+      row.appendChild(node('strong','',String(activeTable*i)));
+      rows.appendChild(row);
+    }
+    focus.appendChild(rows);
+    focusTip=node('div','cb-learning-tip','💡 '+tTable(tipKey(activeTable)));
+    focus.appendChild(focusTip);
+  }
+  function renderTablePicker(){
+    var bounds=RANGES[activeRange];
+    if(activeTable<bounds[0]||activeTable>bounds[1])activeTable=bounds[0];
+    var picker=$('cbLearningTablePicker');
+    if(!picker)return;
+    picker.textContent='';
+    for(var n=bounds[0];n<=bounds[1];n++){
+      var btn=node('button','cb-learning-table-chip',String(n));
+      btn.type='button';
+      btn.setAttribute('data-table-number',String(n));
+      picker.appendChild(btn);
+    }
+    hasRenderedTables=true;
+    renderTableFocus();
+    updateRenderedTablesText();
+    picker.setAttribute('aria-label',tTable('rangeTables',{range:activeRange.replace('-','–')}));
+  }
+  function openTables(){
+    var grid=$('cbLearningToolGrid'),screen=$('cbLearningTablesScreen'),lesson=$('cbLearningLessonScreen');
+    if(lesson){lesson.hidden=true;lesson.setAttribute('aria-hidden','true');}
+    if(grid){grid.hidden=true;grid.setAttribute('aria-hidden','true');}
+    if(screen){screen.hidden=false;screen.removeAttribute('aria-hidden');}
+    activeTool='tables';
+    if(!hasRenderedTables)renderTablePicker();
+    try{$('cbLearningTablesBack').focus({preventScroll:true});}catch(e){}
+    notifyHost();
+  }
+  function closeTables(){
+    var grid=$('cbLearningToolGrid'),screen=$('cbLearningTablesScreen');
+    if(screen){screen.hidden=true;screen.setAttribute('aria-hidden','true');}
+    if(grid){grid.hidden=false;grid.removeAttribute('aria-hidden');}
+    activeTool=null;
+    try{$('cbLearningTablesEntry').focus({preventScroll:true});}catch(e){}
+    notifyHost();
+  }
+
+  /* Lesson View */
+  function renderLesson(){
+    if(!activeTool||!LESSONS[activeTool])return;
+    var screen=$('cbLearningLessonScreen');
+    var data=LESSONS[activeTool];
+    var ui=UI_PACK[currentLang]||UI_PACK.en;
+    var useHi=(currentLang==='hi');
+    screen.replaceChildren();
+    var head=node('div','cb-learning-tables-head');
+    var back=node('button','cb-learning-back','‹');
+    back.type='button';
+    back.id='cbLearningLessonBack';
+    back.setAttribute('aria-label',ui.backLabel);
+    back.addEventListener('click',function(){closeLesson(true);});
+    var intro=node('div');
+    intro.append(node('div','cb-learning-kicker',ui.lessonKicker),node('h2','',toolTitle(activeTool)));
+    head.append(back,intro);
+    screen.append(head);
+
+    var concept=node('section','cb-learning-range-card');
+    concept.append(node('h3','',ui.methodTitle),node('p','',data[useHi?2:3]));
+    screen.append(concept);
+
+    var example=node('section','cb-learning-range-card');
+    example.append(node('h3','',ui.exampleTitle),node('div','cb-lesson-equation',data[4]),node('p','cb-learning-tip',data[useHi?5:6]));
+    screen.append(example);
+
+    if(['square','root','cube','cuberoot'].indexOf(activeTool)!==-1){
+      var ref=node('section','cb-learning-range-card');
+      ref.append(node('h3','',ui.refTitle));
+      var rows=node('div','cb-learning-multiples');
+      rows.dir='ltr';
+      for(var n=1;n<=30;n++){
+        var power=(activeTool==='cube'||activeTool==='cuberoot')?3:2;
+        var val=Math.pow(n,power);
+        var expr=activeTool==='root'?'√'+val:activeTool==='cuberoot'?'∛'+val:n+(power===2?'²':'³');
+        var row=node('div','cb-learning-multiple');
+        row.append(node('span','',expr),node('strong','',String(activeTool==='root'||activeTool==='cuberoot'?n:val)));
+        rows.append(row);
+      }
+      ref.append(rows);
+      screen.append(ref);
+    }
+
+    var activeKey=activeTool;
+    var practice=node('button','btn',ui.practiceBtn);
+    practice.type='button';
+    practice.addEventListener('click',function(){
+      closeLesson(false);
+      try{
+        window.parent.postMessage({type:'cb-learning-practice',tool:activeKey},'*');
+      }catch(e){}
+    });
+    screen.append(practice);
+  }
+  function openLesson(key,trigger){
+    if(key==='tables'){openTables();return;}
+    if(!LESSONS[key])return;
+    activeTool=key;
+    previousTrigger=trigger||null;
+    var grid=$('cbLearningToolGrid'),screen=$('cbLearningLessonScreen'),tables=$('cbLearningTablesScreen');
+    if(tables){tables.hidden=true;tables.setAttribute('aria-hidden','true');}
+    if(grid){grid.hidden=true;grid.setAttribute('aria-hidden','true');}
+    if(screen){
+      screen.hidden=false;
+      screen.removeAttribute('aria-hidden');
+      renderLesson();
+      var b=screen.querySelector('button');
+      if(b)try{b.focus({preventScroll:true});}catch(e){}
+    }
+    notifyHost();
+  }
+  function closeLesson(restoreFocus){
+    var grid=$('cbLearningToolGrid'),screen=$('cbLearningLessonScreen'),tables=$('cbLearningTablesScreen');
+    if(screen){screen.hidden=true;screen.setAttribute('aria-hidden','true');}
+    if(tables){tables.hidden=true;tables.setAttribute('aria-hidden','true');}
+    if(grid){grid.hidden=false;grid.removeAttribute('aria-hidden');}
+    activeTool=null;
+    if(restoreFocus!==false&&previousTrigger){
+      try{previousTrigger.focus({preventScroll:true});}catch(e){}
+    }
+    notifyHost();
+  }
+
+  function applyLang(code){
+    currentLang=normalizeLang(code);
+    var ui=UI_PACK[currentLang]||UI_PACK.en;
+    document.documentElement.lang=currentLang;
+    document.documentElement.dir=(currentLang==='ur')?'rtl':'ltr';
+
+    if($('cbLearningKicker'))$('cbLearningKicker').textContent=ui.kicker;
+    if($('cbLearningSubjectBadge'))$('cbLearningSubjectBadge').textContent=ui.subject;
+    if($('cbLearningFolderTitle'))$('cbLearningFolderTitle').textContent=ui.folderTitle;
+    if($('cbLearningFolderSub'))$('cbLearningFolderSub').textContent=ui.folderSub;
+
+    if($('learnTablesTitle'))$('learnTablesTitle').textContent=tTable('title');
+    if($('learnTablesText'))$('learnTablesText').textContent=tTable('text');
+    var screen=$('cbLearningTablesScreen');
+    if(screen){
+      var h2=screen.querySelector('.cb-learning-tables-head h2');
+      var sub=screen.querySelector('.cb-learning-tables-head p');
+      var kick=screen.querySelector('.cb-learning-kicker');
+      if(h2)h2.textContent=tTable('title');
+      if(sub)sub.textContent=tTable('subtitle');
+      if(kick)kick.textContent='🔢 '+tTable('learning');
+    }
+    if($('cbLearningTablesBack')){
+      $('cbLearningTablesBack').setAttribute('aria-label',tTable('back'));
+      $('cbLearningTablesBack').setAttribute('title',tTable('back'));
+    }
+    if($('cbLearningRangeLabel'))$('cbLearningRangeLabel').textContent=tTable('range');
+    updateRenderedTablesText();
+
+    document.querySelectorAll('[data-learning-tool]').forEach(function(btn){
+      var k=btn.getAttribute('data-learning-tool');
+      var b=btn.querySelector('b'),sm=btn.querySelector('small');
+      if(b)b.textContent=toolTitle(k);
+      if(sm)sm.textContent=ui.cardSub;
+    });
+
+    if($('learningFaqTitle'))$('learningFaqTitle').textContent=ui.faq;
+    if($('faqQ1'))$('faqQ1').textContent=ui.q1;
+    if($('faqA1'))$('faqA1').textContent=ui.a1;
+    if($('faqQ2'))$('faqQ2').textContent=ui.q2;
+    if($('faqA2'))$('faqA2').textContent=ui.a2;
+    if($('faqQ3'))$('faqQ3').textContent=ui.q3;
+    if($('faqA3'))$('faqA3').textContent=ui.a3;
+
+    if(activeTool&&activeTool!=='tables')renderLesson();
+    notifyHost();
+  }
+
+  /* Bind events */
+  $('cbLearningTablesEntry').addEventListener('click',function(e){e.preventDefault();openTables();});
+  $('cbLearningTablesBack').addEventListener('click',function(e){e.preventDefault();closeTables();});
+  $('cbLearningTablePicker').addEventListener('click',function(e){
+    var btn=e.target&&e.target.closest?e.target.closest('[data-table-number]'):null;
+    if(!btn)return;
+    var n=Number(btn.getAttribute('data-table-number'));
+    var bounds=RANGES[activeRange];
+    if(!Number.isInteger(n)||n<bounds[0]||n>bounds[1])return;
+    activeTable=n;
+    updatePicker();
+    renderTableFocus();
+    notifyHost();
+  });
+  $('cbLearningTablesScreen').addEventListener('click',function(e){
+    var btn=e.target&&e.target.closest?e.target.closest('[data-table-range]'):null;
+    if(!btn)return;
+    var next=btn.getAttribute('data-table-range');
+    if(!RANGES[next])return;
+    activeRange=next;
+    activeTable=RANGES[next][0];
+    updateRanges();
+    renderTablePicker();
+    notifyHost();
+  });
+  document.querySelectorAll('[data-learning-tool]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      openLesson(btn.getAttribute('data-learning-tool'),btn);
+    });
+  });
+  document.querySelectorAll('#cbLearningFaqSection details').forEach(function(d){
+    d.addEventListener('toggle',function(){setTimeout(notifyHost,20);});
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&isToolOpen()){
+      e.preventDefault();
+      closeLesson(true);
+    }
+  });
+
+  window.addEventListener('message',function(e){
+    var d=e.data;
+    if(!d||typeof d!=='object')return;
+    if(d.type==='cb-learning-settings'||d.type==='cb-community-settings'||d.type==='cb-ai-chat-settings'){
+      if(d.lang)applyLang(d.lang);
+      if(typeof d.dark==='boolean')applyTheme(d.dark,d.tokens);
+    }
+    if(d.type==='cb-learning-open'&&d.tool){
+      var el=document.querySelector('[data-learning-tool="'+d.tool+'"]');
+      openLesson(d.tool,el);
+    }
+    if(d.type==='cb-learning-close'||d.type==='cb-learning-back'){
+      closeLesson(true);
+    }
+  });
+
+  window.addEventListener('storage',function(e){
+    if(e.key==='cbLang'&&e.newValue)applyLang(e.newValue);
+    if(e.key==='cbDark')applyTheme(e.newValue==='1');
+  });
+  window.addEventListener('resize',notifyHost,{passive:true});
+
+  function boot(){
+    updateRanges();
+    var p=new URLSearchParams(location.search);
+    var initLang=p.get('lang');
+    var initDark=p.get('dark');
+    var initTool=p.get('tool');
+    try{
+      if(!initLang)initLang=localStorage.getItem('cbLang')||'hi';
+      if(initDark===null)initDark=localStorage.getItem('cbDark');
+    }catch(e){}
+    applyTheme(initDark==='1'||initDark==='true');
+    applyLang(initLang||'hi');
+    if(initTool)openLesson(initTool,null);
+    try{window.parent.postMessage({type:'cb-learning-ready'},'*');}catch(e){}
+    setTimeout(notifyHost,50);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script>
+</body>
+</html>
