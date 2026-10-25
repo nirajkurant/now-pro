@@ -1,2 +1,2 @@
-# table-practice
-Table and calculation practice 
+# now-pro
+Be a pro Smart through Smart content & practices
