@@ -1,0 +1,1831 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#f6f8fc">
+<title>NowPro — Hub</title>
+<style>
+:root{
+  --bg:#f6f8fc;--card:#ffffff;--soft:#eef2f7;--text:#111827;--muted:#64748b;
+  --line:#e2e8f0;--p:#4f46e5;--p2:#7c3aed;--good:#10b981;--bad:#ef4444;
+  --shadow:0 10px 28px rgba(15,23,42,.07);
+  --section-gap:12px;--module-gap:10px;--folder-pad:16px;--folder-radius:22px;
+  --font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+html.dark,body.dark{
+  --bg:#0b1020;--card:#111827;--soft:#1b2638;--text:#f8fafc;--muted:#9ca3af;
+  --line:#334155;--p:#4f46e5;--p2:#7c3aed;--good:#10b981;--bad:#ef4444;
+  --shadow:0 12px 32px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{
+  margin:0;min-height:100%;
+  background:radial-gradient(circle at 8% 0%,rgba(99,102,241,.07),transparent 28%),radial-gradient(circle at 92% 12%,rgba(168,85,247,.055),transparent 24%),var(--bg);
+  color:var(--text);font-family:var(--font);
+  transition:background-color .22s ease,color .22s ease,border-color .22s ease;
+  overflow-x:hidden;
+}
+html.dark,body.dark{
+  background:radial-gradient(circle at 8% 0%,rgba(99,102,241,.045),transparent 28%),radial-gradient(circle at 92% 12%,rgba(168,85,247,.035),transparent 24%),var(--bg);
+}
+html{color-scheme:light}
+html.dark{color-scheme:dark}
+button,input,select{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.app{
+  width:min(100%,1180px);margin:0 auto;
+  padding:8px clamp(10px,2vw,20px) calc(68px + env(safe-area-inset-bottom));
+}
+.hidden{display:none!important}
+
+.integrated-demo-note{
+  font-size:12px;line-height:1.5;padding:10px 12px;
+  border:1px solid var(--line);border-radius:14px;color:var(--muted);
+  background:var(--card);margin-bottom:10px;
+}
+
+.folder-card{
+  position:relative;margin:0 0 var(--section-gap);padding:var(--folder-pad);
+  border:1px solid var(--line);border-radius:var(--folder-radius);
+  background:linear-gradient(145deg,var(--card),var(--soft));
+  box-shadow:var(--shadow);overflow:hidden;
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+.folder-card::before{
+  content:"";position:absolute;inset:0 auto 0 0;width:4px;
+  background:var(--folder-accent,#6366f1);
+}
+.dark .folder-card{
+  background:linear-gradient(145deg,#121b2d,#0b1220);
+  border-color:#2b3a52;
+}
+
+.groups-folder{--folder-accent:#6366f1}
+.daily-folder{--folder-accent:#10b981}
+.ca-folder{--folder-accent:#0ea5e9}
+.challenge-folder{--folder-accent:#f59e0b}
+.progress-folder{--folder-accent:#ec4899}
+
+.folder-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;cursor:pointer;position:relative;z-index:2;
+}
+.folder-head>div:first-child{flex:1;min-width:0}
+.folder-kicker{
+  font-size:10px;letter-spacing:.14em;font-weight:950;
+  color:var(--folder-accent);margin-bottom:3px;text-transform:uppercase;
+  display:flex;align-items:center;gap:5px;
+}
+.folder-card .section-title{
+  font-size:21px;font-weight:950;margin:0;color:var(--text);
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+}
+.folder-card .section-subtitle{
+  font-size:12px;color:var(--muted);margin:3px 0 0;line-height:1.4;max-width:640px;
+}
+.folder-head-actions{
+  display:flex;align-items:center;gap:7px;flex:0 0 auto;margin-left:auto;justify-content:flex-end;
+}
+.folder-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:28px;padding:0 10px;border-radius:999px;
+  border:1px solid color-mix(in srgb,var(--folder-accent) 45%,var(--line));
+  background:color-mix(in srgb,var(--folder-accent) 12%,var(--card));
+  color:var(--text);font-size:10.5px;font-weight:900;white-space:nowrap;
+}
+.folder-add-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  min-height:32px;padding:0 11px;border-radius:11px;
+  border:1px solid color-mix(in srgb,var(--folder-accent) 50%,var(--line));
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;font-size:11px;font-weight:900;white-space:nowrap;
+  box-shadow:0 4px 12px rgba(79,70,229,.22);
+  transition:transform .15s ease,filter .15s ease;
+}
+.folder-add-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.folder-add-btn:active{transform:scale(.96)}
+
+.folder-toggle{
+  position:relative;z-index:5;flex:0 0 auto;width:42px;height:42px;
+  border-radius:14px;
+  border:1px solid color-mix(in srgb,var(--folder-accent) 45%,var(--line));
+  background:color-mix(in srgb,var(--folder-accent) 12%,var(--card));
+  color:var(--text);font-size:20px;font-weight:900;
+  display:grid;place-items:center;
+  transition:transform .16s ease,border-color .16s ease;
+}
+.folder-toggle:active{transform:scale(.95)}
+.folder-caret{
+  display:block;font-size:26px;line-height:1;color:var(--muted);
+  transform:rotate(90deg);transition:transform .18s ease;
+}
+.folder-caret::before{content:'›'}
+.folder-card.collapsed .folder-caret{transform:rotate(0deg)}
+.folder-body{margin-top:14px}
+.folder-card.collapsed .folder-body{display:none!important}
+
+.mods{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:var(--module-gap);
+  align-items:stretch;
+}
+@media(max-width:479px){
+  .mods{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+}
+@media(max-width:340px){
+  .mods{grid-template-columns:1fr}
+}
+
+.mod{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:94px;padding:14px;border-radius:17px;
+  border:1px solid color-mix(in srgb,var(--mod-accent,#6366f1) 28%,var(--line));
+  background:linear-gradient(145deg,var(--card),color-mix(in srgb,var(--mod-accent,#6366f1) 7%,var(--card)));
+  color:var(--text);text-align:left;font-weight:850;
+  box-shadow:var(--shadow);
+  display:flex;flex-direction:column;justify-content:space-between;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.mod::before{
+  content:"";position:absolute;right:-20px;top:-24px;width:72px;height:72px;
+  border-radius:50%;background:color-mix(in srgb,var(--mod-accent,#6366f1) 13%,transparent);
+  pointer-events:none;z-index:0;
+}
+.dark .mod{
+  background:linear-gradient(145deg,#172236,#0f1828);
+  border-color:color-mix(in srgb,var(--mod-accent,#6366f1) 36%,#334155);
+}
+.dark .mod::before{
+  background:color-mix(in srgb,var(--mod-accent,#6366f1) 16%,transparent);
+}
+.mod > *{position:relative;z-index:1}
+.mod:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 24px rgba(15,23,42,.14);
+  border-color:color-mix(in srgb,var(--mod-accent,#6366f1) 55%,var(--line));
+}
+.dark .mod:hover{box-shadow:0 10px 24px rgba(0,0,0,.32)}
+.mod:active{transform:scale(.985)}
+.mod:focus-visible{outline:3px solid #818cf8;outline-offset:2px}
+
+.mod-top{
+  display:flex;align-items:center;gap:9px;margin-bottom:6px;
+}
+.mod-icon{
+  font-size:21px;line-height:1;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;flex:0 0 38px;border-radius:12px;
+  background:var(--soft);border:1px solid var(--line);
+  color:var(--mod-accent,#6366f1);position:relative;
+}
+.dark .mod-icon{background:rgba(255,255,255,.06)}
+.mod-online-dot{
+  position:absolute;bottom:-2px;right:-2px;width:9px;height:9px;
+  background:#10b981;border:2px solid var(--card);border-radius:50%;
+}
+.mod-title{
+  font-size:15px;font-weight:900;color:var(--text);line-height:1.25;
+  overflow-wrap:anywhere;flex:1;min-width:0;
+}
+.mod-sub{
+  display:block;color:var(--muted);font-size:11.5px;font-weight:650;
+  line-height:1.38;margin-top:2px;
+}
+.mod-meta{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  margin-top:8px;padding-top:6px;
+  border-top:1px dashed color-mix(in srgb,var(--line) 75%,transparent);
+  font-size:10px;font-weight:850;
+}
+.mod-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 7px;border-radius:6px;
+  background:color-mix(in srgb,var(--mod-accent,#6366f1) 14%,transparent);
+  color:var(--mod-accent,#6366f1);
+  border:1px solid color-mix(in srgb,var(--mod-accent,#6366f1) 26%,transparent);
+  white-space:nowrap;
+}
+.mod-live{color:#10b981;font-weight:900;white-space:nowrap}
+.mod-arrow-tag{
+  color:var(--mod-accent,#6366f1);font-size:14px;font-weight:950;line-height:1;
+}
+
+.mod.mod-add-card{
+  border-style:dashed;
+  border-width:1.8px;
+  justify-content:center;align-items:center;text-align:center;
+  gap:6px;
+}
+.mod.mod-add-card .mod-top{margin-bottom:2px;justify-content:center}
+.mod.mod-add-card .mod-title{flex:initial}
+
+.mod-blue{--mod-accent:#3b82f6}
+.mod-purple{--mod-accent:#8b5cf6}
+.mod-orange{--mod-accent:#f97316}
+.mod-green{--mod-accent:#10b981}
+.mod-cyan{--mod-accent:#06b6d4}
+.mod-indigo{--mod-accent:#6366f1}
+.mod-teal{--mod-accent:#14b8a6}
+.mod-pink{--mod-accent:#ec4899}
+.mod-amber{--mod-accent:#f59e0b}
+.mod-violet{--mod-accent:#7c3aed}
+.mod-rose{--mod-accent:#f43f5e}
+.mod-sky{--mod-accent:#0ea5e9}
+.mod-lime{--mod-accent:#84cc16}
+.mod-fuchsia{--mod-accent:#d946ef}
+
+@media(max-width:480px){
+  :root{--section-gap:10px;--module-gap:8px;--folder-pad:13px}
+  .mod{padding:11px;min-height:86px;border-radius:15px}
+  .mod-icon{width:34px;height:34px;flex-basis:34px;font-size:18px;border-radius:10px}
+  .mod-title{font-size:13.5px}
+  .mod-sub{font-size:10.5px}
+  .folder-card .section-title{font-size:18px}
+  .folder-card .section-subtitle{font-size:11px}
+  .folder-toggle{width:36px;height:36px;border-radius:11px}
+}
+
+body.in-chat{
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+}
+body.in-chat .app{
+  padding:0!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+}
+body.in-chat #chatPage{
+  position:fixed!important;
+  inset:0!important;
+  width:100%!important;
+  max-width:680px!important;
+  margin:0 auto!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  display:flex!important;
+  flex-direction:column!important;
+  background:var(--card)!important;
+  overflow:hidden!important;
+  z-index:20!important;
+}
+#chatPage > .top{display:none!important}
+
+.chat-head{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:10px!important;padding:12px 16px!important;
+  background:color-mix(in srgb,var(--card) 88%,var(--soft))!important;
+  border-bottom:1px solid var(--line)!important;
+  flex-shrink:0!important;z-index:30!important;
+}
+.chat-head-left{display:flex;align-items:center;gap:11px;min-width:0;flex:1 1 auto}
+.chat-group-icon-wrap{
+  position:relative;width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(99,102,241,0.22),rgba(139,92,246,0.22));
+  border:1px solid rgba(99,102,241,0.35);
+  display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;
+}
+.chat-group-icon{display:flex;align-items:center;justify-content:center;line-height:1}
+.chat-online-dot{
+  position:absolute;bottom:-2px;right:-2px;width:10px;height:10px;
+  background:#10b981;border:2px solid var(--card);border-radius:50%;
+  box-shadow:0 0 6px #10b981;
+}
+.chat-title{display:flex;flex-direction:column;min-width:0;flex:1 1 auto}
+.chat-name{
+  font-size:15.5px;font-weight:850;color:var(--text);line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.chat-subtitle-row{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap}
+.chat-badge-pill{
+  display:inline-block;padding:1px 7px;border-radius:6px;
+  background:color-mix(in srgb,var(--p) 14%,transparent);color:var(--p);
+  font-weight:800;font-size:10px;border:1px solid color-mix(in srgb,var(--p) 25%,transparent);
+  white-space:nowrap;
+}
+.chat-status-live{color:#10b981;font-weight:800;font-size:10.5px;white-space:nowrap}
+.chat-head-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.group-join-btn{
+  display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:10px;
+  font-size:11.5px;font-weight:800;background:var(--soft);border:1px solid var(--line);
+  color:var(--p);cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.group-join-btn:hover,.group-join-btn:active{
+  background:color-mix(in srgb,var(--line) 40%,var(--soft));border-color:var(--p);
+}
+.group-join-btn.joined{background:var(--soft);color:var(--muted)}
+.group-join-btn.leave{color:#ef4444;border-color:color-mix(in srgb,#ef4444 35%,var(--line))}
+.chat-close-btn{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
+  background:var(--soft);color:var(--muted);font-size:15px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.chat-close-btn:hover,.chat-close-btn:active{
+  background:color-mix(in srgb,#ef4444 15%,var(--soft));color:#ef4444;border-color:#ef4444;
+}
+
+.chat-messages{
+  flex:1 1 auto!important;overflow-y:auto!important;overflow-x:hidden!important;
+  padding:16px!important;padding-bottom:96px!important;
+  display:flex!important;flex-direction:column!important;gap:13px!important;
+  scroll-behavior:smooth!important;overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;background:var(--card)!important;
+}
+@keyframes aiMsgFadeIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.msg{
+  display:flex;flex-direction:column;align-self:flex-start;
+  width:min(100%,520px);max-width:92%;background:var(--soft);
+  border:1.5px dashed color-mix(in srgb,var(--p) 48%,var(--line));
+  color:var(--text);border-radius:18px 18px 18px 4px!important;
+  padding:11px 14px;font-size:13.5px;line-height:1.55;word-break:break-word;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);animation:aiMsgFadeIn .22s ease-out;
+}
+.msg.admin-msg{
+  border:1.5px dashed color-mix(in srgb,var(--p) 65%,var(--line));
+  background:linear-gradient(145deg,color-mix(in srgb,var(--p) 7%,var(--soft)),var(--soft));
+}
+.msg-card-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-bottom:7px;font-size:11.5px;font-weight:850;color:var(--p);
+}
+.msg-sender-wrap{display:inline-flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap}
+.msg-mini-avatar{
+  width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;font-size:10.5px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.msg-sender-name{font-weight:850;color:var(--p)}
+.msg-role-pill{
+  display:inline-block;padding:1px 7px;border-radius:6px;
+  background:color-mix(in srgb,var(--p) 14%,transparent);color:var(--p);
+  font-weight:800;font-size:10px;border:1px solid color-mix(in srgb,var(--p) 25%,transparent);
+}
+.msg-role-pill.admin{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border-color:transparent}
+.msg-head-time{font-size:10.5px;font-weight:600;opacity:.85;color:var(--muted);white-space:nowrap}
+.msg-inner-box{
+  display:block;width:100%;padding:8px 12px;
+  background:color-mix(in srgb,var(--p) 8%,var(--card));border-radius:12px;
+  border:1px solid color-mix(in srgb,var(--p) 20%,transparent);
+  color:var(--text);font-size:13.5px;line-height:1.5;
+}
+.msg.mine{
+  align-self:flex-end!important;width:auto!important;max-width:86%!important;min-width:68px;
+  background:linear-gradient(135deg,var(--p),var(--p2))!important;border:0!important;color:#fff!important;
+  border-radius:18px 18px 4px 18px!important;padding:10px 14px!important;
+  font-size:13.5px!important;line-height:1.5!important;box-shadow:0 4px 14px rgba(99,102,241,0.25)!important;
+}
+.msg.mine .chat-role{font-size:10px;font-weight:850;opacity:.84;margin-bottom:3px;text-align:right;text-transform:uppercase;color:#fff}
+.msg.mine .text{font-size:13.5px;line-height:1.5;color:#fff;text-align:left}
+.msg.mine .time{font-size:9.5px;color:rgba(255,255,255,.76);text-align:right;margin-top:4px}
+
+.practice-wrap{
+  display:flex;flex-direction:column;align-self:flex-start;
+  width:min(100%,520px);max-width:92%;background:var(--soft);
+  border:1.5px dashed color-mix(in srgb,var(--p) 48%,var(--line));
+  border-radius:18px 18px 18px 4px;padding:11px 14px;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);animation:aiMsgFadeIn .22s ease-out;
+}
+.practice{
+  width:100%;padding:10px 12px;background:color-mix(in srgb,var(--p) 8%,var(--card));
+  border:1px solid color-mix(in srgb,var(--p) 20%,transparent);border-radius:12px;
+}
+.practice-title{font-size:14.5px;font-weight:850;color:var(--text);margin-bottom:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media(max-width:420px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{text-align:center;padding:7px 4px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.stat b{display:block;font-size:15px;line-height:1.1;color:var(--p)}
+.stat span{display:block;font-size:9px;color:var(--muted);margin-top:3px;font-weight:700}
+
+.chat-composer{
+  position:fixed!important;left:50%!important;transform:translateX(-50%)!important;
+  bottom:0!important;width:min(100%,680px)!important;z-index:100!important;
+  display:flex!important;flex-direction:column!important;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
+  background:color-mix(in srgb,var(--card) 92%,var(--soft))!important;
+  border-top:1px solid var(--line)!important;flex-shrink:0!important;
+}
+body.in-chat.cb-keyboard-open .chat-composer{
+  bottom:var(--cb-keyboard-offset,0px)!important;
+}
+.ai-composer-bar{
+  display:flex;align-items:center;gap:7px;width:100%;
+  background:var(--card);border:1.5px solid var(--line);border-radius:18px;
+  padding:4px 7px 4px 12px;transition:border-color .2s,box-shadow .2s;
+}
+.ai-composer-bar:focus-within{
+  border-color:var(--p);box-shadow:0 0 0 3px rgba(99,102,241,0.14);
+}
+.composer-box{position:relative;flex:1 1 auto;min-width:0;display:flex;align-items:center}
+.composer-input{
+  width:100%;height:34px;border:0!important;outline:none!important;
+  background:transparent!important;color:var(--text)!important;
+  padding:4px 44px 4px 2px!important;font-size:14px!important;line-height:1.45!important;
+  user-select:text;-webkit-user-select:text;
+}
+.composer-count{
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:9.5px;font-weight:700;pointer-events:none;
+}
+.send-btn{
+  width:36px;height:36px;flex:0 0 36px;border-radius:11px;border:0;
+  background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;
+  box-shadow:0 3px 10px rgba(99,102,241,0.32);transition:all .18s;
+}
+.send-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 14px rgba(99,102,241,0.42)}
+.send-btn:active{transform:scale(.94)}
+.send-btn:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
+.ai-composer-foot{
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  width:100%;margin-top:6px;padding:0 4px;font-size:10.5px;color:var(--muted);
+}
+.integrated-chat-demo{font-size:10.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 auto}
+.ai-secure-tag{font-size:10.5px;color:var(--muted);flex-shrink:0}
+
+.guest{
+  position:fixed;left:50%;bottom:0;z-index:30;transform:translateX(-50%);
+  width:100%;min-height:52px;padding:8px 14px calc(8px + env(safe-area-inset-bottom));
+  display:grid;place-items:center;text-align:center;
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
+  border-top:1px solid var(--line);backdrop-filter:blur(12px);
+  color:var(--muted);font-size:12px;
+}
+.guest button{border:0;background:none;color:inherit;font-weight:750}
+
+.overlay{
+  position:fixed;inset:0;z-index:120;display:none;align-items:center;
+  justify-content:center;padding:14px;background:rgba(2,6,23,.5);backdrop-filter:blur(5px);
+}
+.overlay.show{display:flex}
+.sheet{
+  width:min(430px,100%);background:var(--card);border:1px solid var(--line);
+  border-radius:22px;padding:20px;box-shadow:0 24px 70px rgba(0,0,0,.28);
+  text-align:center;
+}
+.sheet-icon{
+  width:50px;height:50px;margin:0 auto 10px;border-radius:16px;
+  display:grid;place-items:center;font-size:24px;
+  background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;
+}
+.sheet h3{margin:0 0 6px;font-size:18px;font-weight:900}
+.sheet p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.sheet-field{text-align:left;margin-top:12px}
+.sheet-field label{display:block;font-size:11px;font-weight:850;color:var(--muted);margin-bottom:5px}
+.sheet-field input,.sheet-field select{
+  width:100%;height:42px;border:1.5px solid var(--line);border-radius:12px;
+  background:var(--soft);color:var(--text);padding:0 11px;outline:none;
+  user-select:text;-webkit-user-select:text;
+}
+.sheet-field input:focus,.sheet-field select:focus{border-color:var(--p)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.actions button,.single-action-btn{height:43px;border-radius:13px;font-weight:850}
+.single-action-btn{width:100%;margin-top:15px;border:0;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}
+.cancel{border:1px solid var(--line);background:var(--soft);color:var(--text)}
+.login{border:0;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}
+
+.login-page{
+  position:fixed;inset:0;z-index:200;overflow:auto;display:grid;place-items:center;
+  padding:20px;background:var(--bg);
+}
+.login-card{
+  width:min(420px,100%);margin:auto;padding:24px 20px 20px;
+  border:1px solid var(--line);border-radius:24px;background:var(--card);
+  box-shadow:0 22px 70px rgba(15,23,42,.13);text-align:center;
+}
+.login-mark{
+  width:58px;height:58px;margin:0 auto 14px;border-radius:18px;
+  display:grid;place-items:center;font-size:25px;
+  background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;
+  box-shadow:0 10px 24px rgba(79,70,229,.25);
+}
+.login-card h2{margin:0;font-size:22px;letter-spacing:-.4px}
+.login-card>p{margin:7px 0 19px;color:var(--muted);font-size:13px;line-height:1.5}
+.login-primary,.login-secondary{
+  width:100%;height:45px;border-radius:13px;font-weight:850;margin-top:12px;
+}
+.login-primary{border:0;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}
+.login-secondary{border:1px solid var(--line);background:var(--soft);color:var(--text)}
+
+#chatComposer.hidden,
+body:not(.in-chat) #chatComposer,
+body.in-login #chatComposer{display:none!important}
+body.in-chat .guest,
+body.in-login .guest,
+body.is-demo-session .guest{display:none!important}
+body.in-login #homePage,
+body.in-login #chatPage{display:none!important}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- HUB HOME: 5 TOOLS WITH PRACTICE TAB FOLDER & MOD CARD TEXTURE -->
+  <section id="homePage">
+    <p class="integrated-demo-note" id="languageFallback" hidden></p>
+
+    <!-- 1. GROUPS TOOL > -->
+    <div class="folder-card groups-folder" id="groupsToolFolder">
+      <div class="folder-head" data-toggle-folder="groupsToolFolder">
+        <div>
+          <div class="folder-kicker">💬 <span id="kickerGroups">1. GROUPS TOOL</span></div>
+          <div class="section-title"><span id="titleGroups">Groups Tool</span> <span>›</span></div>
+          <div class="section-subtitle" id="subGroups">Join exam study groups, share practice sets and discuss shortcuts.</div>
+        </div>
+        <div class="folder-head-actions">
+          <button type="button" class="folder-add-btn" id="addGroupBtn">+ <span id="addGroupBtnText">Add Group</span></button>
+          <span class="folder-badge" id="groupCount">4 groups</span>
+          <button type="button" class="folder-toggle" aria-expanded="true" aria-label="Toggle Groups Tool">
+            <span class="folder-caret" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="folder-body">
+        <div class="mods" id="groupsGrid"></div>
+      </div>
+    </div>
+
+    <!-- 2. DAILY PRACTICE -->
+    <div class="folder-card daily-folder" id="dailyPracticeToolFolder">
+      <div class="folder-head" data-toggle-folder="dailyPracticeToolFolder">
+        <div>
+          <div class="folder-kicker">🎯 <span id="kickerDaily">2. DAILY PRACTICE</span></div>
+          <div class="section-title" id="titleDaily">Daily Practice</div>
+          <div class="section-subtitle" id="subDaily">Solve daily community targets and speed drills together.</div>
+        </div>
+        <div class="folder-head-actions">
+          <span class="folder-badge" id="badgeDaily">4 tools</span>
+          <button type="button" class="folder-toggle" aria-expanded="true" aria-label="Toggle Daily Practice">
+            <span class="folder-caret" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="folder-body">
+        <div class="mods" id="dailyGrid"></div>
+      </div>
+    </div>
+
+    <!-- 3. CURRENT AFFAIRS -->
+    <div class="folder-card ca-folder" id="currentAffairsToolFolder">
+      <div class="folder-head" data-toggle-folder="currentAffairsToolFolder">
+        <div>
+          <div class="folder-kicker">🌍 <span id="kickerCA">3. CURRENT AFFAIRS</span></div>
+          <div class="section-title" id="titleCA">Current Affairs</div>
+          <div class="section-subtitle" id="subCA">Daily GK updates, exam capsules and quick revision quizzes.</div>
+        </div>
+        <div class="folder-head-actions">
+          <span class="folder-badge" id="badgeCA">4 tools</span>
+          <button type="button" class="folder-toggle" aria-expanded="true" aria-label="Toggle Current Affairs">
+            <span class="folder-caret" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="folder-body">
+        <div class="mods" id="caGrid"></div>
+      </div>
+    </div>
+
+    <!-- 4. CHALLENGE -->
+    <div class="folder-card challenge-folder" id="challengeToolFolder">
+      <div class="folder-head" data-toggle-folder="challengeToolFolder">
+        <div>
+          <div class="folder-kicker">⚡ <span id="kickerChallenge">4. CHALLENGE</span></div>
+          <div class="section-title" id="titleChallenge">Challenge</div>
+          <div class="section-subtitle" id="subChallenge">Compete in 1v1 speed battles, group tournaments and timed sprints.</div>
+        </div>
+        <div class="folder-head-actions">
+          <span class="folder-badge" id="badgeChallenge">4 tools</span>
+          <button type="button" class="folder-toggle" aria-expanded="true" aria-label="Toggle Challenge">
+            <span class="folder-caret" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="folder-body">
+        <div class="mods" id="challengeGrid"></div>
+      </div>
+    </div>
+
+    <!-- 5. PROGRESS REPORT -->
+    <div class="folder-card progress-folder" id="progressReportToolFolder">
+      <div class="folder-head" data-toggle-folder="progressReportToolFolder">
+        <div>
+          <div class="folder-kicker">📊 <span id="kickerProgress">5. PROGRESS REPORT</span></div>
+          <div class="section-title" id="titleProgress">Progress Report</div>
+          <div class="section-subtitle" id="subProgress">Track rank, accuracy analytics and weekly streaks.</div>
+        </div>
+        <div class="folder-head-actions">
+          <span class="folder-badge" id="badgeProgress">4 tools</span>
+          <button type="button" class="folder-toggle" aria-expanded="true" aria-label="Toggle Progress Report">
+            <span class="folder-caret" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="folder-body">
+        <div class="mods" id="progressGrid"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- GROUP CHAT -->
+  <section id="chatPage" class="chat-page hidden">
+    <header class="top">
+      <div class="brand">NowPro</div>
+    </header>
+
+    <div class="chat-head">
+      <div class="chat-head-left">
+        <div class="chat-group-icon-wrap">
+          <div class="chat-group-icon" id="chatIcon">📚</div>
+          <span class="chat-online-dot" title="Active"></span>
+        </div>
+        <div class="chat-title">
+          <div class="chat-name" id="chatName"></div>
+          <div class="chat-subtitle-row">
+            <span class="chat-badge-pill" id="chatMembers"></span>
+            <span class="chat-status-live" id="chatStatusLive">● Active</span>
+          </div>
+        </div>
+      </div>
+      <div class="chat-head-actions">
+        <button type="button" class="group-join-btn" id="groupJoinBtn">Join</button>
+        <button type="button" class="chat-close-btn" id="chatBack" title="Back to groups" aria-label="Back to groups">✕</button>
+      </div>
+    </div>
+
+    <section class="chat-messages" id="messages" aria-live="polite"></section>
+  </section>
+</main>
+
+<footer class="chat-composer hidden" id="chatComposer" aria-hidden="true">
+  <div class="ai-composer-bar">
+    <div class="composer-box">
+      <input id="messageInput"
+             class="composer-input"
+             type="text"
+             name="hub_message"
+             inputmode="text"
+             autocomplete="off"
+             autocapitalize="sentences"
+             autocorrect="on"
+             spellcheck="true"
+             maxlength="500"
+             placeholder="Type a message...">
+      <span class="composer-count" id="composerCount">0/500</span>
+    </div>
+    <button class="send-btn" id="sendBtn" type="button" aria-label="Send message">➤</button>
+  </div>
+  <div class="ai-composer-foot">
+    <span id="demoNotice" class="integrated-chat-demo" role="status"></span>
+    <span class="ai-secure-tag" id="secureTag">🔒 Private &amp; Secure</span>
+  </div>
+</footer>
+
+<div class="guest">
+  <button id="guestBtn">🔒 &nbsp;Login to join this group and participate.</button>
+</div>
+
+<!-- LOGIN PAGE -->
+<section class="login-page hidden" id="loginPage" aria-label="Login page">
+  <div class="login-card">
+    <div class="login-mark">🔐</div>
+    <h2 id="loginPageTitle">Login to continue</h2>
+    <p id="loginPageText">Login is required to send messages and participate in discussions.</p>
+    <button class="login-primary" id="loginPrimary" type="button">Login</button>
+    <button class="login-secondary" id="loginBack" type="button">Back to chat</button>
+  </div>
+</section>
+
+<!-- ADD NEW GROUP MODAL -->
+<div class="overlay" id="addGroupModal" aria-hidden="true">
+  <div class="sheet">
+    <div class="sheet-icon">➕</div>
+    <h3 id="addModalTitle">Create Hub Group</h3>
+    <p id="addModalDesc">Add a new study group to the Groups Tool.</p>
+    <div class="sheet-field">
+      <label for="newGroupName" id="newGroupNameLabel">Group Name</label>
+      <input type="text" id="newGroupName" maxlength="45" placeholder="e.g. Railway NTPC Speed Maths">
+    </div>
+    <div class="sheet-field">
+      <label for="newGroupIcon" id="newGroupIconLabel">Icon</label>
+      <select id="newGroupIcon">
+        <option value="📚">📚 Study &amp; Exams</option>
+        <option value="🧮">🧮 Calculation &amp; Maths</option>
+        <option value="🧠">🧠 Reasoning &amp; Logic</option>
+        <option value="🌍">🌍 GK &amp; Current Affairs</option>
+        <option value="⚡">⚡ Speed Challenge</option>
+        <option value="🏆">🏆 Target Batch</option>
+      </select>
+    </div>
+    <div class="actions">
+      <button type="button" class="cancel" id="addGroupCancel">Cancel</button>
+      <button type="button" class="login" id="addGroupCreate">Create Group</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOOL PREVIEW MODAL -->
+<div class="overlay" id="toolPreviewModal" aria-hidden="true">
+  <div class="sheet">
+    <div class="sheet-icon" id="previewModalIcon">🎯</div>
+    <h3 id="previewModalTitle">Hub Tool</h3>
+    <p id="previewModalText"></p>
+    <button type="button" class="single-action-btn" id="previewModalClose">OK</button>
+  </div>
+</div>
+
+<script>
+const GROUPS = [
+  {
+    id:"ssc-chsl", icon:"📚", accent:"mod-blue", members:1248,
+    name:{
+      en:"SSC CHSL Aspirants",hi:"SSC CHSL अभ्यर्थी",bn:"SSC CHSL পরীক্ষার্থী",
+      mr:"SSC CHSL उमेदवार",ta:"SSC CHSL தேர்வர்கள்",te:"SSC CHSL అభ్యర్థులు",
+      gu:"SSC CHSL ઉમેદવારો",ur:"SSC CHSL امیدوار",as:"SSC CHSL প্ৰাৰ্থী"
+    },
+    desc:{
+      en:"Exam strategy & daily practice sets",hi:"परीक्षा रणनीति और दैनिक प्रैक्टिस सेट",bn:"পরীক্ষার কৌশল ও দৈনিক অনুশীলন সেট",
+      mr:"परीक्षा रणनीती आणि दैनिक सराव संच",ta:"தேர்வு உத்தி & தினசரி பயிற்சி தொகுப்புகள்",te:"పరీక్ష వ్యూహం & రోజువారీ ప్రాక్టీస్ సెట్స్",
+      gu:"પરીક્ષા વ્યૂહરચના અને દૈનિક પ્રેક્ટિસ સેટ",ur:"امتحانی حکمت عملی اور روزانہ مشق سیٹ",as:"পৰীক্ষাৰ কৌশল আৰু দৈনিক অনুশীলন ছেট"
+    },
+    messages:[
+      {type:"text",initial:"A",name:"Aman",key:"practiceText",time:"10:12 AM"},
+      {type:"text",initial:"P",name:"Priya",key:"fast",time:"10:18 AM"},
+      {type:"text",initial:"N",name:"NowPro",role:"admin",key:"adminWelcome",time:"10:22 AM"},
+      {type:"text",mine:true,key:"timed",time:"10:24 AM"},
+      {type:"practice",initial:"R",name:"Rahul",time:"10:31 AM"}
+    ]
+  },
+  {
+    id:"math", icon:"🧮", accent:"mod-purple", members:864,
+    name:{
+      en:"Math Practice",hi:"गणित अभ्यास",bn:"গণিত অনুশীলন",
+      mr:"गणित सराव",ta:"கணிதப் பயிற்சி",te:"గణిత సాధన",
+      gu:"ગણિત પ્રેક્ટિસ",ur:"ریاضی کی مشق",as:"গণিত অনুশীলন"
+    },
+    desc:{
+      en:"Mental math, tables & fast arithmetic",hi:"मेंटल मैथ, पहाड़े और तेज़ गणना",bn:"মেন্টাল ম্যাথ, নামতা ও দ্রুত গণনা",
+      mr:"मेंटल मॅथ, पाढे आणि जलद अंकगणित",ta:"மனக்கணக்கு, வாய்பாடு & வேக கணிதம்",te:"మెంటల్ మ్యాథ్స్, ఎక్కాలు & వేగవంతమైన గణన",
+      gu:"મેન્ટલ મેથ્સ, ઘડિયા અને ઝડપી ગણતરી",ur:"ذہنی ریاضی، پہاڑے اور تیز حساب",as:"মেণ্টেল মেথ, নেওতা আৰু দ্ৰুত গণনা"
+    },
+    messages:[
+      {type:"text",initial:"S",name:"Sahil",key:"math1",time:"9:42 AM"},
+      {type:"text",initial:"N",name:"Neha",key:"math2",time:"9:50 AM"}
+    ]
+  },
+  {
+    id:"reasoning", icon:"🧠", accent:"mod-teal", members:692,
+    name:{
+      en:"Reasoning Aspirants",hi:"रीजनिंग अभ्यर्थी",bn:"রিজনিং পরীক্ষার্থী",
+      mr:"रीझनिंग उमेदवार",ta:"தர்க்கத் திறன் தேர்வர்கள்",te:"రీజనింగ్ అభ్యర్థులు",
+      gu:"રીઝનિંગ ઉમેદવારો",ur:"ریزننگ امیدوار",as:"ৰিজনিং প্ৰাৰ্থী"
+    },
+    desc:{
+      en:"Coding-decoding, puzzles & series",hi:"कोडिंग-डिकोडिंग, पज़ल्स और सीरीज़",bn:"কোডিং-ডিকোডিং, পাজল ও সিরিজ",
+      mr:"कोडिंग-डिकोडिंग, पझल्स आणि मालिका",ta:"கோடிங்-டிகோடிங், புதிர்கள் & தொடர்கள்",te:"కోడింగ్-డీకోడింగ్, పజిల్స్ & సిరీస్",
+      gu:"કોડિંગ-ડિકોડિંગ, પઝલ્સ અને શ્રેણી",ur:"کوڈنگ ڈیکوڈنگ، پہیلیاں اور سیریز",as:"ক’ডিং-ডিক’ডিং, পাজল আৰু শৃংখলা"
+    },
+    messages:[
+      {type:"text",initial:"K",name:"Kunal",key:"reasoning",time:"8:35 AM"}
+    ]
+  },
+  {
+    id:"gk", icon:"🌍", accent:"mod-amber", members:531,
+    name:{
+      en:"GK & Current Affairs",hi:"GK और करेंट अफेयर्स",bn:"GK ও কারেন্ট অ্যাফেয়ার্স",
+      mr:"GK आणि चालू घडामोडी",ta:"GK மற்றும் நடப்பு நிகழ்வுகள்",te:"GK & ప్రస్తుత వ్యవహారాలు",
+      gu:"GK અને કરંટ અફેર્સ",ur:"جی کے اور حالات حاضرہ",as:"GK আৰু সাম্প্ৰতিক ঘটনা"
+    },
+    desc:{
+      en:"Daily news, static GK & exam facts",hi:"दैनिक समाचार, स्टैटिक GK और परीक्षा तथ्य",bn:"দৈনিক খবর, স্ট্যাটিক GK ও পরীক্ষার তথ্য",
+      mr:"दैनिक बातम्या, स्टॅटिक GK आणि परीक्षा तथ्ये",ta:"தினசரி செய்திகள், GK & தேர்வு தகவல்கள்",te:"రోజువారీ వార్తలు, స్టాటిక్ GK & పరీక్షా అంశాలు",
+      gu:"દૈનિક સમાચાર, સ્ટેટિક GK અને પરીક્ષા તથ્યો",ur:"روزانہ خبریں، جنرل نالج اور امتحانی حقائق",as:"দৈনিক বাতৰি, ষ্টেটিক GK আৰু পৰীক্ষাৰ তথ্য"
+    },
+    messages:[
+      {type:"text",initial:"A",name:"Ankit",key:"gk",time:"8:10 AM"}
+    ]
+  }
+];
+
+const EXTRA_SECTIONS = {
+  daily: [
+    {
+      icon:"⚡", accent:"mod-green",
+      title:{en:"Speed Math Drill",hi:"स्पीड मैथ ड्रिल",gu:"સ્પીડ મેથ ડ્રિલ",mr:"स्पीड मॅथ ड्रिल",bn:"স্পিড ম্যাথ ড্রিল",ta:"வேக கணிதப் பயிற்சி",te:"స్పీడ్ మ్యాథ్ డ్రిల్",ur:"اسپیڈ میتھ ڈرل",as:"স্পীড মেথ ড্ৰিল"},
+      sub:{en:"50 rapid mental math questions",hi:"50 तेज़ मेंटल मैथ प्रश्न",gu:"50 ઝડપી મેન્ટલ મેથ પ્રશ્નો",mr:"50 जलद मेंटल मॅथ प्रश्न",bn:"৫০টি দ্রুত মেন্টাল ম্যাথ প্রশ্ন",ta:"50 விரைவான மனக்கணக்கு கேள்விகள்",te:"50 వేగవంతమైన మెంటల్ మ్యాథ్ ప్రశ్నలు",ur:"50 تیز ذہنی ریاضی کے سوالات",as:"৫০টা দ্ৰুত মেণ্টেল মেথ প্ৰশ্ন"},
+      tag:{en:"Daily Set",hi:"दैनिक सेट",gu:"દૈનિક સેટ",mr:"દૈનિક સંચ",bn:"দৈনিক সেট",ta:"தினசரி தொகுப்பு",te:"రోజువారీ సెట్",ur:"روزانہ سیٹ",as:"দৈনিক ছেট"}
+    },
+    {
+      icon:"🔢", accent:"mod-cyan",
+      title:{en:"Tables & Roots Sprint",hi:"पहाड़े और वर्गमूल स्प्रिंट",gu:"ઘડિયા અને વર્ગમૂળ સ્પ્રિન્ટ",mr:"पाढे आणि वर्गमूळ स्प्रिंट",bn:"নামতা ও বর্গমূল স্প্রিন্ট",ta:"வாய்பாடு & வர்க்கமூலம்",te:"ఎక్కాలు & వర్గమూల స్ప్రింట్",ur:"پہاڑے اور جزر المربع اسپرنگ",as:"নেওতা আৰু বৰ্গমূল স্প্ৰিণ্ট"},
+      sub:{en:"1 to 30 tables, squares & cubes",hi:"1 से 30 पहाड़े, वर्ग और घन",gu:"1 થી 30 ઘડિયા, વર્ગ અને ઘન",mr:"1 ते 30 पाढे, वर्ग आणि घन",bn:"১ থেকে ৩০ নামতা, বর্গ ও ঘন",ta:"1 முதல் 30 வாய்பாடு, வர்க்கம் & கனம்",te:"1 నుండి 30 ఎక్కాలు, వర్గాలు & ఘనాలు",ur:"1 سے 30 پہاڑے، مربع اور مکعب",as:"১ৰ পৰা ৩০ নেওতা, বৰ্গ আৰু ঘন"},
+      tag:{en:"5 Min",hi:"5 मिनट",gu:"5 મિનિટ",mr:"5 मिनिटे",bn:"৫ মিনিট",ta:"5 நிமிடம்",te:"5 నిమిషాలు",ur:"5 منٹ",as:"৫ মিনিট"}
+    },
+    {
+      icon:"%", accent:"mod-rose",
+      title:{en:"Percentage & Ratio",hi:"प्रतिशत और अनुपात",gu:"ટકાવારી અને ગુણોત્તર",mr:"टक्केवारी आणि गुणोत्तर",bn:"শতাংশ ও অনুপাত",ta:"சதவீதம் & விகிதம்",te:"శాతం & నిష్పత్తి",ur:"فیصد اور تناسب",as:"শতাংশ আৰু অনুপাত"},
+      sub:{en:"Exam-level arithmetic shortcuts",hi:"परीक्षा-स्तरीय अंकगणित शॉर्टकट",gu:"પરીક્ષા-સ્તરીય અંકગણિત શોર્ટકટ્સ",mr:"परीक्षा-स्तरीय अंकगणित शॉर्टकट",bn:"পরীক্ষা-স্তরের পাটিগণিত শর্টকাট",ta:"தேர்வு நிலை கணித குறுக்குவழிகள்",te:"పరీక్ష స్థాయి అంకగణిత షార్ట్‌కట్స్",ur:"امتحانی سطح کے حسابی شارٹ کٹس",as:"পৰীক্ষা পৰ্যায়ৰ পাটীগণিত শ্বৰ্টকাট"},
+      tag:{en:"25 Qs",hi:"25 प्रश्न",gu:"25 પ્રશ્નો",mr:"25 प्रश्न",bn:"২৫টি প্রশ্ন",ta:"25 கேள்விகள்",te:"25 ప్రశ్నలు",ur:"25 سوالات",as:"২৫টা প্ৰশ্ন"}
+    },
+    {
+      icon:"≡", accent:"mod-violet",
+      title:{en:"BODMAS Simplification",hi:"BODMAS सरलीकरण",gu:"BODMAS સાદુરૂપ",mr:"BODMAS सरलीकरण",bn:"BODMAS সরলীকরণ",ta:"BODMAS சுருக்குதல்",te:"BODMAS సూక్ష్మీకరణ",ur:"BODMAS سادہ کاری",as:"BODMAS সৰলীকৰণ"},
+      sub:{en:"Fast approximation & exact value",hi:"तेज़ अनुमान और सटीक मान",gu:"ઝડપી અંદાજ અને ચોક્કસ મૂલ્ય",mr:"जलद अंदाज आणि अचूक मूल्य",bn:"দ্রুত অনুমান ও সঠিক মান",ta:"விரைவான தோராயம் & துல்லிய மதிப்பு",te:"వేగవంతమైన అంచనా & ఖచ్చితమైన విలువ",ur:"تیز تخمینہ اور درست قیمت",as:"দ্ৰুত অনুমান আৰু সঠিক মান"},
+      tag:{en:"Live",hi:"लाइव",gu:"લાઇવ",mr:"लाईव्ह",bn:"লাইভ",ta:"நேரலை",te:"లైవ్",ur:"لائیو",as:"লাইভ"}
+    }
+  ],
+  ca: [
+    {
+      icon:"🗞️", accent:"mod-sky",
+      title:{en:"Today's Headlines",hi:"आज की मुख्य खबरें",gu:"આજના મુખ્ય સમાચાર",mr:"आजच्या ठळक बातम्या",bn:"আজকের প্রধান খবর",ta:"இன்றைய முக்கிய செய்திகள்",te:"నేటి ముఖ్యాంశాలు",ur:"آج کی اہم خبریں",as:"আজিৰ মুখ্য বাতৰি"},
+      sub:{en:"Top national & international events",hi:"प्रमुख राष्ट्रीय और अंतर्राष्ट्रीय घटनाएँ",gu:"મુખ્ય રાષ્ટ્રીય અને આંતરરાષ્ટ્રીય ઘટનાઓ",mr:"प्रमुख राष्ट्रीय आणि आंतरराष्ट्रीय घडामोडी",bn:"শীর্ষ জাতীয় ও আন্তর্জাতিক ঘটনা",ta:"முக்கிய தேசிய & சர்வதேச நிகழ்வுகள்",te:"ప్రధాన జాతీయ & అంతర్జాతీయ సంఘటనలు",ur:"اہم قومی اور بین الاقوامی واقعات",as:"প্ৰধান ৰাষ্ট্ৰীয় আৰু আন্তঃৰাষ্ট্ৰীয় ঘটনা"},
+      tag:{en:"Daily",hi:"दैनिक",gu:"દૈનિક",mr:"दैनिक",bn:"দৈনিক",ta:"தினசரி",te:"రోజువారీ",ur:"روزانہ",as:"দৈনিক"}
+    },
+    {
+      icon:"🎯", accent:"mod-indigo",
+      title:{en:"Daily CA Quiz",hi:"दैनिक करेंट अफेयर्स क्विज़",gu:"દૈનિક કરંટ અફેર્સ ક્વિઝ",mr:"दैनिक चालू घडामोडी प्रश्नमंजुषा",bn:"দৈনিক কারেন্ট অ্যাফেয়ার্স কুইজ",ta:"தினசரி நடப்பு நிகழ்வு வினாடி வினா",te:"రోజువారీ కరెంట్ అఫైర్స్ క్విజ్",ur:"روزانہ حالات حاضرہ کوئز",as:"দৈনিক সাম্প্ৰতিক ঘটনা কুইজ"},
+      sub:{en:"15 MCQs with instant explanations",hi:"तुरंत व्याख्या के साथ 15 MCQ",gu:"તરત સમજૂતી સાથે 15 MCQ",mr:"त्वरित स्पष्टीकरणासह 15 MCQ",bn:"তাৎক্ষণিক ব্যাখ্যাসহ ১৫টি MCQ",ta:"உடனடி விளக்கத்துடன் 15 MCQ",te:"తక్షణ వివరణతో 15 MCQలు",ur:"فوری وضاحت کے ساتھ 15 سوالات",as:"তাৎক্ষণিক ব্যাখ্যাৰ সৈতে ১৫টা MCQ"},
+      tag:{en:"15 MCQs",hi:"15 प्रश्न",gu:"15 પ્રશ્નો",mr:"15 प्रश्न",bn:"১৫টি প্রশ্ন",ta:"15 கேள்விகள்",te:"15 ప్రశ్నలు",ur:"15 سوالات",as:"১৫টা প্ৰশ্ন"}
+    },
+    {
+      icon:"🏛️", accent:"mod-teal",
+      title:{en:"Static GK Capsule",hi:"स्टैटिक GK कैप्सूल",gu:"સ્ટેટિક GK કેપ્સ્યુલ",mr:"स्टॅटिक GK कॅप्सूल",bn:"স্ট্যাটিক GK ক্যাপসুল",ta:"நிலையான GK குறிப்புகள்",te:"స్టాటిక్ GK క్యాప్సూల్",ur:"اسٹیٹک جی کے کیپسول",as:"ষ্টেটিক GK কেপচুল"},
+      sub:{en:"Polity, history, economy & science",hi:"राजव्यवस्था, इतिहास, अर्थव्यवस्था और विज्ञान",gu:"રાજ્યવ્યવસ્થા, ઇતિહાસ, અર્થતંત્ર અને વિજ્ઞાન",mr:"राज्यशास्त्र, इतिहास, अर्थव्यवस्था आणि विज्ञान",bn:"রাষ্ট্রবিজ্ঞান, ইতিহাস, অর্থনীতি ও বিজ্ঞান",ta:"அரசியலமைப்பு, வரலாறு, பொருளாதாரம் & அறிவியல்",te:"పాలిటీ, చరిత్ర, ఆర్థికం & సైన్స్",ur:"سیاست، تاریخ، معیشت اور سائنس",as:"ৰাজনীতি, ইতিহাস, অৰ্থনীতি আৰু বিজ্ঞান"},
+      tag:{en:"Notes",hi:"नोट्स",gu:"નોંધ",mr:"नोट्स",bn:"নোটস",ta:"குறிப்புகள்",te:"நோட்ஸ்",ur:"نوٹس",as:"নোটছ"}
+    },
+    {
+      icon:"📅", accent:"mod-amber",
+      title:{en:"Monthly Revision",hi:"मासिक रिवीजन",gu:"માસિક રિવિઝન",mr:"માસિક ઉજળણી",bn:"মাসিক রিভিশন",ta:"மாதாந்திர திருப்புதல்",te:"నెలవారీ రివిజన్",ur:"ماہانہ دہرائی",as:"মাহেকীয়া ৰিভিজন"},
+      sub:{en:"One-liner revision for upcoming exams",hi:"आगामी परीक्षाओं के लिए वन-लाइनर रिवीजन",gu:"આગામી પરીક્ષાઓ માટે વન-લાઇનર રિવિઝન",mr:"आगामी परीक्षांसाठी वन-लाइनर उजळणी",bn:"আসন্ন পরীক্ষার জন্য ওয়ান-লাইনার রিভিশন",ta:"வரும் தேர்வுகளுக்கான ஒரு வரி திருப்புதல்",te:"రాబోయే పరీక్షల కోసం వన్-లైనర్ రివిజన్",ur:"آنے والے امتحانات کے لیے یک سطری دہرائی",as:"আগন্তুক পৰীক্ষাৰ বাবে ৱান-লাইনাৰ ৰিভিজন"},
+      tag:{en:"PDF / Quiz",hi:"रिवीजन",gu:"રિવિઝન",mr:"उजळणी",bn:"রিভিশন",ta:"திருப்புதல்",te:"రివిజన్",ur:"دہرائی",as:"ৰিভিজন"}
+    }
+  ],
+  challenge: [
+    {
+      icon:"⚔️", accent:"mod-orange",
+      title:{en:"1v1 Speed Battle",hi:"1v1 स्पीड बैटल",gu:"1v1 સ્પીડ બેટલ",mr:"1v1 स्पीड बॅटल",bn:"1v1 স্পিড ব্যাটল",ta:"1v1 வேகப் போட்டி",te:"1v1 స్పీడ్ బ్యాటిల్",ur:"1v1 اسپیڈ مقابلہ",as:"1v1 স্পীড বেটল"},
+      sub:{en:"Real-time calculation match with peers",hi:"साथियों के साथ रियल-टाइम गणना मुकाबला",gu:"સાથીઓ સાથે રિયલ-ટાઇમ ગણતરી મુકાબલો",mr:"मित्रांसोबत रिअल-टाइम गणना सामना",bn:"সতীর্থদের সাথে রিয়েল-টাইম গণনা প্রতিযোগিতা",ta:"நண்பர்களுடன் நேரடி கணக்கீட்டுப் போட்டி",te:"తోటివారితో రియల్-టైమ్ గణన పోటీ",ur:"ساتھیوں کے ساتھ براہ راست حسابی مقابلہ",as:"সহপাঠীৰ সৈতে ৰিয়েল-টাইম গণনা যুঁজ"},
+      tag:{en:"Battle",hi:"मुकाबला",gu:"મુકાબલો",mr:"सामना",bn:"লড়াই",ta:"போட்டி",te:"పోటీ",ur:"مقابلہ",as:"যুঁজ"}
+    },
+    {
+      icon:"🏆", accent:"mod-amber",
+      title:{en:"Group Tournament",hi:"ग्रुप टूर्नामेंट",gu:"ગ્રુપ ટૂર્નામેન્ટ",mr:"ग्रुप स्पर्धा",bn:"ग्रुप টুর্নামেন্ট",ta:"குழுப் போட்டி",te:"గ్రూప్ టోర్నమెంట్",ur:"گروپ ٹورنامنٹ",as:"গোট টুৰ্ণামেণ্ট"},
+      sub:{en:"Weekly inter-group accuracy championship",hi:"साप्ताहिक इंटर-ग्रुप सटीकता चैंपियनशिप",gu:"સાપ્તાહિક ઇન્ટર-ગ્રુપ ચોકસાઈ ચેમ્પિયનશિપ",mr:"साप्ताहिक आंतर-गट अचूकता स्पर्धा",bn:"সাপ্তাহিক আন্তঃগ্রুপ নির্ভুলতা চ্যাম্পিয়নশিপ",ta:"வாராந்திர குழு துல்லிய சாம்பியன்ஷிப்",te:"వారాంతపు ఇంటర్-గ్రూప్ ఖచ్చితత్వ ఛాంపియన్‌షిప్",ur:"ہفتہ وار گروپ درستگی چیمپئن شپ",as:"সাপ্তাহিক আন্তঃগোট সঠিকতা চেম্পিয়নশ্বিপ"},
+      tag:{en:"Weekly",hi:"साप्ताहिक",gu:"સાપ્તાહિક",mr:"साप्ताहिक",bn:"সাপ্তাহিক",ta:"வாராந்திர",te:"వారాంతపు",ur:"ہفتہ وار",as:"সাপ্তাহিক"}
+    },
+    {
+      icon:"⏱️", accent:"mod-rose",
+      title:{en:"60s Survival Sprint",hi:"60 सेकंड सर्वाइवल स्प्रिंट",gu:"60 સેકન્ડ સર્વાઇવલ સ્પ્રિન્ટ",mr:"60 सेकंद सर्व्हायव्हल स्प्रिंट",bn:"৬০ সেকেন্ড সারভাইভাল স্প্রিন্ট",ta:"60 வினாடி சர்வைவல் ஓட்டம்",te:"60 సెకన్ల సర్వైవల్ స్ప్రింట్",ur:"60 سیکنڈ سروائیول اسپرنگ",as:"৬০ ছেকেণ্ড চাৰ্ভাইভেল স্প্ৰিণ্ট"},
+      sub:{en:"Keep answering right to extend timer",hi:"टाइमर बढ़ाने के लिए लगातार सही उत्तर दें",gu:"ટાઇમર વધારવા માટે સતત સાચા જવાબ આપો",mr:"टाइमर वाढवण्यासाठी सलग बरोबर उत्तरे द्या",bn:"টাইমার বাড়াতে একটানা সঠিক উত্তর দিন",ta:"நேரத்தை நீட்டிக்க தொடர்ந்து சரியான விடையளிக்கவும்",te:"టైమర్ పెంచుకోవడానికి వరుసగా సరైన సమాధానాలు ఇవ్వండి",ur:"وقت بڑھانے کے لیے مسلسل درست جواب دیں",as:"টাইমাৰ বঢ়াবলৈ একেৰাহে শুদ্ধ উত্তৰ দিয়ক"},
+      tag:{en:"60 Sec",hi:"60 सेकंड",gu:"60 સેકન્ડ",mr:"60 सेकंद",bn:"৬০ সেকেন্ড",ta:"60 வினாடி",te:"60 సెకన్లు",ur:"60 سیکنڈ",as:"৬০ ছেকেণ্ড"}
+    },
+    {
+      icon:"🧠", accent:"mod-purple",
+      title:{en:"Memory Challenge",hi:"मेमोरी चैलेंज",gu:"મેમરી ચેલેન્જ",mr:"मेमरी चॅलेंज",bn:"মেমরি চ্যালেঞ্জ",ta:"நினைவாற்றல் சவால்",te:"మెమరీ ఛాలెంజ్",ur:"میموری چیلنج",as:"মেম’ৰি চেলেঞ্জ"},
+      sub:{en:"Flash numbers & falling calculation duel",hi:"फ़्लैश नंबर और गिरती गणना का मुकाबला",gu:"ફ્લેશ નંબર અને પડતી ગણતરીનો મુકાબલો",mr:"फ्लॅश नंबर आणि पडत्या गणनेचा सामना",bn:"ফ্ল্যাশ নম্বর ও ফলিং ক্যালকুলেশন ডুয়েল",ta:"ஃபிளாஷ் எண்கள் & விழும் கணக்கீடு சவால்",te:"ఫ్లాష్ నంబర్స్ & ఫాలింగ్ గణన పోటీ",ur:"فلیش نمبرز اور گرتے حساب کا مقابلہ",as:"ফ্লেশ্ব নম্বৰ আৰু ফলিং গণনা প্ৰতিযোগিতা"},
+      tag:{en:"Pro",hi:"प्रो",gu:"પ્રો",mr:"प्रो",bn:"প্রো",ta:"புரோ",te:"ప్రో",ur:"پرو",as:"প্ৰ’"}
+    }
+  ],
+  progress: [
+    {
+      icon:"📈", accent:"mod-pink",
+      title:{en:"Accuracy & Speed",hi:"सटीकता और गति",gu:"ચોકસાઈ અને ઝડપ",mr:"अचूकता आणि वेग",bn:"নির্ভুলতা ও গতি",ta:"துல்லியம் & வேகம்",te:"ఖచ్చితత్వం & వేగం",ur:"درستگی اور رفتار",as:"সঠিকতা আৰু গতি"},
+      sub:{en:"88% avg accuracy • 1.8s per question",hi:"88% औसत सटीकता • 1.8 सेकंड प्रति प्रश्न",gu:"88% સરેરાશ ચોકસાઈ • 1.8 સેકન્ડ પ્રતિ પ્રશ્ન",mr:"88% सरासरी अचूकता • 1.8 सेकंद प्रति प्रश्न",bn:"৮৮% গড় নির্ভুলতা • প্রতি প্রশ্নে ১.৮ সেকেন্ড",ta:"88% சராசரி துல்லியம் • கேள்விக்கு 1.8 வினாடி",te:"88% సగటు ఖచ్చితత్వం • ప్రశ్నకు 1.8 సెకన్లు",ur:"88% اوسط درستگی • 1.8 سیکنڈ فی سوال",as:"৮৮% গড় সঠিকতা • প্ৰতি প্ৰশ্নত ১.৮ ছেকেণ্ড"},
+      tag:{en:"88% Acc",hi:"88% सटीक",gu:"88% ચોકસાઈ",mr:"88% अचूक",bn:"৮৮% সঠিক",ta:"88% துல்லியம்",te:"88% ఖచ్చితత్వం",ur:"88% درست",as:"৮৮% সঠিক"}
+    },
+    {
+      icon:"🔥", accent:"mod-amber",
+      title:{en:"Streak & Consistency",hi:"स्ट्रीक और नियमितता",gu:"સ્ટ્રીક અને નિયમિતતા",mr:"स्ट्रीक आणि सातत्य",bn:"স্ট্রিক ও নিয়মিততা",ta:"தொடர்ச்சி & நிலைத்தன்மை",te:"స్ట్రీక్ & స్థిరత్వం",ur:"اسٹریک اور تسلسل",as:"ষ্ট্ৰিক আৰু নিয়মিততা"},
+      sub:{en:"14 days active streak • Best: 32 Qs",hi:"14 दिन एक्टिव स्ट्रीक • सर्वश्रेष्ठ: 32 प्रश्न",gu:"14 દિવસ એક્ટિવ સ્ટ્રીક • શ્રેષ્ઠ: 32 પ્રશ્નો",mr:"14 दिवस सक्रिय स्ट्रीक • सर्वोत्तम: 32 प्रश्न",bn:"১৪ দিনের অ্যাক্টিভ স্ট্রিক • সেরা: ৩২টি প্রশ্ন",ta:"14 நாட்கள் தொடர் பயிற்சி • சிறந்தது: 32",te:"14 రోజుల యాక్టివ్ స్ట్రీక్ • ఉత్తమం: 32",ur:"14 دن مسلسل مشق • بہترین: 32 سوالات",as:"১৪ দিনৰ সক্ৰিয় ষ্ট্ৰিক • শ্ৰেষ্ঠ: ৩২টা প্ৰশ্ন"},
+      tag:{en:"🔥 14 Days",hi:"🔥 14 दिन",gu:"🔥 14 દિવસ",mr:"🔥 14 दिवस",bn:"🔥 ১৪ দিন",ta:"🔥 14 நாட்கள்",te:"🔥 14 రోజులు",ur:"🔥 14 دن",as:"🔥 ১৪ দিন"}
+    },
+    {
+      icon:"🥇", accent:"mod-blue",
+      title:{en:"Hub Rank",hi:"हब रैंक",gu:"હબ રેન્ક",mr:"हब रँक",bn:"হাব র‍্যাঙ্ক",ta:"ஹப் தரவரிசை",te:"హబ్ ర్యాంక్",ur:"ہب رینک",as:"হাব ৰেংক"},
+      sub:{en:"Top 5% in Calculation & SSC Groups",hi:"गणना और SSC ग्रुप में शीर्ष 5% में",gu:"ગણતરી અને SSC ગ્રુપમાં ટોપ 5% માં",mr:"गणना आणि SSC ग्रुपमध्ये टॉप 5% मध्ये",bn:"গণনা ও SSC গ্রুপে শীর্ষ ৫%-এ",ta:"கணக்கீடு & SSC குழுக்களில் முதல் 5%",te:"గణన & SSC గ్రూపులలో టాప్ 5%",ur:"حساب اور SSC گروپس میں سرفہرست 5%",as:"গণনা আৰু SSC গোটত শীৰ্ষ ৫%"},
+      tag:{en:"Top 5%",hi:"टॉप 5%",gu:"ટોપ 5%",mr:"टॉप 5%",bn:"শীর্ষ ৫%",ta:"முதல் 5%",te:"టాప్ 5%",ur:"ٹاپ 5%",as:"শীৰ্ষ ৫%"}
+    },
+    {
+      icon:"📋", accent:"mod-fuchsia",
+      title:{en:"Topic-wise Report Card",hi:"विषय-वार रिपोर्ट कार्ड",gu:"વિષય-વાર રિપોર્ટ કાર્ડ",mr:"विषयनिहाय रिपोर्ट कार्ड",bn:"বিষয়ভিত্তিক রিপোর্ট কার্ড",ta:"தலைப்பு வாரியான அறிக்கை",te:"టాపిక్ వారీ రిపోర్ట్ కార్డ్",ur:"موضوع وار رپورٹ کارڈ",as:"বিষয়ভিত্তিক ৰিপ’ৰ্ট কাৰ্ড"},
+      sub:{en:"Strongest: Tables & Squares • Focus: Ratio",hi:"मजबूत: पहाड़े और वर्ग • फोकस: अनुपात",gu:"મજબૂત: ઘડિયા અને વર્ગ • ફોકસ: ગુણોત્તર",mr:"मजबूत: पाढे आणि वर्ग • लक्ष: गुणोत्तर",bn:"শক্তিশালী: নামতা ও বর্গ • ফোকাস: অনুপাত",ta:"வலிமை: வாய்பாடு & வர்க்கம் • கவனம்: விகிதம்",te:"బలం: ఎక్కాలు & వర్గాలు • ఫోకస్: నిష్పత్తి",ur:"مضبوط: پہاڑے اور مربع • توجہ: تناسب",as:"শক্তিশালী: নেওতা আৰু বৰ্গ • মনোযোগ: অনুপাত"},
+      tag:{en:"Summary",hi:"सारांश",gu:"સારાંશ",mr:"सारांश",bn:"সারাংশ",ta:"சுருக்கம்",te:"సారాంశం",ur:"خلاصہ",as:"সাৰাংশ"}
+    }
+  ]
+};
+
+const I18N = {
+  en:{
+    code:"EN", name:"English", you:"You", hub:"Hub",
+    groups:"Groups Tool", group:"group", groupsPlural:"groups", toolsPlural:"tools", members:"members", active:"● Active",
+    kickerGroups:"1. GROUPS TOOL", subGroups:"Join exam study groups, share practice sets and discuss shortcuts.",
+    kickerDaily:"2. DAILY PRACTICE", titleDaily:"Daily Practice", subDaily:"Solve daily hub targets and speed drills together.",
+    kickerCA:"3. CURRENT AFFAIRS", titleCA:"Current Affairs", subCA:"Daily GK updates, exam capsules and quick revision quizzes.",
+    kickerChallenge:"4. CHALLENGE", titleChallenge:"Challenge", subChallenge:"Compete in 1v1 speed battles, group tournaments and timed sprints.",
+    kickerProgress:"5. PROGRESS REPORT", titleProgress:"Progress Report", subProgress:"Track hub rank, accuracy analytics and weekly streaks.",
+    addGroupBtn:"Add Group", addCardTitle:"Create New Group", addCardSub:"Add your own exam or topic group",
+    addModalTitle:"Create Hub Group", addModalDesc:"Add a new study group to the Groups Tool.",
+    newGroupNameLabel:"Group Name", newGroupIconLabel:"Category Icon", createBtn:"Create Group",
+    previewNote:"This hub tool is synced with your NowPro practice profile. Select any group in Groups Tool above to share and discuss live!",
+    back:"Back", chatBack:"Back to groups",
+    guestHome:"Demo messages & groups stay in this open page.", guestChat:"Login to join this group and participate.",
+    loginRequired:"Login required", loginText:"Login to join a group and participate in the discussion.",
+    cancel:"Cancel", login:"Login", close:"OK", noGroups:"No groups found.",
+    practice:"PRACTICE RESULT", questions:"Questions", correct:"Correct",
+    accuracy:"Accuracy", streak:"Streak", expires:"Sample",
+    joinDemo:"➕ Join demo", leaveDemo:"🗑️ Leave demo",
+    msgs:{
+      practiceText:"Aaj percentage ke 50 questions practice kiye.",
+      adminWelcome:"Welcome to the group! Keep discussions focused on practice and exam preparation.",
+      practice:"PRACTICE RESULT",
+      fast:"15% of 240 = 36. Fast method bhi batao.",
+      timed:"Calculation speed improve karne ke liye daily timed practice useful hai.",
+      math1:"Aaj simplification ke questions solve kiye.",
+      math2:"LCM/HCF ke shortcuts discuss karte hain.",
+      reasoning:"Coding-decoding ka practice set complete hua.",
+      gk:"Aaj ke important current affairs discuss karte hain."
+    }
+  },
+  hi:{
+    code:"हि", name:"हिन्दी", you:"आप", hub:"हब",
+    groups:"ग्रुप्स टूल", group:"ग्रुप", groupsPlural:"ग्रुप", toolsPlural:"टूल", members:"सदस्य", active:"● सक्रिय",
+    kickerGroups:"1. ग्रुप्स टूल", subGroups:"परीक्षा स्टडी ग्रुप से जुड़ें, प्रैक्टिस सेट साझा करें और शॉर्टकट पर चर्चा करें।",
+    kickerDaily:"2. दैनिक अभ्यास", titleDaily:"दैनिक अभ्यास", subDaily:"हब के दैनिक टारगेट और स्पीड ड्रिल साथ मिलकर हल करें।",
+    kickerCA:"3. करेंट अफेयर्स", titleCA:"करेंट अफेयर्स", subCA:"दैनिक GK अपडेट्स, परीक्षा कैप्सूल और तेज़ रिवीजन क्विज़।",
+    kickerChallenge:"4. चैलेंज", titleChallenge:"चैलेंज", subChallenge:"1v1 स्पीड बैटल, ग्रुप टूर्नामेंट और टाइम्ड स्प्रिंट में मुकाबला करें।",
+    kickerProgress:"5. प्रगति रिपोर्ट", titleProgress:"प्रगति रिपोर्ट", subProgress:"हब रैंक, सटीकता विश्लेषण और साप्ताहिक स्ट्रीक ट्रैक करें।",
+    addGroupBtn:"नया ग्रुप", addCardTitle:"नया ग्रुप बनाएँ", addCardSub:"अपना परीक्षा या टॉपिक ग्रुप जोड़ें",
+    addModalTitle:"नया हब ग्रुप बनाएँ", addModalDesc:"ग्रुप्स टूल में एक नया स्टडी ग्रुप जोड़ें।",
+    newGroupNameLabel:"ग्रुप का नाम", newGroupIconLabel:"आइकन चुनें", createBtn:"ग्रुप बनाएँ",
+    previewNote:"यह हब टूल आपके NowPro अभ्यास प्रोफ़ाइल के साथ जुड़ा है। लाइव चर्चा के लिए ऊपर ग्रुप्स टूल में से कोई भी ग्रुप खोलें!",
+    back:"वापस", chatBack:"ग्रुप पर वापस",
+    guestHome:"डेमो संदेश और ग्रुप केवल इस खुले पेज में रहते हैं।", guestChat:"इस ग्रुप में शामिल होने और भाग लेने के लिए लॉगिन करें।",
+    loginRequired:"लॉगिन आवश्यक है", loginText:"ग्रुप में शामिल होकर चर्चा में भाग लेने के लिए लॉगिन करें।",
+    cancel:"रद्द करें", login:"लॉगिन", close:"ठीक है", noGroups:"कोई ग्रुप नहीं मिला।",
+    practice:"अभ्यास परिणाम", questions:"प्रश्न", correct:"सही", accuracy:"सटीकता", streak:"स्ट्रीक", expires:"नमूना",
+    joinDemo:"➕ डेमो जुड़ें", leaveDemo:"🗑️ डेमो छोड़ें",
+    msgs:{
+      practiceText:"आज प्रतिशत के 50 प्रश्नों का अभ्यास किया।",
+      adminWelcome:"ग्रुप में आपका स्वागत है! चर्चा को अभ्यास और परीक्षा की तैयारी तक सीमित रखें।",
+      practice:"अभ्यास परिणाम",
+      fast:"15% of 240 = 36। इसका तेज तरीका भी बताओ।",
+      timed:"Calculation speed बेहतर करने के लिए रोज़ timed practice उपयोगी है।",
+      math1:"आज simplification के प्रश्न हल किए।",
+      math2:"LCM/HCF के shortcuts पर चर्चा करते हैं।",
+      reasoning:"Coding-decoding का practice set पूरा हुआ।",
+      gk:"आज के महत्वपूर्ण current affairs पर चर्चा करते हैं।"
+    }
+  },
+  gu:{
+    code:"ગુ", name:"ગુજરાતી", you:"તમે", hub:"હબ",
+    groups:"ગ્રુપ્સ ટૂલ", group:"ગ્રુપ", groupsPlural:"ગ્રુપ", toolsPlural:"ટૂલ", members:"સભ્યો", active:"● સક્રિય",
+    kickerGroups:"1. ગ્રુપ્સ ટૂલ", subGroups:"પરીક્ષા સ્ટડી ગ્રુપમાં જોડાઓ, પ્રેક્ટિસ સેટ શેર કરો અને શોર્ટકટ્સની ચર્ચા કરો.",
+    kickerDaily:"2. દૈનિક પ્રેક્ટિસ", titleDaily:"દૈનિક પ્રેક્ટિસ", subDaily:"હબના દૈનિક લક્ષ્યો અને સ્પીડ ડ્રિલ્સ સાથે મળીને ઉકેલો.",
+    kickerCA:"3. કરંટ અફેર્સ", titleCA:"કરંટ અફેર્સ", subCA:"દૈનિક GK અપડેટ્સ, પરીક્ષા કેપ્સ્યુલ અને ઝડપી રિવિઝન ક્વિઝ.",
+    kickerChallenge:"4. ચેલેન્જ", titleChallenge:"ચેલેન્જ", subChallenge:"1v1 સ્પીડ બેટલ, ગ્રુપ ટૂર્નામેન્ટ અને ટાઇમ્ડ સ્પ્રિન્ટમાં સ્પર્ધા કરો.",
+    kickerProgress:"5. પ્રગતિ રિપોર્ટ", titleProgress:"પ્રગતિ રિપોર્ટ", subProgress:"હબ રેન્ક, ચોકસાઈ વિશ્લેષણ અને સાપ્તાહિક સ્ટ્રીક ટ્રેક કરો.",
+    addGroupBtn:"નવું ગ્રુપ", addCardTitle:"નવું ગ્રુપ બનાવો", addCardSub:"તમારું પરીક્ષા અથવા વિષય ગ્રુપ ઉમેરો",
+    addModalTitle:"નવું હબ ગ્રુપ બનાવો", addModalDesc:"ગ્રુપ્સ ટૂલમાં નવું સ્ટડી ગ્રુપ ઉમેરો.",
+    newGroupNameLabel:"ગ્રુપનું નામ", newGroupIconLabel:"આઇકન પસંદ કરો", createBtn:"ગ્રુપ બનાવો",
+    previewNote:"આ હબ ટૂલ તમારી NowPro પ્રેક્ટિસ પ્રોફાઇલ સાથે જોડાયેલું છે. લાઇવ ચર્ચા માટે ઉપર ગ્રુપ્સ ટૂલમાંથી કોઈપણ ગ્રુપ ખોલો!",
+    back:"પાછા", chatBack:"ગ્રુપ પર પાછા",
+    guestHome:"ડેમો સંદેશાઓ ફક્ત આ ખુલ્લા પેજમાં જ રહે છે.", guestChat:"આ ગ્રુપમાં જોડાવા અને ભાગ લેવા માટે લોગિન કરો.",
+    loginRequired:"લોગિન જરૂરી છે", loginText:"ગ્રુપમાં જોડાવા અને ચર્ચામાં ભાગ લેવા માટે લોગિન કરો.",
+    cancel:"રદ કરો", login:"લોગિન", close:"બરાબર", noGroups:"કોઈ ગ્રુપ મળ્યું નથી.",
+    practice:"પ્રેક્ટિસ પરિણામ", questions:"પ્રશ્નો", correct:"સાચા", accuracy:"ચોકસાઈ", streak:"સ્ટ્રીક", expires:"નમૂનો",
+    joinDemo:"➕ ડેમો જોડાઓ", leaveDemo:"🗑️ ડેમો છોડો",
+    msgs:{
+      practiceText:"આજે ટકાવારીના 50 પ્રશ્નોની પ્રેક્ટિસ કરી.",
+      adminWelcome:"ગ્રુપમાં તમારું સ્વાગત છે! ચર્ચાને પ્રેક્ટિસ અને પરીક્ષાની તૈયારી પર કેન્દ્રિત રાખો.",
+      practice:"પ્રેક્ટિસ પરિણામ",
+      fast:"15% of 240 = 36. આની ઝડપી રીત પણ જણાવો.",
+      timed:"ગણતરીની ઝડપ વધારવા માટે દરરોજ timed practice ઉપયોગી છે.",
+      math1:"આજે simplification ના પ્રશ્નો ઉકેલ્યા.",
+      math2:"LCM/HCF ના shortcuts પર ચર્ચા કરીએ.",
+      reasoning:"Coding-decoding નો પ્રેક્ટિસ સેટ પૂર્ણ થયો.",
+      gk:"આજના મહત્વપૂર્ણ current affairs પર ચર્ચા કરીએ."
+    }
+  },
+  mr:{
+    code:"म", name:"मराठी", you:"तुम्ही", hub:"हब",
+    groups:"ग्रुप्स टूल", group:"ग्रुप", groupsPlural:"ग्रुप", toolsPlural:"टूल", members:"सदस्य", active:"● सक्रिय",
+    kickerGroups:"1. ग्रुप्स टूल", subGroups:"परीक्षा अभ्यास गटात सामील व्हा, सराव संच शेअर करा आणि शॉर्टकटवर चर्चा करा.",
+    kickerDaily:"2. दैनिक सराव", titleDaily:"दैनिक सराव", subDaily:"हबचे दैनंदिन लक्ष्य आणि स्पीड ड्रिल्स एकत्र सोडवा.",
+    kickerCA:"3. चालू घडामोडी", titleCA:"चालू घडामोडी", subCA:"दैनिक GK अपडेट्स, परीक्षा कॅप्सूल आणि जलद उजळणी प्रश्नमंजुषा.",
+    kickerChallenge:"4. चॅलेंज", titleChallenge:"चॅलेंज", subChallenge:"1v1 स्पीड बॅटल, ग्रुप स्पर्धा आणि टाइम्ड स्प्रिंटमध्ये स्पर्धा करा.",
+    kickerProgress:"5. प्रगती अहवाल", titleProgress:"प्रगती अहवाल", subProgress:"हब रँक, अचूकता विश्लेषण आणि साप्ताहिक स्ट्रीक ट्रॅक करा.",
+    addGroupBtn:"नवीन ग्रुप", addCardTitle:"नवीन ग्रुप तयार करा", addCardSub:"तुमचा परीक्षा किंवा विषय ग्रुप जोडा",
+    addModalTitle:"नवीन हब ग्रुप तयार करा", addModalDesc:"ग्रुप्स टूलमध्ये नवीन अभ्यास गट जोडा.",
+    newGroupNameLabel:"ग्रुपचे नाव", newGroupIconLabel:"चिन्ह निवडा", createBtn:"ग्रुप तयार करा",
+    previewNote:"हे हब टूल तुमच्या NowPro सराव प्रोफाइलशी जोडलेले आहे. थेट चर्चेसाठी वरील ग्रुप्स टूलमधील कोणताही ग्रुप उघडा!",
+    back:"मागे", chatBack:"ग्रुपकडे परत",
+    guestHome:"डेमो संदेश फक्त या उघड्या पेजवर राहतात.", guestChat:"या ग्रुपमध्ये सहभागी होण्यासाठी लॉगिन करा.",
+    loginRequired:"लॉगिन आवश्यक", loginText:"ग्रुपमध्ये सहभागी होऊन चर्चेत भाग घेण्यासाठी लॉगिन करा.",
+    cancel:"रद्द करा", login:"लॉगिन", close:"ठीक आहे", noGroups:"कोणतेही ग्रुप सापडले नाहीत.",
+    practice:"सरावाचा निकाल", questions:"प्रश्न", correct:"बरोबर", accuracy:"अचूकता", streak:"स्ट्रीक", expires:"नमुना",
+    joinDemo:"➕ डेमो सामील व्हा", leaveDemo:"🗑️ डेमो सोडा",
+    msgs:{
+      practiceText:"आज टक्केवारीचे ५० प्रश्न सरावले.",
+      adminWelcome:"ग्रुपमध्ये स्वागत आहे! चर्चा सराव आणि परीक्षेच्या तयारीपुरती ठेवा.",
+      practice:"सरावाचा निकाल",
+      fast:"15% of 240 = 36. जलद पद्धतही सांगा.",
+      timed:"गणनेचा वेग वाढवण्यासाठी दररोज timed practice उपयुक्त आहे.",
+      math1:"आज simplification चे प्रश्न सोडवले.",
+      math2:"LCM/HCF shortcuts वर चर्चा करूया.",
+      reasoning:"Coding-decoding practice set पूर्ण झाला.",
+      gk:"आजच्या महत्त्वाच्या current affairs वर चर्चा करूया."
+    }
+  },
+  bn:{
+    code:"বা", name:"বাংলা", you:"আপনি", hub:"হাব",
+    groups:"গ্রুপস টুল", group:"গ্রুপ", groupsPlural:"গ্রুপ", toolsPlural:"টুল", members:"সদস্য", active:"● সক্রিয়",
+    kickerGroups:"১. গ্রুপস টুল", subGroups:"পরীক্ষার স্টাডি গ্রুপে যোগ দিন, প্র্যাকটিস সেট শেয়ার করুন এবং শর্টকাট নিয়ে আলোচনা করুন।",
+    kickerDaily:"২. দৈনিক অনুশীলন", titleDaily:"দৈনিক অনুশীলন", subDaily:"হাবের প্রতিদিনের লক্ষ্য এবং স্পিড ড্রিল একসাথে সমাধান করুন।",
+    kickerCA:"৩. কারেন্ট অ্যাফেয়ার্স", titleCA:"কারেন্ট অ্যাফেয়ার্স", subCA:"দৈনিক GK আপডেট, পরীক্ষার ক্যাপসুল এবং দ্রুত রিভিশন কুইজ।",
+    kickerChallenge:"৪. চ্যালেঞ্জ", titleChallenge:"চ্যালেঞ্জ", subChallenge:"1v1 স্পিড ব্যাটল, গ্রুপ টুর্নামেন্ট এবং টাইমড স্প্রিন্টে প্রতিযোগিতা করুন।",
+    kickerProgress:"৫. অগ্রগতি রিপোর্ট", titleProgress:"অগ্রগতি রিপোর্ট", subProgress:"হাব র‍্যাঙ্ক, নির্ভুলতা বিশ্লেষণ এবং সাপ্তাহিক স্ট্রিক ট্র্যাক করুন।",
+    addGroupBtn:"নতুন গ্রুপ", addCardTitle:"নতুন গ্রুপ তৈরি করুন", addCardSub:"আপনার পরীক্ষা বা বিষয়ের গ্রুপ যোগ করুন",
+    addModalTitle:"নতুন হাব গ্রুপ তৈরি করুন", addModalDesc:"গ্রুপস টুলে একটি নতুন স্টাডি গ্রুপ যোগ করুন।",
+    newGroupNameLabel:"গ্রুপের নাম", newGroupIconLabel:"আইকন বেছে নিন", createBtn:"গ্রুপ তৈরি করুন",
+    previewNote:"এই হাব টুলটি আপনার NowPro প্র্যাকটিস প্রোফাইলের সাথে যুক্ত। সরাসরি আলোচনার জন্য উপরে গ্রুপস টুল থেকে যেকোনো গ্রুপ খুলুন!",
+    back:"ফিরে যান", chatBack:"গ্রুপে ফিরে যান",
+    guestHome:"ডেমো বার্তা শুধুমাত্র এই খোলা পৃষ্ঠায় থাকে।", guestChat:"এই গ্রুপে যোগ দিতে ও অংশ নিতে লগইন করুন।",
+    loginRequired:"লগইন প্রয়োজন", loginText:"গ্রুপে যোগ দিয়ে আলোচনায় অংশ নিতে লগইন করুন।",
+    cancel:"বাতিল", login:"লগইন", close:"ঠিক আছে", noGroups:"কোনও গ্রুপ পাওয়া যায়নি।",
+    practice:"অনুশীলনের ফলাফল", questions:"প্রশ্ন", correct:"সঠিক", accuracy:"নির্ভুলতা", streak:"স্ট্রিক", expires:"নমুনা",
+    joinDemo:"➕ ডেমো যোগ দিন", leaveDemo:"🗑️ ডেমো ছাড়ুন",
+    msgs:{
+      practiceText:"আজ শতাংশের ৫০টি প্রশ্ন অনুশীলন করেছি।",
+      adminWelcome:"গ্রুপে স্বাগতম! আলোচনা অনুশীলন ও পরীক্ষার প্রস্তুতির মধ্যে রাখুন।",
+      practice:"অনুশীলনের ফলাফল",
+      fast:"15% of 240 = 36। দ্রুত পদ্ধতিটিও বলুন।",
+      timed:"গণনার গতি বাড়াতে প্রতিদিন timed practice উপকারী।",
+      math1:"আজ simplification-এর প্রশ্ন সমাধান করেছি।",
+      math2:"LCM/HCF shortcuts নিয়ে আলোচনা করি।",
+      reasoning:"Coding-decoding practice set সম্পূর্ণ হয়েছে।",
+      gk:"আজকের গুরুত্বপূর্ণ current affairs নিয়ে আলোচনা করি।"
+    }
+  },
+  ta:{
+    code:"த", name:"தமிழ்", you:"நீங்கள்", hub:"ஹப்",
+    groups:"குழுக்கள் கருவி", group:"குழு", groupsPlural:"குழுக்கள்", toolsPlural:"கருவிகள்", members:"உறுப்பினர்கள்", active:"● செயலில்",
+    kickerGroups:"1. குழுக்கள் கருவி", subGroups:"தேர்வு குழுக்களில் சேரவும், பயிற்சி தொகுப்புகளைப் பகிரவும் மற்றும் குறுக்குவழிகளை விவாதிக்கவும்.",
+    kickerDaily:"2. தினசரி பயிற்சி", titleDaily:"தினசரி பயிற்சி", subDaily:"ஹப் தினசரி இலக்குகள் மற்றும் வேகப் பயிற்சிகளை ஒன்றாகத் தீர்க்கவும்.",
+    kickerCA:"3. நடப்பு நிகழ்வுகள்", titleCA:"நடப்பு நிகழ்வுகள்", subCA:"தினசரி GK செய்திகள், தேர்வுக் குறிப்புகள் மற்றும் விரைவு வினாடி வினா.",
+    kickerChallenge:"4. சவால்", titleChallenge:"சவால்", subChallenge:"1v1 வேகப் போட்டி, குழுப் போட்டிகள் மற்றும் நேர சவால்களில் பங்கேற்கவும்.",
+    kickerProgress:"5. முன்னேற்ற அறிக்கை", titleProgress:"முன்னேற்ற அறிக்கை", subProgress:"ஹப் தரவரிசை, துல்லிய பகுப்பாய்வு மற்றும் வாராந்திர தொடர்ச்சியைக் கண்காணிக்கவும்.",
+    addGroupBtn:"புதிய குழு", addCardTitle:"புதிய குழுவை உருவாக்கு", addCardSub:"உங்கள் தேர்வு அல்லது தலைப்புக் குழுவைச் சேர்க்கவும்",
+    addModalTitle:"புதிய ஹப் குழுவை உருவாக்கு", addModalDesc:"குழுக்கள் கருவியில் புதிய படிப்புக் குழுவைச் சேர்க்கவும்.",
+    newGroupNameLabel:"குழுவின் பெயர்", newGroupIconLabel:"ஐகானைத் தேர்ந்தெடுக்கவும்", createBtn:"குழுவை உருவாக்கு",
+    previewNote:"இந்த ஹப் கருவி உங்கள் NowPro பயிற்சி சுயவிவரத்துடன் இணைக்கப்பட்டுள்ளது. நேரடி விவாதத்திற்கு மேலே உள்ள குழுக்களில் ஒன்றைத் திறக்கவும்!",
+    back:"பின்", chatBack:"குழுக்களுக்குத் திரும்பு",
+    guestHome:"டெமோ செய்திகள் இந்தத் திறந்த பக்கத்தில் மட்டுமே இருக்கும்.", guestChat:"இந்தக் குழுவில் சேர்ந்து பங்கேற்க உள்நுழையவும்.",
+    loginRequired:"உள்நுழைவு தேவை", loginText:"குழுவில் சேர்ந்து கலந்துரையாடலில் பங்கேற்க உள்நுழையவும்.",
+    cancel:"ரத்து", login:"உள்நுழை", close:"சரி", noGroups:"குழுக்கள் எதுவும் இல்லை.",
+    practice:"பயிற்சி முடிவு", questions:"கேள்விகள்", correct:"சரி", accuracy:"துல்லியம்", streak:"தொடர்", expires:"மாதிரி",
+    joinDemo:"➕ டெமோவில் சேர்", leaveDemo:"🗑️ டெமோவை விடு",
+    msgs:{
+      practiceText:"இன்று சதவீதத்தில் 50 கேள்விகள் பயிற்சி செய்தேன்.",
+      adminWelcome:"குழுவிற்கு வரவேற்கிறோம்! கலந்துரையாடலை பயிற்சி மற்றும் தேர்வு தயாரிப்பில் கவனம் செலுத்துங்கள்.",
+      practice:"பயிற்சி முடிவு",
+      fast:"15% of 240 = 36. வேகமான முறையையும் சொல்லுங்கள்.",
+      timed:"கணக்கீட்டு வேகத்தை மேம்படுத்த தினசரி timed practice பயனுள்ளதாகும்.",
+      math1:"இன்று simplification கேள்விகளைத் தீர்த்தேன்.",
+      math2:"LCM/HCF shortcuts பற்றி விவாதிப்போம்.",
+      reasoning:"Coding-decoding practice set முடிந்தது.",
+      gk:"இன்றைய முக்கிய current affairs பற்றி விவாதிப்போம்."
+    }
+  },
+  te:{
+    code:"తె", name:"తెలుగు", you:"మీరు", hub:"హబ్",
+    groups:"గ్రూప్స్ టూల్", group:"గ్రూప్", groupsPlural:"గ్రూప్‌లు", toolsPlural:"టూల్స్", members:"సభ్యులు", active:"● యాక్టివ్",
+    kickerGroups:"1. గ్రూప్స్ టూల్", subGroups:"పరీక్షా స్టడీ గ్రూపుల్లో చేరండి, ప్రాక్టీస్ సెట్లను షేర్ చేయండి మరియు షార్ట్‌కట్స్ చర్చించండి.",
+    kickerDaily:"2. రోజువారీ ప్రాక్టీస్", titleDaily:"రోజువారీ ప్రాక్టీస్", subDaily:"హబ్ రోజువారీ లక్ష్యాలు మరియు స్పీడ్ డ్రిల్స్ కలిసి సాధన చేయండి.",
+    kickerCA:"3. కరెంట్ అఫైర్స్", titleCA:"కరెంట్ అఫైర్స్", subCA:"రోజువారీ GK అప్‌డేట్స్, పరీక్షా క్యాప్సూల్స్ మరియు క్విక్ రివిజన్ క్విజ్‌లు.",
+    kickerChallenge:"4. ఛాలెంజ్", titleChallenge:"ఛాలెంజ్", subChallenge:"1v1 స్పీడ్ బ్యాటిల్స్, గ్రూప్ టోర్నమెంట్లు మరియు టైమ్డ్ స్ప్రింట్లలో పోటీ పడండి.",
+    kickerProgress:"5. ప్రోగ్రెస్ రిపోర్ట్", titleProgress:"ప్రోగ్రెస్ రిపోర్ట్", subProgress:"హబ్ ర్యాంక్, ఖచ్చితత్వ విశ్లేషణ మరియు వారపు స్ట్రీక్స్ ట్రాక్ చేయండి.",
+    addGroupBtn:"కొత్త గ్రూప్", addCardTitle:"కొత్త గ్రూప్ సృష్టించండి", addCardSub:"మీ పరీక్ష లేదా టాపిక్ గ్రూప్‌ను జోడించండి",
+    addModalTitle:"కొత్త హబ్ గ్రూప్ సృష్టించండి", addModalDesc:"గ్రూప్స్ టూల్‌లో కొత్త స్టడీ గ్రూప్‌ను జోడించండి.",
+    newGroupNameLabel:"గ్రూప్ పేరు", newGroupIconLabel:"ఐకాన్ ఎంచుకోండి", createBtn:"గ్రూప్ సృష్టించండి",
+    previewNote:"ఈ హబ్ టూల్ మీ NowPro ప్రాక్టీస్ ప్రొఫైల్‌తో అనుసంధానించబడింది. లైవ్ చర్చ కోసం పైన ఉన్న గ్రూప్స్ టూల్ నుండి ఏదైనా గ్రూప్ తెరవండి!",
+    back:"వెనుకకు", chatBack:"గ్రూప్‌లకు తిరిగి",
+    guestHome:"డెమో సందేశాలు ఈ ఓపెన్ పేజీలో మాత్రమే ఉంటాయి.", guestChat:"ఈ గ్రూప్‌లో చేరి పాల్గొనడానికి లాగిన్ చేయండి.",
+    loginRequired:"లాగిన్ అవసరం", loginText:"గ్రూప్‌లో చేరి చర్చలో పాల్గొనడానికి లాగిన్ చేయండి.",
+    cancel:"రద్దు", login:"లాగిన్", close:"సరే", noGroups:"గ్రూప్‌లు ఏవీ లేవు.",
+    practice:"ప్రాక్టీస్ ఫలితం", questions:"ప్రశ్నలు", correct:"సరైనవి", accuracy:"ఖచ్చితత్వం", streak:"స్ట్రీక్", expires:"నమూనా",
+    joinDemo:"➕ డెమోలో చేరండి", leaveDemo:"🗑️ డెమో వదిలివేయండి",
+    msgs:{
+      practiceText:"ఈరోజు శాతాల్లో 50 ప్రశ్నలు సాధన చేశాను.",
+      adminWelcome:"గ్రూప్‌కు స్వాగతం! చర్చను సాధన మరియు పరీక్షా సిద్ధతపై కేంద్రీకరించండి.",
+      practice:"ప్రాక్టీస్ ఫలితం",
+      fast:"15% of 240 = 36. వేగవంతమైన పద్ధతిని కూడా చెప్పండి.",
+      timed:"లెక్కల వేగాన్ని మెరుగుపరచడానికి రోజువారీ timed practice ఉపయోగకరం.",
+      math1:"ఈరోజు simplification ప్రశ్నలు పూర్తి చేశాను.",
+      math2:"LCM/HCF shortcuts గురించి చర్చిద్దాం.",
+      reasoning:"Coding-decoding practice set పూర్తైంది.",
+      gk:"ఈరోజు ముఖ్యమైన current affairs గురించి చర్చిద్దాం."
+    }
+  },
+  ur:{
+    code:"ار", name:"اردو", you:"آپ", hub:"ہب",
+    groups:"گروپس ٹول", group:"گروپ", groupsPlural:"گروپس", toolsPlural:"ٹولز", members:"اراکین", active:"● فعال",
+    kickerGroups:"1. گروپس ٹول", subGroups:"امتحانی اسٹڈی گروپس میں شامل ہوں، پریکٹس سیٹ شیئر کریں اور شارٹ کٹس پر گفتگو کریں۔",
+    kickerDaily:"2. روزانہ مشق", titleDaily:"روزانہ مشق", subDaily:"ہب کے روزانہ اہداف اور اسپیڈ ڈرلز مل کر حل کریں۔",
+    kickerCA:"3. حالات حاضرہ", titleCA:"حالات حاضرہ", subCA:"روزانہ جی کے اپڈیٹس، امتحانی کیپسول اور تیز کوئز۔",
+    kickerChallenge:"4. چیلنج", titleChallenge:"چیلنج", subChallenge:"1v1 اسپیڈ مقابلے، گروپ ٹورنامنٹ اور ٹائمڈ اسپرنگ میں حصہ لیں۔",
+    kickerProgress:"5. پیش رفت رپورٹ", titleProgress:"پیش رفت رپورٹ", subProgress:"ہب رینک، درستگی کا تجزیہ اور ہفتہ وار اسٹریک ٹریک کریں۔",
+    addGroupBtn:"نیا گروپ", addCardTitle:"نیا گروپ بنائیں", addCardSub:"اپنا امتحانی یا موضوعاتی گروپ شامل کریں",
+    addModalTitle:"نیا ہب گروپ بنائیں", addModalDesc:"گروپس ٹول میں ایک نیا اسٹڈی گروپ شامل کریں۔",
+    newGroupNameLabel:"گروپ کا نام", newGroupIconLabel:"آئیکن منتخب کریں", createBtn:"گروپ بنائیں",
+    previewNote:"یہ ہب ٹول آپ کے NowPro پریکٹس پروفائل کے ساتھ منسلک ہے۔ لائیو گفتگو کے لیے اوپر گروپس ٹول میں سے کوئی بھی گروپ کھولیں!",
+    back:"واپس", chatBack:"گروپس پر واپس",
+    guestHome:"ڈیمو پیغامات صرف اس کھلے صفحے میں رہتے ہیں۔", guestChat:"اس گروپ میں شامل ہونے کے لیے لاگ ان کریں۔",
+    loginRequired:"لاگ ان ضروری ہے", loginText:"گروپ میں شامل ہونے اور بحث میں حصہ لینے کے لیے لاگ ان کریں۔",
+    cancel:"منسوخ", login:"لاگ ان", close:"ٹھیک ہے", noGroups:"کوئی گروپ نہیں ملا۔",
+    practice:"مشق کا نتیجہ", questions:"سوالات", correct:"درست", accuracy:"درستگی", streak:"اسٹریک", expires:"نمونہ",
+    joinDemo:"➕ ڈیمو شامل ہوں", leaveDemo:"🗑️ ڈیمو چھوڑیں",
+    msgs:{
+      practiceText:"آج فیصد کے 50 سوالات کی مشق کی۔",
+      adminWelcome:"گروپ میں خوش آمدید! گفتگو کو مشق اور امتحان کی تیاری تک محدود رکھیں۔",
+      practice:"مشق کا نتیجہ",
+      fast:"15% of 240 = 36۔ اس کا تیز طریقہ بھی بتائیں۔",
+      timed:"حساب کی رفتار بڑھانے کے لیے روزانہ ٹائمڈ پریکٹس مفید ہے۔",
+      math1:"آج سادہ کاری کے سوالات حل کیے۔",
+      math2:"LCM/HCF کے شارٹ کٹس پر بات کرتے ہیں۔",
+      reasoning:"کوڈنگ ڈیکوڈنگ کا پریکٹس سیٹ مکمل ہوا۔",
+      gk:"آج کے اہم حالات حاضرہ پر بات کرتے ہیں۔"
+    }
+  },
+  as:{
+    code:"অ", name:"অসমীয়া", you:"আপুনি", hub:"হাব",
+    groups:"গোটসমূহ টুল", group:"গোট", groupsPlural:"গোটসমূহ", toolsPlural:"টুল", members:"সদস্য", active:"● সক্ৰিয়",
+    kickerGroups:"১. গোটসমূহ টুল", subGroups:"পৰীক্ষাৰ অধ্যয়ন গোটত যোগ দিয়ক, অনুশীলন ছেট শ্বেয়াৰ কৰক আৰু শ্বৰ্টকাট আলোচনা কৰক।",
+    kickerDaily:"২. দৈনিক অনুশীলন", titleDaily:"দৈনিক অনুশীলন", subDaily:"হাবৰ দৈনিক লক্ষ্য আৰু স্পীড ড্ৰিল একেলগে সমাধান কৰক।",
+    kickerCA:"৩. সাম্প্ৰতিক ঘটনা", titleCA:"সাম্প্ৰতিক ঘটনা", subCA:"দৈনিক GK আপডেট, পৰীক্ষাৰ কেপচুল আৰু দ্ৰুত ৰিভিজন কুইজ।",
+    kickerChallenge:"৪. চেলেঞ্জ", titleChallenge:"চেলেঞ্জ", subChallenge:"1v1 স্পীড বেটল, গোট টুৰ্ণামেণ্ট আৰু টাইমড স্প্ৰিণ্টত প্ৰতিযোগিতা কৰক।",
+    kickerProgress:"৫. প্ৰগতি প্ৰতিবেদন", titleProgress:"প্ৰগতি প্ৰতিবেদন", subProgress:"হাব ৰেংক, সঠিকতা বিশ্লেষণ আৰু সাপ্তাহিক ষ্ট্ৰিক ট্ৰেক কৰক।",
+    addGroupBtn:"নতুন গোট", addCardTitle:"নতুন গোট বনাওক", addCardSub:"আপোনাৰ পৰীক্ষা বা বিষয়ৰ গোট যোগ কৰক",
+    addModalTitle:"নতুন হাব গোট বনাওক", addModalDesc:"গোটসমূহ টুলত এটা নতুন অধ্যয়ন গোট যোগ কৰক।",
+    newGroupNameLabel:"গোটৰ নাম", newGroupIconLabel:"আইকন বাছনি কৰক", createBtn:"গোট বনাওক",
+    previewNote:"এই হাব টুলটো আপোনাৰ NowPro অনুশীলন প্ৰ’ফাইলৰ সৈতে সংযুক্ত। পোনপটীয়া আলোচনাৰ বাবে ওপৰৰ গোটসমূহ টুলৰ পৰা যিকোনো গোট খোলক!",
+    back:"পিছলৈ", chatBack:"গোটলৈ উভতি যাওক",
+    guestHome:"ডেম’ বাৰ্তাসমূহ কেৱল এই খোলা পৃষ্ঠাত থাকে।", guestChat:"এই গোটত যোগদান কৰিবলৈ লগইন কৰক।",
+    loginRequired:"লগইন প্ৰয়োজন", loginText:"গোটত যোগদান কৰি আলোচনাত অংশ ল’বলৈ লগইন কৰক।",
+    cancel:"বাতিল", login:"লগইন", close:"ঠিক আছে", noGroups:"কোনো গোট পোৱা নগ’ল।",
+    practice:"অনুশীলনৰ ফলাফল", questions:"প্ৰশ্ন", correct:"শুদ্ধ", accuracy:"সঠিকতা", streak:"ষ্ট্ৰিক", expires:"নমুনা",
+    joinDemo:"➕ ডেম’ত যোগ দিয়ক", leaveDemo:"🗑️ ডেম’ এৰক",
+    msgs:{
+      practiceText:"আজি শতাংশৰ ৫০টা প্ৰশ্ন অনুশীলন কৰিলোঁ।",
+      adminWelcome:"গোটলৈ স্বাগতম! আলোচনা অনুশীলন আৰু পৰীক্ষাৰ প্ৰস্তুতিৰ মাজত ৰাখক।",
+      practice:"অনুশীলনৰ ফলাফল",
+      fast:"15% of 240 = 36। ইয়াৰ দ্ৰুত পদ্ধতিটোও কওক।",
+      timed:"গণনাৰ গতি বঢ়াবলৈ দৈনিক timed practice উপকাৰী।",
+      math1:"আজি সৰলীকৰণৰ প্ৰশ্ন সমাধান কৰিলোঁ।",
+      math2:"LCM/HCF ৰ শ্বৰ্টকাটসমূহ আলোচনা কৰোঁ আহক।",
+      reasoning:"Coding-decoding ৰ অনুশীলন ছেট সম্পূৰ্ণ হ’ল।",
+      gk:"আজিৰ গুৰুত্বপূৰ্ণ সাম্প্ৰতিক ঘটনাৰ বিষয়ে আলোচনা কৰোঁ।"
+    }
+  }
+};
+
+const V7_TEXT = {
+  en:{type:"Type your message here...",loginTitle:"Try the frontend demo",loginText:"This is not a real login. No email or password is needed. Messages and membership are page-only samples and reset on refresh.",login:"Try demo",back:"Back",demoNote:"Instant Hub Chat • In-memory Demo Chat",secure:"🔒 Private & Secure"},
+  hi:{type:"अपना संदेश यहाँ लिखें...",loginTitle:"Frontend डेमो आज़माएँ",loginText:"यह असली लॉगिन नहीं है। कोई ईमेल या पासवर्ड नहीं चाहिए। संदेश और सदस्यता केवल इस पेज का नमूना हैं; refresh पर मिटेंगे।",login:"डेमो आज़माएँ",back:"वापस",demoNote:"Instant Hub Chat • इन-मेमोरी डेमो चैट",secure:"🔒 निजी और सुरक्षित"},
+  gu:{type:"તમારો સંદેશ અહીં લખો...",loginTitle:"Frontend ડેમો અજમાવો",loginText:"આ સાચું લોગિન નથી. કોઈ ઈમેલ કે પાસવર્ડની જરૂર નથી. સંદેશાઓ માત્ર આ પેજ પૂરતા છે.",login:"ડેમો અજમાવો",back:"પાછા",demoNote:"Instant Hub Chat • ઇન-મેમરી ડેમો ચેટ",secure:"🔒 ખાનગી અને સુરક્ષિત"},
+  mr:{type:"तुमचा संदेश येथे लिहा...",loginTitle:"Frontend डेमो वापरून पहा",loginText:"हे खरे लॉगिन नाही. ईमेल किंवा पासवर्डची गरज नाही. संदेश फक्त या पेजपुरते राहतात.",login:"डेमो वापरा",back:"मागे",demoNote:"Instant Hub Chat • इन-मेमरी डेमो चॅट",secure:"🔒 खाजगी आणि सुरक्षित"},
+  bn:{type:"আপনার বার্তা এখানে লিখুন...",loginTitle:"Frontend ডেমো ট্রাই করুন",loginText:"এটি আসল লগইন নয়। কোনো ইমেল বা পাসওয়ার্ড প্রয়োজন নেই। বার্তাগুলি শুধুমাত্র এই পেজেই থাকে।",login:"ডেমো ট্রাই করুন",back:"ফিরে যান",demoNote:"Instant Hub Chat • ইন-মেমরি ডেমো চ্যাট",secure:"🔒 গোপনীয় ও নিরাপদ"},
+  ta:{type:"உங்கள் செய்தியை இங்கே எழுதுங்கள்...",loginTitle:"Frontend டெமோவை முயற்சிக்கவும்",loginText:"இது உண்மையான உள்நுழைவு அல்ல. மின்னஞ்சல் அல்லது கடவுச்சொல் தேவையில்லை.",login:"டெமோவை முயற்சி",back:"பின்செல்",demoNote:"Instant Hub Chat • டெமோ அரட்டை",secure:"🔒 பாதுகாப்பானது"},
+  te:{type:"మీ సందేశాన్ని ఇక్కడ టైప్ చేయండి...",loginTitle:"Frontend డెమో ప్రయత్నించండి",loginText:"ఇది నిజమైన లాగిన్ కాదు. ఈమెయిల్ లేదా పాస్‌వర్డ్ అవసరం లేదు.",login:"డెమో ప్రయత్నించండి",back:"వెనుకకు",demoNote:"Instant Hub Chat • డెమో చాట్",secure:"🔒 ప్రైవేట్ & సురక్షితం"},
+  ur:{type:"اپنا پیغام یہاں لکھیں...",loginTitle:"فرنٹ اینڈ ڈیمو آزمائیں",loginText:"یہ حقیقی لاگ ان نہیں ہے۔ کسی ای میل یا پاس ورڈ کی ضرورت نہیں ہے۔",login:"ڈیمو آزمائیں",back:"واپس",demoNote:"Instant Hub Chat • ڈیمو چیٹ",secure:"🔒 نجی اور محفوظ"},
+  as:{type:"আপোনাৰ বাৰ্তা ইয়াত লিখক...",loginTitle:"Frontend ডেম’ চেষ্টা কৰক",loginText:"এইটো প্ৰকৃত লগইন নহয়। কোনো ইমেইল বা পাছৱৰ্ডৰ প্ৰয়োজন নাই।",login:"ডেম’ চেষ্টা কৰক",back:"পিছলৈ",demoNote:"Instant Hub Chat • ডেম’ চেট",secure:"🔒 ব্যক্তিগত আৰু সুৰক্ষিত"}
+};
+
+const $ = id => document.getElementById(id);
+const home = $("homePage");
+const chat = $("chatPage");
+
+let lang = "hi";
+let sharedDark = false;
+let requestedLanguage = "hi";
+let pendingAction = null;
+const joinedGroups = new Set();
+let currentGroup = null;
+
+function tr(){ return I18N[lang] || I18N.en; }
+function v7(){ return V7_TEXT[lang] || V7_TEXT.en; }
+function groupName(g){ return (g.name && (g.name[lang] || g.name.en)) || ""; }
+function groupDesc(g){ return (g.desc && (g.desc[lang] || g.desc.en)) || tr().subGroups; }
+function memberText(n){ return `${n.toLocaleString()} ${tr().members}`; }
+function messageText(key){ return tr().msgs[key] || I18N.en.msgs[key] || ""; }
+
+function escapeHtml(value){
+  return String(value==null?"":value).replace(/[&<>"']/g,ch=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+
+function notifyParentResize(){
+  try{
+    if(document.body.classList.contains("in-chat")) return;
+    const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, 620);
+    parent.postMessage({type:"cb-community-resize", height: h + 16}, "*");
+    if(window.frameElement && !document.body.classList.contains("in-chat")){
+      window.frameElement.style.height = (h + 16) + "px";
+    }
+  }catch(e){}
+}
+
+function renderGroups(){
+  const list = GROUPS;
+  const x = tr();
+  $("groupCount").textContent = `${list.length} ${list.length === 1 ? x.group : x.groupsPlural}`;
+  const grid = $("groupsGrid");
+  grid.innerHTML = "";
+
+  list.forEach(g=>{
+    const btn = document.createElement("button");
+    btn.className = `mod ${g.accent || "mod-blue"}`;
+    btn.type = "button";
+    btn.innerHTML = `
+      <div>
+        <div class="mod-top">
+          <span class="mod-icon">${escapeHtml(g.icon)}<span class="mod-online-dot"></span></span>
+          <b class="mod-title">${escapeHtml(groupName(g))}</b>
+        </div>
+        <small class="mod-sub">${escapeHtml(groupDesc(g))}</small>
+      </div>
+      <div class="mod-meta">
+        <span class="mod-pill">${escapeHtml(memberText(g.members))}</span>
+        <span class="mod-live">${escapeHtml(x.active)} ›</span>
+      </div>
+    `;
+    btn.addEventListener("click",()=>openGroup(g.id));
+    grid.appendChild(btn);
+  });
+
+  const addCard = document.createElement("button");
+  addCard.className = "mod mod-indigo mod-add-card";
+  addCard.type = "button";
+  addCard.innerHTML = `
+    <div>
+      <div class="mod-top">
+        <span class="mod-icon">➕</span>
+        <b class="mod-title">${escapeHtml(x.addCardTitle)}</b>
+      </div>
+      <small class="mod-sub">${escapeHtml(x.addCardSub)}</small>
+    </div>
+  `;
+  addCard.addEventListener("click", openAddGroupModal);
+  grid.appendChild(addCard);
+}
+
+function renderExtraSection(sectionKey, gridId){
+  const items = EXTRA_SECTIONS[sectionKey] || [];
+  const grid = $(gridId);
+  if(!grid) return;
+  grid.innerHTML = "";
+
+  items.forEach(item=>{
+    const title = item.title[lang] || item.title.en;
+    const sub = item.sub[lang] || item.sub.en;
+    const tag = item.tag[lang] || item.tag.en;
+    const btn = document.createElement("button");
+    btn.className = `mod ${item.accent || "mod-indigo"}`;
+    btn.type = "button";
+    btn.innerHTML = `
+      <div>
+        <div class="mod-top">
+          <span class="mod-icon">${escapeHtml(item.icon)}</span>
+          <b class="mod-title">${escapeHtml(title)}</b>
+        </div>
+        <small class="mod-sub">${escapeHtml(sub)}</small>
+      </div>
+      <div class="mod-meta">
+        <span class="mod-pill">${escapeHtml(tag)}</span>
+        <span class="mod-arrow-tag">›</span>
+      </div>
+    `;
+    btn.addEventListener("click",()=>openToolPreview(item.icon, title, sub));
+    grid.appendChild(btn);
+  });
+}
+
+function openToolPreview(icon, title, sub){
+  $("previewModalIcon").textContent = icon || "🎯";
+  $("previewModalTitle").textContent = title;
+  $("previewModalText").textContent = `${sub} — ${tr().previewNote}`;
+  $("previewModalClose").textContent = tr().close;
+  $("toolPreviewModal").classList.add("show");
+}
+
+function openAddGroupModal(e){
+  if(e) e.stopPropagation();
+  $("newGroupName").value = "";
+  $("addGroupModal").classList.add("show");
+  setTimeout(()=>$("newGroupName").focus(), 60);
+}
+
+function closeAddGroupModal(){
+  $("addGroupModal").classList.remove("show");
+}
+
+function createCustomGroup(){
+  const rawName = $("newGroupName").value.trim();
+  if(!rawName){
+    $("newGroupName").focus();
+    return;
+  }
+  const icon = $("newGroupIcon").value || "📚";
+  const accents = ["mod-blue","mod-purple","mod-teal","mod-amber","mod-green","mod-rose","mod-sky"];
+  const accent = accents[GROUPS.length % accents.length];
+  const id = "custom-" + Date.now();
+
+  const nameMap = {};
+  const descMap = {};
+  Object.keys(I18N).forEach(k=>{
+    nameMap[k] = rawName;
+    descMap[k] = I18N[k].subGroups;
+  });
+
+  const newGrp = {
+    id,
+    icon,
+    accent,
+    members: 1,
+    name: nameMap,
+    desc: descMap,
+    messages:[
+      {type:"text",initial:"N",name:"NowPro",role:"admin",key:"adminWelcome",time:"Just now"}
+    ]
+  };
+
+  GROUPS.push(newGrp);
+  joinedGroups.add(id);
+  closeAddGroupModal();
+  renderGroups();
+  notifyParentResize();
+  openGroup(id);
+}
+
+function openGroup(id){
+  currentGroup = GROUPS.find(g=>g.id===id);
+  if(!currentGroup) return;
+
+  $("chatIcon").textContent = currentGroup.icon;
+  $("chatName").textContent = groupName(currentGroup);
+  $("chatMembers").textContent = memberText(currentGroup.members);
+  $("chatStatusLive").textContent = tr().active;
+  $("chatIcon").setAttribute("aria-label", groupName(currentGroup));
+  $("chatName").title = groupName(currentGroup);
+  updateJoinLeaveButton();
+
+  setChatState(true);
+  home.classList.add("hidden");
+  chat.classList.remove("hidden");
+  renderMessages();
+  $("guestBtn").textContent = "🔒  " + tr().guestChat;
+  if(window.CB_UPDATE_KEYBOARD_VIEWPORT) window.CB_UPDATE_KEYBOARD_VIEWPORT();
+  const messages=$("messages");
+  requestAnimationFrame(()=>{ if(messages) messages.scrollTop=messages.scrollHeight; });
+}
+
+function renderMessages(){
+  if(!currentGroup) return;
+  const el = $("messages");
+  el.innerHTML = "";
+
+  currentGroup.messages.forEach(m=>{
+    if(m.type === "practice"){
+      el.insertAdjacentHTML("beforeend",`
+        <div class="practice-wrap">
+          <div class="msg-card-head">
+            <span class="msg-sender-wrap">
+              <span class="msg-mini-avatar">${escapeHtml(m.initial)}</span>
+              <span class="msg-sender-name">${escapeHtml(m.name)}</span>
+              <span class="msg-role-pill">📊 ${escapeHtml(tr().practice)}</span>
+            </span>
+            <span class="msg-head-time">${escapeHtml(m.time)} · ${escapeHtml(tr().expires)}</span>
+          </div>
+          <div class="practice">
+            <div class="practice-title">Mixed Calculation</div>
+            <div class="stats">
+              <div class="stat"><b>50</b><span>${escapeHtml(tr().questions)}</span></div>
+              <div class="stat"><b>43</b><span>${escapeHtml(tr().correct)}</span></div>
+              <div class="stat"><b>86%</b><span>${escapeHtml(tr().accuracy)}</span></div>
+              <div class="stat"><b>12</b><span>${escapeHtml(tr().streak)}</span></div>
+            </div>
+          </div>
+        </div>
+      `);
+      return;
+    }
+
+    const mine = !!m.mine;
+    const isAdmin = m.role === "admin";
+    const bodyText = m.text != null ? escapeHtml(m.text) : escapeHtml(messageText(m.key));
+
+    if(mine){
+      el.insertAdjacentHTML("beforeend",`
+        <div class="msg mine">
+          <div class="chat-role">${escapeHtml(tr().you || "You")}</div>
+          <div class="text">${bodyText}</div>
+          <div class="time">${escapeHtml(m.time)} · ${escapeHtml(tr().expires)}</div>
+        </div>
+      `);
+      return;
+    }
+
+    const badgeText = isAdmin ? "🛡 ADMIN" : groupName(currentGroup);
+    const badgeClass = isAdmin ? "msg-role-pill admin" : "msg-role-pill";
+    const avatarIcon = isAdmin ? "🤖" : escapeHtml(m.initial || "👤");
+
+    el.insertAdjacentHTML("beforeend",`
+      <div class="msg ${isAdmin ? "admin-msg" : ""}">
+        <div class="msg-card-head">
+          <span class="msg-sender-wrap">
+            <span class="msg-mini-avatar">${avatarIcon}</span>
+            <span class="msg-sender-name">${escapeHtml(m.name)}</span>
+            <span class="${badgeClass}">${escapeHtml(badgeText)}</span>
+          </span>
+          <span class="msg-head-time">${escapeHtml(m.time)} · ${escapeHtml(tr().expires)}</span>
+        </div>
+        <div class="msg-inner-box">${bodyText}</div>
+      </div>
+    `);
+  });
+  applyIntegratedCopy();
+}
+
+function setChatState(on){
+  parent.postMessage({type:"cb-community-mode",chat:!!on},"*");
+  document.body.classList.toggle("in-chat",!!on);
+  const composer=$("chatComposer");
+  if(composer){
+    composer.classList.toggle("hidden",!on);
+    composer.setAttribute("aria-hidden", on ? "false" : "true");
+  }
+  if(on) document.body.classList.remove("in-login");
+  else setTimeout(notifyParentResize, 50);
+}
+
+function openLoginPage(action){
+  pendingAction=action||null;
+  document.body.classList.add("in-login");
+  document.body.classList.remove("cb-keyboard-open");
+  $("loginPage").classList.remove("hidden");
+  $("chatComposer").classList.add("hidden");
+  $("chatComposer").setAttribute("aria-hidden","true");
+  $("messageInput").blur();
+}
+
+function closeLoginPage(){
+  pendingAction=null;
+  document.body.classList.remove("in-login");
+  $("loginPage").classList.add("hidden");
+  if(currentGroup){
+    $("chatComposer").classList.remove("hidden");
+    $("chatComposer").setAttribute("aria-hidden","false");
+    setChatState(true);
+    if(window.CB_UPDATE_KEYBOARD_VIEWPORT) window.CB_UPDATE_KEYBOARD_VIEWPORT();
+  }
+}
+
+function addLocalMessage(text){
+  if(!currentGroup || !text.trim()) return;
+  const now=new Date();
+  const time=now.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+  currentGroup.messages.push({
+    type:"text",
+    mine:true,
+    name:tr().you || "You",
+    initial:"Y",
+    key:null,
+    text:text.trim(),
+    time
+  });
+
+  renderMessages();
+  $("messageInput").value="";
+  updateComposer();
+
+  const el=$("messages");
+  requestAnimationFrame(()=>{ el.scrollTop=el.scrollHeight; });
+}
+
+function isGroupJoined(group){
+  return !!group && joinedGroups.has(group.id);
+}
+function setGroupJoined(group,joined){
+  if(!group) return;
+  if(joined) joinedGroups.add(group.id);
+  else joinedGroups.delete(group.id);
+}
+function updateJoinLeaveButton(){
+  const btn=$("groupJoinBtn");
+  if(!btn || !currentGroup) return;
+  const joined=isGroupJoined(currentGroup);
+  btn.classList.toggle("joined",joined);
+  btn.classList.toggle("leave",joined);
+  btn.textContent=joined ? tr().leaveDemo : tr().joinDemo;
+}
+function handleJoinLeave(){
+  if(!currentGroup) return;
+  if(!document.body.classList.contains("is-demo-session")){
+    openLoginPage("join");
+    return;
+  }
+  const joined=isGroupJoined(currentGroup);
+  setGroupJoined(currentGroup,!joined);
+  updateJoinLeaveButton();
+}
+
+function sendCommunityMessage(){
+  const input=$("messageInput");
+  if(!currentGroup) return;
+  const text=input.value.trim();
+  if(!text) return;
+
+  if(document.body.classList.contains("is-demo-session")){
+    addLocalMessage(text);
+    return;
+  }
+  openLoginPage("send");
+}
+
+function updateComposer(){
+  const input=$("messageInput");
+  const count=input.value.length;
+  $("composerCount").textContent=`${count}/500`;
+  $("sendBtn").disabled=!input.value.trim();
+}
+
+function showHome(){
+  currentGroup = null;
+  setChatState(false);
+  document.documentElement.style.setProperty("--cb-keyboard-offset","0px");
+  document.body.classList.remove("cb-keyboard-open");
+  chat.classList.add("hidden");
+  home.classList.remove("hidden");
+  $("guestBtn").textContent = "🔒  " + tr().guestHome;
+  $("guestBtn").style.display = document.body.classList.contains("is-demo-session") ? "none" : "";
+  if(document.scrollingElement) document.scrollingElement.scrollTop=0;
+  notifyParentResize();
+}
+
+function applyLanguage(){
+  const x = tr();
+  const v = v7();
+
+  $("kickerGroups").textContent = x.kickerGroups;
+  $("titleGroups").textContent = x.groups;
+  $("subGroups").textContent = x.subGroups;
+  $("addGroupBtnText").textContent = x.addGroupBtn;
+
+  $("kickerDaily").textContent = x.kickerDaily;
+  $("titleDaily").textContent = x.titleDaily;
+  $("subDaily").textContent = x.subDaily;
+  $("badgeDaily").textContent = `4 ${x.toolsPlural}`;
+
+  $("kickerCA").textContent = x.kickerCA;
+  $("titleCA").textContent = x.titleCA;
+  $("subCA").textContent = x.subCA;
+  $("badgeCA").textContent = `4 ${x.toolsPlural}`;
+
+  $("kickerChallenge").textContent = x.kickerChallenge;
+  $("titleChallenge").textContent = x.titleChallenge;
+  $("subChallenge").textContent = x.subChallenge;
+  $("badgeChallenge").textContent = `4 ${x.toolsPlural}`;
+
+  $("kickerProgress").textContent = x.kickerProgress;
+  $("titleProgress").textContent = x.titleProgress;
+  $("subProgress").textContent = x.subProgress;
+  $("badgeProgress").textContent = `4 ${x.toolsPlural}`;
+
+  $("addModalTitle").textContent = x.addModalTitle;
+  $("addModalDesc").textContent = x.addModalDesc;
+  $("newGroupNameLabel").textContent = x.newGroupNameLabel;
+  $("newGroupIconLabel").textContent = x.newGroupIconLabel;
+  $("addGroupCancel").textContent = x.cancel;
+  $("addGroupCreate").textContent = x.createBtn;
+
+  $("messageInput").placeholder = v.type;
+  $("loginPageTitle").textContent = v.loginTitle;
+  $("loginPageText").textContent = v.loginText;
+  $("loginPrimary").textContent = v.login;
+  $("loginBack").textContent = v.back;
+  $("chatBack").setAttribute("aria-label", x.chatBack);
+
+  renderGroups();
+  renderExtraSection("daily", "dailyGrid");
+  renderExtraSection("ca", "caGrid");
+  renderExtraSection("challenge", "challengeGrid");
+  renderExtraSection("progress", "progressGrid");
+
+  if(currentGroup && !chat.classList.contains("hidden")){
+    $("chatName").textContent = groupName(currentGroup);
+    $("chatMembers").textContent = memberText(currentGroup.members);
+    $("chatStatusLive").textContent = x.active;
+    updateJoinLeaveButton();
+    renderMessages();
+  }
+
+  applyIntegratedCopy();
+  updateComposer();
+  notifyParentResize();
+}
+
+function applyIntegratedCopy(){
+  const x = tr();
+  const v = v7();
+  $("demoNotice").textContent = v.demoNote;
+  $("demoNotice").hidden = false;
+  $("secureTag").textContent = v.secure;
+  const unsupported = !I18N[requestedLanguage];
+  $("languageFallback").hidden = !unsupported;
+  $("languageFallback").textContent = "Hub translations for this language are not available yet; this section uses English.";
+  $("guestBtn").textContent = "🔒  " + (currentGroup ? x.guestChat : x.guestHome);
+  if(currentGroup){
+    updateJoinLeaveButton();
+  }
+}
+
+function syncDocumentTheme(){
+  document.documentElement.classList.toggle("dark",sharedDark);
+  document.body.classList.toggle("dark",sharedDark);
+}
+
+function syncThemeColor(){
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content",
+    document.documentElement.classList.contains("dark") ? "#0b1020" : "#f6f8fc"
+  );
+}
+
+document.querySelectorAll("[data-toggle-folder]").forEach(head=>{
+  head.addEventListener("click", e=>{
+    if(e.target.closest("#addGroupBtn")) return;
+    const folderId = head.getAttribute("data-toggle-folder");
+    const folder = $(folderId);
+    if(!folder) return;
+    const collapsed = folder.classList.toggle("collapsed");
+    const btn = folder.querySelector(".folder-toggle");
+    if(btn) btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    notifyParentResize();
+  });
+});
+
+$("addGroupBtn").addEventListener("click", openAddGroupModal);
+$("addGroupCancel").addEventListener("click", closeAddGroupModal);
+$("addGroupCreate").addEventListener("click", createCustomGroup);
+$("newGroupName").addEventListener("keydown", e=>{
+  if(e.key === "Enter"){ e.preventDefault(); createCustomGroup(); }
+});
+$("addGroupModal").addEventListener("click", e=>{
+  if(e.target.id === "addGroupModal") closeAddGroupModal();
+});
+$("previewModalClose").addEventListener("click", ()=>$("toolPreviewModal").classList.remove("show"));
+$("toolPreviewModal").addEventListener("click", e=>{
+  if(e.target.id === "toolPreviewModal") $("toolPreviewModal").classList.remove("show");
+});
+
+$("chatBack").addEventListener("click",showHome);
+$("groupJoinBtn").addEventListener("click",handleJoinLeave);
+$("guestBtn").addEventListener("click",()=>openLoginPage("join"));
+
+$("messageInput").addEventListener("input",updateComposer);
+$("messageInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter" && !e.shiftKey){
+    e.preventDefault();
+    sendCommunityMessage();
+  }
+});
+$("sendBtn").addEventListener("click",sendCommunityMessage);
+$("loginBack").addEventListener("click",closeLoginPage);
+$("loginPrimary").addEventListener("click",()=>{
+  const action=pendingAction;
+  document.body.classList.add("is-demo-session");
+  closeLoginPage();
+  $("guestBtn").style.display="none";
+  if(currentGroup && action==="join"){setGroupJoined(currentGroup,true);updateJoinLeaveButton();}
+  if(currentGroup && action==="send" && $("messageInput").value.trim()) addLocalMessage($("messageInput").value);
+  applyIntegratedCopy();
+});
+
+window.addEventListener("resize", ()=>{
+  applyIntegratedCopy();
+  notifyParentResize();
+});
+
+window.addEventListener("message",e=>{
+  if(!e.data) return;
+  if(e.data.type==="cb-community-back" && currentGroup){
+    showHome();
+    return;
+  }
+  if(e.data.type!=="cb-community-settings" && e.data.type!=="cb-ai-chat-settings") return;
+  requestedLanguage=String(e.data.lang||"hi");
+  lang=I18N[requestedLanguage]?requestedLanguage:"en";
+  sharedDark=!!e.data.dark;
+  syncDocumentTheme();
+  const tokens=e.data.tokens||{};
+  ["bg","card","soft","text","muted","line","p","p2"].forEach(k=>{
+    if(typeof tokens[k]==="string" && tokens[k]) document.body.style.setProperty("--"+k,tokens[k]);
+  });
+  document.documentElement.lang=requestedLanguage;
+  document.documentElement.dir=["ar","ur"].includes(requestedLanguage)?"rtl":"ltr";
+  applyLanguage();
+  syncThemeColor();
+});
+
+function syncFromStorageOrParent(){
+  try{
+    let parentDark = null;
+    let parentLang = null;
+    try{
+      if(window.parent && window.parent !== window && window.parent.document){
+        parentDark = window.parent.document.body.classList.contains("dark");
+        const sel = window.parent.document.getElementById("langSelect");
+        if(sel && sel.value) parentLang = sel.value;
+      }
+    }catch(_){}
+
+    const lsDark = localStorage.getItem("cbDark");
+    const d = parentDark !== null ? parentDark : (lsDark === "1");
+    if(sharedDark !== d){
+      sharedDark = d;
+      syncDocumentTheme();
+      syncThemeColor();
+    }
+
+    const lsLang = parentLang || localStorage.getItem("cbLang");
+    if(lsLang && lsLang !== requestedLanguage){
+      requestedLanguage = lsLang;
+      lang = I18N[lsLang] ? lsLang : "en";
+      document.documentElement.lang = requestedLanguage;
+      document.documentElement.dir = ["ar","ur"].includes(requestedLanguage) ? "rtl" : "ltr";
+      applyLanguage();
+    }
+  }catch(e){}
+}
+
+window.addEventListener("storage", syncFromStorageOrParent);
+setInterval(()=>{ if(document.visibilityState !== "hidden") syncFromStorageOrParent(); }, 400);
+
+parent.postMessage({type:"cb-community-ready"},"*");
+setChatState(false);
+syncFromStorageOrParent();
+applyLanguage();
+syncDocumentTheme();
+syncThemeColor();
+</script>
+
+<script id="community-v17-keyboard-js">
+(function(){
+  const vv=window.visualViewport;
+  const root=document.documentElement;
+
+  function updateKeyboardViewport(){
+    if(!vv) return;
+    const layoutH=document.documentElement.clientHeight || window.innerHeight;
+    const visibleBottom=vv.height + Math.max(0,vv.offsetTop);
+    const keyboard=Math.max(0,layoutH-visibleBottom);
+
+    root.style.setProperty("--cb-keyboard-offset",keyboard+"px");
+    document.body.classList.toggle("cb-keyboard-open",keyboard>80);
+
+    if(document.body.classList.contains("in-chat")){
+      const sc=document.scrollingElement;
+      if(sc) sc.scrollTop=0;
+      const msgBox=document.getElementById("messages");
+      if(msgBox) msgBox.scrollTop=msgBox.scrollHeight;
+    }
+  }
+
+  if(vv){
+    vv.addEventListener("resize",updateKeyboardViewport,{passive:true});
+    vv.addEventListener("scroll",updateKeyboardViewport,{passive:true});
+  }
+  window.addEventListener("resize",updateKeyboardViewport,{passive:true});
+  window.addEventListener("orientationchange",()=>setTimeout(updateKeyboardViewport,100),{passive:true});
+
+  document.addEventListener("focusin",e=>{
+    if(e.target && e.target.id==="messageInput"){
+      setTimeout(updateKeyboardViewport,50);
+      setTimeout(updateKeyboardViewport,180);
+    }
+  },true);
+
+  document.addEventListener("focusout",e=>{
+    if(e.target && e.target.id==="messageInput"){
+      setTimeout(updateKeyboardViewport,150);
+    }
+  },true);
+
+  window.CB_UPDATE_KEYBOARD_VIEWPORT=updateKeyboardViewport;
+  setTimeout(updateKeyboardViewport,0);
+})();
+</script>
+</body>
+</html>
