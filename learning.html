@@ -1,0 +1,1501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NowPro — Learning</title>
+<style>
+:root{
+  --bg:#f6f8fc;
+  --card:#ffffff;
+  --soft:#eef2f7;
+  --text:#111827;
+  --muted:#64748b;
+  --line:#e2e8f0;
+  --p:#4f46e5;
+  --p2:#7c3aed;
+  --shadow:0 10px 28px rgba(15,23,42,.07);
+  --section-gap:12px;
+  --module-gap:10px;
+  --folder-pad:16px;
+  --folder-radius:22px;
+}
+body.dark{
+  --bg:#0b1020;
+  --card:#111827;
+  --soft:#1b2638;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --line:#273449;
+  --p:#818cf8;
+  --p2:#a855f7;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:auto;
+  min-height:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+html{
+  height:auto;
+  min-height:0;
+  overflow:visible;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  height:auto !important;
+  min-height:0 !important;
+  overflow:visible !important;
+  overflow-x:hidden !important;
+  overscroll-behavior-y:auto;
+}
+.learning-root{
+  height:auto;
+  min-height:0 !important;
+  overflow:visible;
+}
+[hidden]{display:none!important}
+.learning-root{
+  width:100%;
+  min-height:100%;
+  padding:2px 0 16px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:16px;
+  box-shadow:var(--shadow);
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.folder-card{
+  position:relative;
+  margin:0 0 var(--section-gap);
+  padding:var(--folder-pad);
+  border:1px solid var(--line);
+  border-radius:var(--folder-radius);
+  background:linear-gradient(145deg,var(--card),var(--soft));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  min-width:0;
+}
+body.dark .folder-card{
+  background:linear-gradient(145deg,#121b2d,#0b1220);
+  border-color:#2b3a52;
+}
+.folder-card:before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:var(--folder-accent,#6366f1);
+}
+.folder-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  position:relative;
+  z-index:2;
+}
+.folder-head>div:first-child{
+  flex:1;
+  min-width:0;
+}
+.folder-head-actions{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex:0 0 auto;
+  margin-left:auto;
+}
+.folder-kicker{
+  font-size:10px;
+  letter-spacing:.14em;
+  font-weight:950;
+  color:var(--folder-accent,#6366f1);
+  margin-bottom:3px;
+}
+.folder-card .section-title{
+  font-size:21px;
+  font-weight:950;
+  margin:0;
+  color:var(--text);
+}
+.folder-card .section-subtitle{
+  font-size:12px;
+  color:var(--muted);
+  margin:3px 0 0;
+  line-height:1.4;
+  max-width:600px;
+}
+.folder-subject-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:5px 13px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  background:color-mix(in srgb,var(--p) 14%,var(--card));
+  color:var(--p);
+  border:1px solid color-mix(in srgb,var(--p) 35%,var(--line));
+  box-shadow:0 2px 8px color-mix(in srgb,var(--p) 12%,transparent);
+}
+.folder-body{
+  margin-top:14px;
+}
+.mods{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(165px,1fr));
+  gap:var(--module-gap);
+  align-items:stretch;
+}
+.mod{
+  width:100%;
+  min-height:92px;
+  border:1px solid color-mix(in srgb,var(--mod-accent,#6366f1) 28%,var(--line));
+  border-radius:17px;
+  padding:14px;
+  text-align:left;
+  font-weight:850;
+  background:linear-gradient(145deg,var(--card),color-mix(in srgb,var(--mod-accent,#6366f1) 7%,var(--card)));
+  color:var(--text);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  min-width:0;
+  overflow-wrap:anywhere;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+body.dark .mod{
+  background:linear-gradient(145deg,#172236,#0f1828);
+  border-color:color-mix(in srgb,var(--mod-accent,#6366f1) 35%,#334155);
+}
+.mod:before{
+  content:"";
+  position:absolute;
+  right:-20px;
+  top:-24px;
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:color-mix(in srgb,currentColor 9%,transparent);
+  pointer-events:none;
+}
+.mod:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 24px rgba(15,23,42,.14);
+}
+.mod:active{
+  transform:scale(.985);
+}
+.mod:focus-visible{
+  outline:3px solid var(--p);
+  outline-offset:3px;
+}
+.mod>span{
+  font-size:24px;
+  line-height:1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  color:var(--mod-accent,#6366f1);
+  margin-bottom:6px;
+}
+body.dark .mod>span{
+  background:rgba(255,255,255,.06);
+}
+.mod b{
+  display:block;
+  color:var(--text);
+  font-size:14px;
+}
+.mod small{
+  display:block;
+  color:var(--muted);
+  font-weight:600;
+  font-size:11px;
+  margin-top:4px;
+  line-height:1.35;
+}
+.mod-blue{--mod-accent:#3b82f6}
+.mod-purple{--mod-accent:#8b5cf6}
+.mod-orange{--mod-accent:#f97316}
+.mod-green{--mod-accent:#10b981}
+.mod-cyan{--mod-accent:#06b6d4}
+.mod-indigo{--mod-accent:#6366f1}
+.mod-teal{--mod-accent:#14b8a6}
+.mod-pink{--mod-accent:#ec4899}
+.mod-amber,.memory-game{--mod-accent:#f59e0b}
+.mod-violet{--mod-accent:#7c3aed}
+.mod-rose{--mod-accent:#f43f5e}
+.mod-sky{--mod-accent:#0ea5e9}
+.mod-lime{--mod-accent:#84cc16}
+.mod-slate{--mod-accent:#64748b}
+.mod-fuchsia{--mod-accent:#d946ef}
+.mod-yellow{--mod-accent:#eab308}
+
+.cb-learning-tables-screen,.cb-learning-lesson-screen{
+  display:grid;
+  gap:10px;
+  margin-top:2px;
+}
+.cb-learning-tables-head{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:12px 13px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+.cb-learning-back{
+  width:44px;
+  min-width:44px;
+  height:44px;
+  flex:0 0 44px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  font-size:30px;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 7px 18px rgba(79,70,229,.24);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.cb-learning-back:hover{
+  transform:translateY(-1px);
+}
+.cb-learning-back:active{
+  transform:scale(.97);
+}
+.cb-learning-kicker{
+  font-size:10px;
+  letter-spacing:.12em;
+  font-weight:900;
+  color:var(--p);
+  margin-bottom:2px;
+}
+.cb-learning-tables-head h2{
+  margin:0;
+  font-size:21px;
+  color:var(--text);
+}
+.cb-learning-tables-head p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.45;
+}
+.cb-learning-range-card,.cb-learning-table-focus{
+  touch-action:pan-y;
+
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+.cb-learning-lesson-screen h3{
+  font-size:16px;
+  margin:0 0 10px;
+  color:var(--text);
+}
+.cb-learning-lesson-screen p{
+  font-size:14px;
+  line-height:1.7;
+  margin:0;
+  color:var(--text);
+}
+.cb-lesson-equation{
+  direction:ltr;
+  text-align:left;
+  overflow-wrap:anywhere;
+  padding:14px;
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--p);
+  font-size:clamp(16px,4vw,22px);
+  font-weight:850;
+  line-height:1.7;
+}
+.cb-learning-section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  font-weight:900;
+  font-size:13px;
+  color:var(--text);
+  margin-bottom:9px;
+}
+.cb-learning-count{
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+}
+.cb-learning-range-row{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:7px;
+}
+.cb-learning-range,.cb-learning-table-chip{
+  min-height:40px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--text);
+  font-weight:900;
+  cursor:pointer;
+}
+.cb-learning-range.active,.cb-learning-table-chip.active{
+  border-color:transparent;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  box-shadow:0 7px 18px rgba(79,70,229,.22);
+}
+.cb-learning-table-picker{
+  display:grid;
+  grid-template-columns:repeat(10,minmax(0,1fr));
+  gap:7px;
+}
+.cb-learning-table-chip{
+  min-height:38px;
+  font-size:12px;
+}
+.cb-learning-focus-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:8px;
+}
+.cb-learning-focus-title h3{
+  margin:0;
+  font-size:17px;
+  color:var(--text);
+}
+.cb-learning-focus-badge{
+  font-size:10px;
+  font-weight:900;
+  color:#fff;
+  padding:5px 8px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+}
+.cb-learning-multiples{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:7px;
+}
+.cb-learning-multiple{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:9px 11px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--text);
+  font-weight:850;
+  font-size:13px;
+}
+.cb-learning-multiple strong{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:48px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#4f46e5,#8b5cf6);
+  color:#fff;
+  font-size:13px;
+  line-height:1.2;
+  box-shadow:0 3px 9px rgba(79,70,229,.22);
+}
+body.dark .cb-learning-multiple strong{
+  color:#fff;
+  background:linear-gradient(135deg,#6366f1,#a855f7);
+}
+.cb-learning-tip{
+  margin-top:9px;
+  padding:10px 11px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+/* Table learning: compact results and desktop two-column workspace */
+.cb-table-workspace{display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,.92fr);gap:10px;align-items:start;min-width:0}
+.cb-table-main,.cb-table-sidebar{display:grid;gap:10px;min-width:0}
+.cb-learning-multiple{display:grid;grid-template-columns:max-content 18px minmax(48px,max-content);justify-content:start;align-items:center;gap:10px;padding:8px 11px;min-height:38px}
+.cb-learning-multiple::after{content:'=';grid-column:2;grid-row:1;color:var(--muted);font-weight:800;text-align:center}
+.cb-learning-multiple span{grid-column:1;grid-row:1;white-space:nowrap}
+.cb-learning-multiple strong{grid-column:3;grid-row:1;min-width:48px;text-align:center;margin-left:0}
+.cb-table-side-card{padding:10px}.cb-table-side-card h3{font-size:13px;margin:0 0 7px;color:var(--text);line-height:1.3}
+.cb-table-side-card ul{list-style:none;padding:0;margin:0;display:grid;gap:5px}
+.cb-table-side-card li{font-size:11.5px;line-height:1.4;color:var(--text)}
+.cb-table-nav{width:100%;display:grid;grid-template-columns:34px minmax(0,1fr) 32px;align-items:center;gap:8px;text-align:left;padding:7px;border:1px solid var(--line);border-radius:12px;background:var(--soft);color:var(--text);cursor:pointer}
+.cb-table-nav:disabled{opacity:.38;cursor:not-allowed;filter:saturate(.55)}
+.cb-table-navigation-card .cb-navigation-title:before{content:"↔️"}
+.cb-table-navigation-row{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;align-items:stretch}
+.cb-table-navigation-row .cb-table-nav{grid-template-columns:32px minmax(0,1fr) 28px;gap:6px;padding:7px;min-width:0}
+.cb-table-navigation-row .cb-table-nav b{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-table-navigation-row .cb-table-nav small{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-table-navigation-row .cb-table-nav>strong{width:27px;height:27px;font-size:15px}
+@media(max-width:520px){.cb-table-navigation-row{grid-template-columns:repeat(2,minmax(0,1fr))}.cb-table-navigation-row .cb-table-nav{grid-template-columns:28px minmax(0,1fr) 24px;gap:5px;padding:6px}.cb-table-navigation-row .cb-table-nav-icon{width:28px;height:28px;font-size:15px}.cb-table-navigation-row .cb-table-nav>strong{width:24px;height:24px}}
+.cb-table-nav-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:var(--card);font-size:19px;font-weight:900}
+.cb-table-nav span:nth-child(2){min-width:0;display:grid;gap:2px}
+.cb-table-nav b{font-size:11.5px}.cb-table-nav small{font-size:10px;color:var(--muted)}
+.cb-table-nav>strong{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:linear-gradient(135deg,var(--p),var(--p2));color:white;font-size:16px}
+.cb-table-practice{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--soft);color:var(--text);font-size:11.5px;text-align:left;cursor:pointer}
+.cb-table-practice strong{color:var(--p);font-size:16px}
+@media(min-width:900px){.cb-table-sidebar{position:sticky;top:10px;align-self:start}}
+@media(max-width:899px){.cb-table-workspace{grid-template-columns:minmax(0,1fr)}.cb-table-sidebar{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.cb-table-sidebar{grid-template-columns:minmax(0,1fr)}.cb-learning-multiple{padding:9px 11px}}
+
+.btn{
+  width:100%;
+  min-height:46px;
+  border:0;
+  border-radius:13px;
+  padding:11px 16px;
+  font-weight:900;
+  font-size:14px;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;
+  box-shadow:0 8px 20px rgba(79,70,229,.22);
+  transition:transform .15s ease,filter .15s ease;
+}
+.btn:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.04);
+}
+.btn:active{
+  transform:scale(.985);
+}
+.cb-learning-faq{
+  margin-top:10px;
+}
+.cb-learning-faq h2{
+  font-size:18px;
+  margin:0 0 8px;
+  color:var(--text);
+}
+.cb-learning-faq details{
+  border-top:1px solid var(--line);
+  padding:9px 0;
+}
+.cb-learning-faq summary{
+  cursor:pointer;
+  font-size:12px;
+  font-weight:900;
+  color:var(--text);
+}
+.cb-learning-faq p{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.5;
+  margin:7px 0 0;
+}
+.learning-root:has(#cbLearningTablesScreen:not([hidden])) > .cb-learning-faq,
+.learning-root:has(#cbLearningLessonScreen:not([hidden])) > .cb-learning-faq{
+  display:none!important;
+}
+@media(min-width:700px){
+  .mods{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(min-width:1100px){
+  .mods{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .mod{min-height:102px}
+}
+@media(max-width:520px){
+  :root{--section-gap:10px;--module-gap:8px;--folder-pad:13px}
+  .mods{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .mod{padding:11px;min-height:84px;border-radius:16px}
+  .folder-card .section-title{font-size:18px}
+  .folder-card .section-subtitle{font-size:11px}
+  .cb-learning-range-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cb-learning-table-picker{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .cb-learning-tables-head h2{font-size:19px}
+}
+@media(max-width:360px){
+  .cb-learning-range-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+.cb-learning-extra-list{margin:10px 0 0;padding-left:22px;display:grid;gap:9px;line-height:1.6}
+.cb-learning-extra-list li{padding-left:3px;color:var(--text)}
+.cb-learning-extra p{line-height:1.65}
+.cb-learning-extra{margin-top:10px}
+
+/* Global colourful Learning theme — applies to every module, not only Tables */
+:root{
+  --bg:#eef2ff;
+  --card:#ffffff;
+  --soft:#e8edff;
+  --text:#172554;
+  --muted:#596987;
+  --line:#c7d2fe;
+  --p:#6d28d9;
+  --p2:#db2777;
+  --shadow:0 9px 24px rgba(59,75,150,.13);
+}
+body{
+  background:
+    radial-gradient(ellipse at 8% 0%,rgba(99,102,241,.18),transparent 34%),
+    radial-gradient(ellipse at 95% 12%,rgba(217,70,239,.14),transparent 30%),
+    linear-gradient(145deg,#eef2ff 0%,#f5f3ff 48%,#effaff 100%);
+}
+.learning-root{isolation:isolate}
+.card,.folder-card,.cb-learning-tables-head,.cb-learning-range-card,.cb-learning-table-focus{
+  border-color:color-mix(in srgb,var(--p) 25%,var(--line));
+  box-shadow:0 8px 22px rgba(67,56,202,.10),inset 0 1px 0 rgba(255,255,255,.72);
+}
+.folder-card{
+  background:linear-gradient(135deg,#fff 0%,#f0f4ff 48%,#fdf0ff 100%);
+}
+.folder-card:before{width:5px;background:linear-gradient(180deg,#22d3ee,#8b5cf6,#ec4899)}
+.folder-card .section-title{color:#312e81}
+.folder-subject-badge{background:linear-gradient(120deg,#ede9fe,#fce7f3);color:#6d28d9;border-color:#c4b5fd}
+.mod{
+  border-color:color-mix(in srgb,var(--mod-accent,#6366f1) 48%,#fff);
+  background:linear-gradient(145deg,#fff 0%,color-mix(in srgb,var(--mod-accent,#6366f1) 11%,#fff) 100%);
+  box-shadow:0 7px 17px color-mix(in srgb,var(--mod-accent,#6366f1) 14%,transparent),inset 0 1px 0 #fff;
+}
+.mod>span{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--mod-accent,#6366f1) 16%,#fff),#fff);
+  border-color:color-mix(in srgb,var(--mod-accent,#6366f1) 35%,#fff);
+}
+.mod b{color:#202b59}
+.mod small{color:#596987}
+.cb-learning-tables-head{background:linear-gradient(110deg,#eef2ff,#f5eaff 62%,#e7fbff)}
+.cb-learning-range-card,.cb-learning-table-focus{
+  background:linear-gradient(145deg,#fff 0%,#f2f5ff 58%,#fff5fc 100%);
+}
+.cb-learning-range,.cb-learning-table-chip{
+  background:linear-gradient(145deg,#f8faff,#e8efff);
+  border-color:#a5b4fc;
+}
+.cb-learning-range.active,.cb-learning-table-chip.active,.cb-learning-back,.cb-learning-focus-badge,.btn{
+  background:linear-gradient(120deg,#7c3aed,#c026d3 55%,#ec4899);
+}
+.cb-learning-multiple{background:linear-gradient(90deg,#edf4ff,#f4efff);border-color:#9bb8f5}
+.cb-learning-multiple strong{background:linear-gradient(120deg,#7c3aed,#c026d3 58%,#ec4899)}
+.cb-table-side-card{background:linear-gradient(145deg,#fff,#f1f2ff 62%,#fff1fb)}
+.cb-table-nav,.cb-table-practice{background:linear-gradient(110deg,#edf4ff,#f1eaff);border-color:#a5b4fc}
+.cb-table-nav-icon{background:linear-gradient(145deg,#dbeafe,#cffafe);color:#2563eb}
+.cb-table-nav>strong,.cb-table-practice strong{background:linear-gradient(135deg,#7c3aed,#d946ef);color:#fff}
+.cb-learning-lesson-screen .card,.cb-learning-lesson-screen section,.cb-learning-lesson-screen .cb-learning-range-card{
+  border-color:#c4b5fd;background:linear-gradient(145deg,#fff,#f1f5ff 60%,#fff1fa);
+}
+.cb-lesson-equation{background:linear-gradient(110deg,#ede9fe,#fce7f3);color:#6d28d9;border:1px solid #d8b4fe}
+.cb-learning-tip{background:linear-gradient(110deg,#ecfeff,#f5f3ff);border-color:#a5b4fc;color:#465779}
+.cb-learning-faq{background:linear-gradient(145deg,#fff,#f1f5ff 60%,#fff4fb)}
+
+/* Deep, vivid neon palette for dark mode across the entire Learning page */
+body.dark{
+  --bg:#050b1d;--card:#0c1730;--soft:#122448;--text:#f3f6ff;--muted:#b5c5e8;
+  --line:#294a78;--p:#a855f7;--p2:#ec4899;
+  --shadow:0 10px 26px rgba(0,0,0,.32);
+  background:radial-gradient(ellipse at 5% 0%,rgba(14,165,233,.19),transparent 34%),radial-gradient(ellipse at 92% 8%,rgba(168,85,247,.23),transparent 35%),linear-gradient(145deg,#050b1d,#0a1230 55%,#100b2b);
+}
+body.dark .card,body.dark .folder-card,body.dark .cb-learning-tables-head,body.dark .cb-learning-range-card,body.dark .cb-learning-table-focus{
+  background:linear-gradient(145deg,rgba(15,31,61,.98),rgba(12,18,48,.98) 58%,rgba(35,15,62,.88));
+  border-color:#315b91;box-shadow:0 8px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(147,197,253,.12);
+}
+body.dark .folder-card:before{background:linear-gradient(180deg,#22d3ee,#8b5cf6,#ec4899)}
+body.dark .folder-card .section-title,body.dark .mod b{color:#f4f5ff}
+body.dark .folder-subject-badge{background:linear-gradient(120deg,rgba(124,58,237,.28),rgba(219,39,119,.2));color:#e9d5ff;border-color:#8b5cf6}
+body.dark .mod{
+  background:linear-gradient(145deg,#142747 0%,#111b3b 55%,#26133e 100%);
+  border-color:color-mix(in srgb,var(--mod-accent,#818cf8) 65%,#23385d);
+  box-shadow:0 7px 20px color-mix(in srgb,var(--mod-accent,#818cf8) 13%,transparent),inset 0 1px 0 rgba(255,255,255,.08);
+}
+body.dark .mod>span{background:linear-gradient(145deg,color-mix(in srgb,var(--mod-accent,#818cf8) 30%,#142747),#17213f);border-color:color-mix(in srgb,var(--mod-accent,#818cf8) 55%,#263b61);color:color-mix(in srgb,var(--mod-accent,#818cf8) 80%,white)}
+body.dark .mod small{color:#bdcbed}
+body.dark .cb-learning-range,body.dark .cb-learning-table-chip{background:linear-gradient(145deg,#152b4d,#172044);border-color:#37659b;color:#f1f5ff}
+body.dark .cb-learning-range.active,body.dark .cb-learning-table-chip.active,body.dark .cb-learning-back,body.dark .cb-learning-focus-badge,body.dark .btn{background:linear-gradient(120deg,#7c3aed,#c026d3 55%,#ec4899)}
+body.dark .cb-learning-multiple{background:linear-gradient(90deg,#12294b,#1b1a46);border-color:#35649a;color:#f5f7ff}
+body.dark .cb-table-side-card{background:linear-gradient(145deg,#12294a,#171b43 65%,#29133e)}
+body.dark .cb-table-nav,body.dark .cb-table-practice{background:linear-gradient(110deg,#142c50,#1b1b47);border-color:#4566a2;color:#f5f7ff}
+body.dark .cb-table-nav-icon{background:linear-gradient(145deg,#075985,#2563eb);color:#fff}
+body.dark .cb-lesson-equation{background:linear-gradient(110deg,#24164d,#42164b);color:#f0d9ff;border-color:#9254d8}
+body.dark .cb-learning-tip{background:linear-gradient(110deg,#102e43,#21183e);border-color:#4967a0;color:#c9d7f5}
+body.dark .cb-learning-faq{background:linear-gradient(145deg,#102344,#17183d 70%,#28133d)}
+@media(prefers-reduced-motion:no-preference){.mod,.cb-learning-range,.cb-learning-table-chip,.cb-table-nav,.cb-table-practice{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,filter .16s ease}}
+
+
+
+/* Removed superseded intermediate theme overrides; current theme rules follow. */
+
+/* Selected table/range: high-contrast state in both themes. */
+#cbPanelLearning .cb-learning-range.active,
+#cbPanelLearning .cb-learning-table-chip.active,
+body.dark #cbPanelLearning .cb-learning-range.active,
+body.dark #cbPanelLearning .cb-learning-table-chip.active{
+  background:linear-gradient(120deg,#7c3aed 0%,#a855f7 55%,#d946ef 100%) !important;
+  color:#fff !important;
+  border:2px solid #d8b4fe !important;
+  box-shadow:0 0 0 2px rgba(168,85,247,.20),0 3px 10px rgba(124,58,237,.22) !important;
+  font-weight:900 !important;
+  transform:translateY(-1px);
+  position:relative;
+  z-index:1;
+}
+#cbPanelLearning .cb-learning-range.active:after,
+#cbPanelLearning .cb-learning-table-chip.active:after{
+  content:"✓";display:inline-grid;place-items:center;
+  width:15px;height:15px;margin-left:5px;border-radius:50%;
+  background:#fff;color:#7c3aed;font-size:10px;font-weight:1000;
+  vertical-align:middle;
+}
+#cbPanelLearning .cb-learning-table-chip.active:after{position:absolute;right:3px;top:2px;margin:0}
+#cbPanelLearning .cb-learning-range:not(.active),
+#cbPanelLearning .cb-learning-table-chip:not(.active){opacity:.88}
+
+/* Learning visual refresh: icon-led accents, crisp selection, restrained glow. */
+#cbPanelLearning .cb-learning-tables-head{
+  position:relative;overflow:hidden;isolation:isolate;
+  background:linear-gradient(112deg,#0b1c3a 0%,#15275a 58%,#29134c 100%);
+  border:1px solid #425cae;box-shadow:0 4px 14px rgba(16,35,86,.18);
+  padding:12px 14px;
+}
+#cbPanelLearning .cb-learning-tables-head:after{
+  content:"🧮   ➗   ➕   ✖️   📚";position:absolute;right:18px;top:50%;transform:translateY(-50%);
+  font-size:clamp(22px,3vw,38px);letter-spacing:8px;opacity:.92;pointer-events:none;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.25));white-space:nowrap;z-index:0
+}
+#cbPanelLearning .cb-learning-tables-head>*{position:relative;z-index:1}
+#cbPanelLearning .cb-learning-kicker{display:flex;align-items:center;gap:6px;color:#e879f9;letter-spacing:.02em;font-size:12px}
+#cbPanelLearning .cb-learn-book-icon{font-size:19px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+#cbPanelLearning .cb-learning-tables-head h2{font-size:clamp(23px,3vw,29px);font-weight:950;letter-spacing:-.02em}
+#cbPanelLearning .cb-learning-tables-head p{font-size:12px;color:#dbeafe}
+#cbPanelLearning .cb-learning-back{box-shadow:0 3px 9px rgba(124,58,237,.22);border-color:#c4b5fd}
+#cbPanelLearning .cb-learning-range-card,
+#cbPanelLearning .cb-learning-table-focus{
+  background:linear-gradient(145deg,#102344 0%,#111d3b 72%,#1b1740 100%);
+  border:1px solid #365a91;box-shadow:0 3px 10px rgba(4,12,35,.18);border-radius:17px
+}
+#cbPanelLearning .cb-learning-section-title{font-size:14px;color:#f8fafc;justify-content:flex-start;gap:9px}
+#cbPanelLearning .cb-range-heading:before{content:"📚";font-size:21px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+#cbPanelLearning .cb-picker-heading:before{content:"🔢";font-size:20px}
+#cbPanelLearning .cb-learning-count{margin-left:auto;padding:4px 9px;border-radius:99px;color:#f5eaff;background:linear-gradient(120deg,#4c1d95,#7e22ce);border:1px solid #a78bfa;font-size:10px}
+#cbPanelLearning .cb-learning-range,
+#cbPanelLearning .cb-learning-table-chip{
+  background:linear-gradient(145deg,#142e51,#15223f);border:1px solid #456b9d;color:#f1f5f9;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);transition:background .15s,border-color .15s,transform .15s
+}
+#cbPanelLearning .cb-learning-range.active,
+#cbPanelLearning .cb-learning-table-chip.active,
+body.dark #cbPanelLearning .cb-learning-range.active,
+body.dark #cbPanelLearning .cb-learning-table-chip.active{
+  background:linear-gradient(120deg,#7c3aed 0%,#a855f7 55%,#d946ef 100%) !important;
+  color:#fff !important;border:2px solid #e9d5ff !important;
+  box-shadow:0 0 0 1px rgba(192,132,252,.25),0 3px 9px rgba(124,58,237,.24) !important;
+  transform:translateY(-1px);font-weight:950;opacity:1
+}
+#cbPanelLearning .cb-learning-range.active:after,
+#cbPanelLearning .cb-learning-table-chip.active:after{
+  content:"✓";display:inline-grid;place-items:center;width:15px;height:15px;margin-left:5px;
+  border-radius:50%;background:#fff;color:#7c3aed;font-size:10px;font-weight:1000;vertical-align:middle
+}
+#cbPanelLearning .cb-learning-table-chip.active:after{position:absolute;right:3px;top:2px;margin:0}
+#cbPanelLearning .cb-learning-table-chip{position:relative}
+#cbPanelLearning .cb-learning-focus-title h3{font-size:clamp(19px,2.4vw,25px);font-weight:950;color:#fff}
+#cbPanelLearning .cb-learning-focus-title h3:before{content:"🧮";display:inline-block;margin-right:9px;font-size:25px;vertical-align:-2px}
+#cbPanelLearning .cb-learning-focus-title h3{color:#fff}
+#cbPanelLearning .cb-learning-focus-title h3::first-letter{color:#fff}
+#cbPanelLearning .cb-learning-focus-badge{background:linear-gradient(120deg,#7c3aed,#c026d3);border:1px solid #d8b4fe;box-shadow:none}
+#cbPanelLearning .cb-learning-multiple{background:linear-gradient(100deg,#11294b,#111f3c);border:1px solid #4774aa;color:#f8fafc;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+#cbPanelLearning .cb-learning-multiple strong{background:linear-gradient(120deg,#7c3aed,#c026d3);box-shadow:0 2px 5px rgba(124,58,237,.18);border:1px solid rgba(233,213,255,.55)}
+#cbPanelLearning .cb-table-side-card{border-color:#42649b;box-shadow:0 3px 10px rgba(4,12,35,.16);padding:11px}
+#cbPanelLearning .cb-side-title{display:flex;align-items:center;gap:8px;font-size:14px!important;color:#f8fafc!important;margin:0 0 8px!important}
+#cbPanelLearning .cb-side-title:before{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:9px;font-size:19px;line-height:1;flex:0 0 28px;background:linear-gradient(145deg,rgba(124,58,237,.32),rgba(14,165,233,.18));border:1px solid rgba(147,197,253,.25)}
+#cbPanelLearning .cb-quick-title:before{content:"💡"}
+#cbPanelLearning .cb-next-title:before{content:"➡️"}
+#cbPanelLearning .cb-prev-title:before{content:"⬅️"}
+#cbPanelLearning .cb-practice-title:before{content:"🎮"}
+#cbPanelLearning .cb-table-side-card ul{gap:6px}
+#cbPanelLearning .cb-table-side-card li{font-size:12px;color:#e5edff;line-height:1.45}
+#cbPanelLearning .cb-table-nav{background:linear-gradient(110deg,#122c50,#191b43);border-color:#45699e;box-shadow:none;padding:8px}
+#cbPanelLearning .cb-table-nav-icon{background:linear-gradient(145deg,#0891b2,#2563eb);color:#fff;border:1px solid #67e8f9;box-shadow:none;font-size:17px}
+#cbPanelLearning .cb-table-nav>strong{background:linear-gradient(135deg,#7c3aed,#c026d3);box-shadow:none}
+#cbPanelLearning .cb-table-practice{background:linear-gradient(110deg,#172c50,#211943);border-color:#6651a6;color:#f8fafc}
+#cbPanelLearning .cb-table-practice strong{color:#e879f9}
+#cbPanelLearning .mod>span{background:linear-gradient(145deg,color-mix(in srgb,var(--mod-accent,#6366f1) 24%,#142344),#111c38);border:1px solid color-mix(in srgb,var(--mod-accent,#6366f1) 55%,#334155);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 5px rgba(0,0,0,.15);filter:saturate(1.12)}
+#cbPanelLearning .mod{box-shadow:0 3px 10px rgba(4,12,35,.13);border-color:color-mix(in srgb,var(--mod-accent,#6366f1) 42%,#334155)}
+#cbPanelLearning .mod:hover{box-shadow:0 5px 13px rgba(4,12,35,.18)}
+@media(max-width:600px){
+ #cbPanelLearning .cb-learning-tables-head:after{font-size:20px;letter-spacing:2px;right:8px;opacity:.38}
+ #cbPanelLearning .cb-learning-tables-head{padding:10px}
+ #cbPanelLearning .cb-learning-tables-head p{max-width:72%}
+ #cbPanelLearning .cb-learning-range-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){#cbPanelLearning .cb-learning-range,#cbPanelLearning .cb-learning-table-chip{transition:none}}
+
+</style>
+
+<style id="learning-embed-contrast-compact-fixes">
+/* The iframe is a standalone document: scope refinements to its own root, not the host page ID. */
+.learning-root .cb-learning-tables-screen,
+.learning-root .cb-learning-lesson-screen{min-width:0;}
+body:not(.dark) .learning-root .cb-learning-range-card,
+body:not(.dark) .learning-root .cb-learning-table-focus{
+  background:linear-gradient(145deg,#f8fbff 0%,#eef4ff 62%,#fff5fc 100%);
+  border-color:#9db6df;color:#17233d;box-shadow:0 3px 10px rgba(35,62,110,.08);
+}
+body:not(.dark) .learning-root .cb-learning-multiple{
+  background:linear-gradient(100deg,#edf4ff,#f7f0ff);border-color:#a8bee5;color:#17233d;
+}
+body:not(.dark) .learning-root .cb-learning-multiple strong{
+  background:linear-gradient(120deg,#7c3aed,#c026d3);color:#fff;border:1px solid #d8b4fe;
+}
+body:not(.dark) .learning-root .cb-table-side-card li{color:#253653;}
+body:not(.dark) .learning-root .cb-table-nav,
+body:not(.dark) .learning-root .cb-table-practice{background:linear-gradient(110deg,#edf4ff,#f4edff);border-color:#a5b4fc;color:#17233d;}
+.cb-learning-lesson-screen{gap:9px;}
+.cb-learning-lesson-screen>.cb-learning-range-card{padding:12px;}
+.cb-learning-lesson-screen .cb-learning-lesson-summary p{line-height:1.5;}
+.cb-learning-compact-detail{margin:0 0 8px;padding:11px 13px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,var(--card),var(--soft));color:var(--text);}
+.cb-learning-compact-detail summary,.cb-learning-reference summary{cursor:pointer;list-style:none;font-weight:850;font-size:13px;display:flex;align-items:center;gap:8px;min-height:22px;}
+.cb-learning-compact-detail summary::-webkit-details-marker,.cb-learning-reference summary::-webkit-details-marker{display:none;}
+.cb-learning-compact-detail summary:after,.cb-learning-reference summary:after{content:'＋';margin-left:auto;color:var(--p2);font-weight:950;font-size:16px;}
+.cb-learning-compact-detail[open] summary:after,.cb-learning-reference[open] summary:after{content:'−';}
+.cb-learning-compact-detail .cb-learning-extra-list{margin-top:8px;gap:5px;line-height:1.45;font-size:12px;}
+.cb-learning-compact-detail p{margin-top:8px!important;font-size:12px!important;line-height:1.5!important;}
+.cb-learning-reference{margin-top:8px;}
+.cb-learning-reference>.cb-learning-multiples{margin-top:10px;max-height:360px;overflow:auto;overscroll-behavior:contain;padding-right:3px;}
+@media(max-width:600px){
+ .cb-learning-compact-detail{padding:10px 12px;margin-bottom:7px;}
+ .cb-learning-lesson-screen>.cb-learning-range-card{padding:11px;}
+ .cb-learning-reference>.cb-learning-multiples{max-height:260px;}
+}
+@media(prefers-reduced-motion:no-preference){.cb-learning-compact-detail,.cb-learning-reference{transition:border-color .15s ease,background .15s ease;}}
+</style>
+
+</head>
+<body>
+<div class="learning-root" id="cbPanelLearning">
+  <div class="cb-learning-grid" id="cbLearningToolGrid">
+    <div class="folder-card calculation-folder">
+      <div class="folder-head">
+        <div>
+          <div class="folder-kicker" id="cbLearningKicker">📚 LEARNING</div>
+          <div class="section-title" id="cbLearningFolderTitle">Learn Calculation</div>
+          <div class="section-subtitle" id="cbLearningFolderSub">Choose a tool to explore its method and examples.</div>
+        </div>
+        <div class="folder-head-actions">
+          <span class="folder-subject-badge" id="cbLearningSubjectBadge">Maths</span>
+        </div>
+      </div>
+      <div class="folder-body">
+        <div class="mods">
+          <button type="button" class="mod mod-blue cb-learning-tables-entry" id="cbLearningTablesEntry" aria-controls="cbLearningTablesScreen"><span aria-hidden="true">🧮</span><b id="learnTablesTitle">Tables</b><small id="learnTablesText">Learn tables 1–60</small></button>
+          <button type="button" class="mod mod-purple" data-learning-tool="addition" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">➕</span><b>Addition</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-orange" data-learning-tool="subtraction" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">➖</span><b>Subtraction</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-green" data-learning-tool="multiplication" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">✖️</span><b>Multiplication</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-cyan" data-learning-tool="division" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">➗</span><b>Division</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-indigo" data-learning-tool="square" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🔲</span><b>Squares</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-teal" data-learning-tool="root" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">√️⃣</span><b>Square Root</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-pink" data-learning-tool="cube" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🧊</span><b>Cube</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-amber" data-learning-tool="cuberoot" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🧩</span><b>Cube Root</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-violet" data-learning-tool="mixed" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🔀</span><b>Mixed Calculation</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-rose" data-learning-tool="percentage" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">％</span><b>Percentage</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-sky" data-learning-tool="fraction" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🍕</span><b>Fraction</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-lime" data-learning-tool="average" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">📊</span><b>Average</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-violet" data-learning-tool="ratio" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">⚖️</span><b>Ratio</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-slate" data-learning-tool="lcmhcf" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🔗</span><b>LCM/HCF</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-fuchsia" data-learning-tool="simplification" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🧮</span><b>Simplification</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-yellow" data-learning-tool="approximation" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🎯</span><b>Approximation</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod memory-game memory-feature-main" data-learning-tool="memorycalculation" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🧠</span><b>Calculation Memory</b><small>Learn the method and examples</small></button>
+          <button type="button" class="mod mod-indigo falling-tool-card" data-learning-tool="fallingcalculation" aria-controls="cbLearningLessonScreen"><span aria-hidden="true">🎮</span><b>Falling Calculation</b><small>Learn the method and examples</small></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="cbLearningLessonScreen" class="cb-learning-lesson-screen" hidden aria-hidden="true" aria-label="Learning tool"></section>
+
+  <div class="cb-learning-tables-screen" id="cbLearningTablesScreen" hidden aria-hidden="true">
+    <div class="cb-learning-tables-head">
+      <button class="cb-learning-back" id="cbLearningTablesBack" type="button" aria-label="Back to learning">‹</button>
+      <div>
+        <div class="cb-learning-kicker"><span class="cb-learn-book-icon" aria-hidden="true">📖</span> LEARN</div>
+        <h2>Table</h2>
+        <p>Tables from 1 to 60: choose a range, then a table.</p>
+      </div>
+    </div>
+    <div class="cb-table-workspace">
+      <div class="cb-table-main">
+        <div class="cb-learning-range-card">
+          <div class="cb-learning-section-title cb-range-heading" id="cbLearningRangeLabel"><span>Table Range</span></div>
+          <div class="cb-learning-range-row" role="group" aria-label="Table range">
+            <button type="button" class="cb-learning-range active" data-table-range="1-10">1–10</button>
+            <button type="button" class="cb-learning-range" data-table-range="11-20">11–20</button>
+            <button type="button" class="cb-learning-range" data-table-range="21-30">21–30</button>
+            <button type="button" class="cb-learning-range" data-table-range="31-40">31–40</button>
+            <button type="button" class="cb-learning-range" data-table-range="41-50">41–50</button>
+            <button type="button" class="cb-learning-range" data-table-range="51-60">51–60</button>
+          </div>
+        </div>
+        <div class="cb-learning-range-card">
+          <div class="cb-learning-section-title cb-picker-heading"><span id="cbLearningRangeTitle">Tables 1–10</span><span class="cb-learning-count" id="cbLearningRangeCount">10 tables</span></div>
+          <div class="cb-learning-table-picker" id="cbLearningTablePicker" role="group"></div>
+        </div>
+        <div class="cb-learning-table-focus" id="cbLearningTableFocus"></div>
+      </div>
+      <aside class="cb-table-sidebar" aria-label="Table learning and navigation">
+        <section class="cb-learning-range-card cb-table-side-card cb-table-navigation-card">
+          <h3 class="cb-side-title cb-navigation-title">Table Navigation</h3>
+          <div class="cb-table-navigation-row">
+            <button type="button" class="cb-table-nav cb-table-nav-prev" id="cbTablePrev" aria-label="Previous table"><span class="cb-table-nav-icon" id="cbTablePrevIcon">30</span><span><b id="cbTablePrevName">Table</b><small id="cbTablePrevSub">Previous table</small></span><strong>←</strong></button>
+            <button type="button" class="cb-table-nav cb-table-nav-next" id="cbTableNext" aria-label="Next table"><span class="cb-table-nav-icon" id="cbTableNextIcon">32</span><span><b id="cbTableNextName">Table</b><small id="cbTableNextSub">Next table</small></span><strong>→</strong></button>
+          </div>
+        </section>
+        <section class="cb-learning-range-card cb-table-side-card">
+          <h3 class="cb-side-title cb-quick-title" id="cbTableQuickTitle">Quick Learning — Table</h3>
+          <ul id="cbTableQuickList"></ul>
+        </section>
+        <section class="cb-learning-range-card cb-table-side-card">
+          <h3 class="cb-side-title cb-practice-title" id="cbTablePracticeHeading">More Practice</h3>
+          <button type="button" class="cb-table-practice" id="cbTablePracticeOne"><span>🎯 <b id="cbTablePracticeOneText">Practice Table</b></span><strong>▶</strong></button>
+          <button type="button" class="cb-table-practice" id="cbTablePracticeMixed"><span>🔀 <b id="cbTablePracticeMixedText">Mixed Table Practice</b></span><strong>▶</strong></button>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <section aria-labelledby="learningFaqTitle" class="card cb-learning-faq" id="cbLearningFaqSection">
+    <h2 id="learningFaqTitle">Calculation Practice FAQ</h2>
+    <details><summary id="faqQ1">What is NowPro?</summary><p id="faqA1">NowPro is a free web-based practice platform for improving number skills, arithmetic speed and calculation accuracy.</p></details>
+    <details><summary id="faqQ2">What can I practice?</summary><p id="faqA2">You can practice tables, addition, subtraction, multiplication, division, squares, square roots, cubes, cube roots, mixed calculation and common exam topics.</p></details>
+    <details><summary id="faqQ3">How should I improve calculation speed?</summary><p id="faqA3">Start with accurate answers, choose a suitable difficulty, practice regularly and increase speed gradually instead of sacrificing accuracy.</p></details>
+  </section>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var currentLang='en';
+  var activeTool=null;
+  var previousTrigger=null;
+  var activeRange='1-10';
+  var activeTable=1;
+  var hasRenderedTables=false;
+  var focusHeading=null;
+  var focusTip=null;
+
+  var RANGES={'1-10':[1,10],'11-20':[11,20],'21-30':[21,30],'31-40':[31,40],'41-50':[41,50],'51-60':[51,60]};
+
+  var TOOL_NAMES={
+    addition:{hi:'जोड़',en:'Addition',gu:'સરવાળો',mr:'बेरीज',bn:'যোগ',ta:'கூட்டல்',te:'కూడిక',ur:'جمع',as:'যোগ'},
+    subtraction:{hi:'घटाव',en:'Subtraction',gu:'બાદબાકી',mr:'वजाबाकी',bn:'বিয়োগ',ta:'கழித்தல்',te:'తీసివేత',ur:'تفریق',as:'বিয়োগ'},
+    multiplication:{hi:'गुणा',en:'Multiplication',gu:'ગુણાકાર',mr:'गुणाकार',bn:'গুণ',ta:'பெருக்கல்',te:'గుణకారం',ur:'ضرب',as:'পূৰণ'},
+    division:{hi:'भाग',en:'Division',gu:'ભાગાકાર',mr:'भागाकार',bn:'ভাগ',ta:'வகுத்தல்',te:'భాగహారం',ur:'تقسیم',as:'ভাগ'},
+    square:{hi:'वर्ग',en:'Squares',gu:'વર્ગ',mr:'वर्ग',bn:'বর্গ',ta:'வர்க்கம்',te:'వర్గాలు',ur:'مربع',as:'বৰ্গ'},
+    root:{hi:'वर्गमूल',en:'Square Root',gu:'વર્ગમૂળ',mr:'वर्गमूळ',bn:'বর্গমূল',ta:'வர்க்கமூலம்',te:'వర్గమూలం',ur:'مربع جذر',as:'বৰ্গমূল'},
+    cube:{hi:'घन',en:'Cube',gu:'ઘન',mr:'घन',bn:'ঘন',ta:'கனசதுரம்',te:'ఘనం',ur:'مکعب',as:'ঘন'},
+    cuberoot:{hi:'घनमूल',en:'Cube Root',gu:'ઘનમૂળ',mr:'घनमूळ',bn:'ঘনমূল',ta:'கனமூலம்',te:'ఘనమూలం',ur:'مکعب جذر',as:'ঘনমূল'},
+    mixed:{hi:'मिश्रित गणना',en:'Mixed Calculation',gu:'મિશ્ર ગણતરી',mr:'मिश्र गणित',bn:'মিশ্র গণনা',ta:'கலப்பு கணக்கீடு',te:'మిశ్రమ గణన',ur:'مخلوط حساب',as:'মিশ্ৰ গণনা'},
+    percentage:{hi:'प्रतिशत',en:'Percentage',gu:'ટકાવારી',mr:'टक्केवारी',bn:'শতাংশ',ta:'சதவீதம்',te:'శాతం',ur:'فیصد',as:'শতাংশ'},
+    fraction:{hi:'भिन्न',en:'Fraction',gu:'અપૂર્ણાંક',mr:'अपूर्णांक',bn:'ভগ্নাংশ',ta:'பின்னம்',te:'భిన్నం',ur:'کسر',as:'ভগ্নাংশ'},
+    average:{hi:'औसत',en:'Average',gu:'સરેરાશ',mr:'सरासरी',bn:'গড়',ta:'சராசரி',te:'సగటు',ur:'اوسط',as:'গড়'},
+    ratio:{hi:'अनुपात',en:'Ratio',gu:'ગુણોત્તર',mr:'प्रमाण',bn:'অনুপাত',ta:'விகிதம்',te:'నిష్పత్తి',ur:'تناسب',as:'অনুপাত'},
+    lcmhcf:{hi:'ल.स.प./म.स.प.',en:'LCM/HCF',gu:'LCM / HCF',mr:'LCM / HCF',bn:'LCM / HCF',ta:'LCM / HCF',te:'LCM / HCF',ur:'LCM / HCF',as:'ল.সা.গু. / গ.সা.গু.'},
+    simplification:{hi:'सरलीकरण',en:'Simplification',gu:'સરળીકરણ',mr:'सुलभीकरण',bn:'সরলীকরণ',ta:'எளிமைப்படுத்தல்',te:'సరళీకరణ',ur:'سادہ کاری',as:'সৰলীকৰণ'},
+    approximation:{hi:'सन्निकटन',en:'Approximation',gu:'અંદાજ',mr:'अंदाज',bn:'আনুমানিক',ta:'தோராயம்',te:'సన్నికరణ',ur:'تقریب',as:'আনুমানিক মান'},
+    memorycalculation:{hi:'गणना स्मृति',en:'Calculation Memory',gu:'ગણતરી સ્મૃતિ',mr:'गणना स्मृती',bn:'গণনা স্মৃতি',ta:'கணக்கீட்டு நினைவகம்',te:'గణన జ్ఞాపకం',ur:'حسابی یادداشت',as:'গণনা স্মৃতি'},
+    fallingcalculation:{hi:'गिरती गणना',en:'Falling Calculation',gu:'Falling Calculation',mr:'Falling Calculation',bn:'Falling Calculation',ta:'Falling Calculation',te:'Falling Calculation',ur:'Falling Calculation',as:'Falling Calculation'}
+  };
+
+  var UI_PACK={
+    en:{
+      kicker:'📚 LEARNING',subject:'Mathematics',folderTitle:'Learn Calculation',folderSub:'Choose a tool to explore its method and examples.',
+      cardSub:'Learn the method and examples',lessonKicker:'LEARN • CALCULATION',methodTitle:'Understand the method',exampleTitle:'Worked example',
+      refTitle:'1–30 reference list',practiceBtn:'Practice this topic',backLabel:'Back to learning tools',
+      faq:'Calculation Practice FAQ',q1:'What is NowPro?',a1:'NowPro is a free web-based practice platform for improving number skills, arithmetic speed and calculation accuracy.',
+      q2:'What can I practice?',a2:'You can practice tables, addition, subtraction, multiplication, division, squares, square roots, cubes, cube roots, mixed calculation and common exam topics.',
+      q3:'How should I improve calculation speed?',a3:'Start with accurate answers, choose a suitable difficulty, practice regularly and increase speed gradually instead of sacrificing accuracy.'
+    },
+    hi:{
+      kicker:'📚 सीखें',subject:'गणित',folderTitle:'गणना सीखें',folderSub:'कोई tool चुनें — उसका तरीका और उदाहरण अंदर मिलेंगे।',
+      cardSub:'तरीका और उदाहरण सीखें',lessonKicker:'सीखें • गणना',methodTitle:'तरीका समझें',exampleTitle:'हल किया हुआ उदाहरण',
+      refTitle:'1–30 संदर्भ सूची',practiceBtn:'इस विषय का अभ्यास करें',backLabel:'Learning tools पर वापस जाएँ',
+      faq:'गणना अभ्यास के सामान्य प्रश्न',q1:'NowPro क्या है?',a1:'NowPro number skills, calculation speed और accuracy सुधारने के लिए एक free web-based practice platform है।',
+      q2:'मैं क्या practice कर सकता हूँ?',a2:'आप tables, addition, subtraction, multiplication, division, squares, square roots, cubes, cube roots, mixed calculation और common exam topics practice कर सकते हैं।',
+      q3:'Calculation speed कैसे बढ़ाएँ?',a3:'पहले accuracy पर ध्यान दें, सही difficulty चुनें, नियमित practice करें और accuracy खोए बिना speed धीरे-धीरे बढ़ाएँ।'
+    },
+    gu:{
+      kicker:'📚 શીખો',subject:'ગણિત',folderTitle:'ગણતરી શીખો',folderSub:'પદ્ધતિ અને ઉદાહરણો જોવા માટે કોઈ ટૂલ પસંદ કરો.',
+      cardSub:'પદ્ધતિ અને ઉદાહરણો શીખો',lessonKicker:'શીખો • ગણતરી',methodTitle:'પદ્ધતિ સમજો',exampleTitle:'ઉકેલેલું ઉદાહરણ',
+      refTitle:'1–30 સંદર્ભ યાદી',practiceBtn:'આ વિષયનો અભ્યાસ કરો',backLabel:'પાછા જાઓ',
+      faq:'Calculation Practice FAQ',q1:'NowPro શું છે?',a1:'NowPro નંબર skills, calculation speed અને accuracy સુધારવા માટેનું free web-based practice platform છે.',
+      q2:'હું શું practice કરી શકું?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation અને exam topicsનો અભ્યાસ કરી શકો છો.',
+      q3:'Calculation speed કેવી રીતે વધારવી?',a3:'Accuracyથી શરૂઆત કરો, યોગ્ય difficulty પસંદ કરો અને નિયમિત practiceથી ધીમે ધીમે speed વધારો.'
+    },
+    mr:{
+      kicker:'📚 शिका',subject:'गणित',folderTitle:'गणना शिका',folderSub:'पद्धत आणि उदाहरणे पाहण्यासाठी एखादे टूल निवडा.',
+      cardSub:'पद्धत आणि उदाहरणे शिका',lessonKicker:'शिका • गणना',methodTitle:'पद्धत समजून घ्या',exampleTitle:'सोडवलेले उदाहरण',
+      refTitle:'1–30 संदर्भ यादी',practiceBtn:'या विषयाचा सराव करा',backLabel:'मागे जा',
+      faq:'Calculation Practice FAQ',q1:'NowPro म्हणजे काय?',a1:'NowPro हे number skills, calculation speed आणि accuracy सुधारण्यासाठीचे free web-based practice platform आहे.',
+      q2:'मी काय practice करू शकतो?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation आणि exam topics चा सराव करू शकता.',
+      q3:'Calculation speed कशी वाढवायची?',a3:'Accuracyपासून सुरुवात करा, योग्य difficulty निवडा आणि नियमित सरावाने हळूहळू speed वाढवा.'
+    },
+    bn:{
+      kicker:'📚 শিখুন',subject:'গণিত',folderTitle:'হিসাব শিখুন',folderSub:'পদ্ধতি এবং উদাহরণ দেখতে একটি টুল বেছে নিন।',
+      cardSub:'পদ্ধতি ও উদাহরণ শিখুন',lessonKicker:'শিখুন • হিসাব',methodTitle:'পদ্ধতি বুঝুন',exampleTitle:'সমাধান করা উদাহরণ',
+      refTitle:'1–30 রেফারেন্স তালিকা',practiceBtn:'এই বিষয়ের অনুশীলন করুন',backLabel:'ফিরে যান',
+      faq:'Calculation Practice FAQ',q1:'NowPro কী?',a1:'NowPro হলো number skills, calculation speed এবং accuracy উন্নত করার একটি free web-based practice platform।',
+      q2:'আমি কী practice করতে পারি?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation এবং exam topics practice করতে পারেন।',
+      q3:'Calculation speed কীভাবে বাড়াব?',a3:'Accuracy দিয়ে শুরু করুন, উপযুক্ত difficulty বেছে নিন এবং নিয়মিত practice করে ধীরে speed বাড়ান।'
+    },
+    ta:{
+      kicker:'📚 கற்க',subject:'கணிதம்',folderTitle:'கணக்கீடு கற்க',folderSub:'முறை மற்றும் எடுத்துக்காட்டுகளை அறிய ஒரு கருவியைத் தேர்ந்தெடுக்கவும்.',
+      cardSub:'முறை மற்றும் எடுத்துக்காட்டுகளைக் கற்க',lessonKicker:'கற்க • கணக்கீடு',methodTitle:'முறையைப் புரிந்துகொள்ளுங்கள்',exampleTitle:'தீர்க்கப்பட்ட எடுத்துக்காட்டு',
+      refTitle:'1–30 குறிப்புப் பட்டியல்',practiceBtn:'இந்தத் தலைப்பைப் பயிற்சி செய்க',backLabel:'திரும்பிச் செல்',
+      faq:'Calculation Practice FAQ',q1:'NowPro என்றால் என்ன?',a1:'NowPro என்பது number skills, calculation speed மற்றும் accuracy-ஐ மேம்படுத்தும் இலவச web-based practice platform.',
+      q2:'நான் என்ன practice செய்யலாம்?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation மற்றும் exam topics-ஐ practice செய்யலாம்.',
+      q3:'Calculation speed-ஐ எப்படி அதிகரிப்பது?',a3:'Accuracy-யில் தொடங்கி, சரியான difficulty-ஐ தேர்ந்தெடுத்து, தொடர்ந்து practice செய்து speed-ஐ படிப்படியாக அதிகரிக்கவும்.'
+    },
+    te:{
+      kicker:'📚 నేర్చుకోండి',subject:'గణితం',folderTitle:'గణన నేర్చుకోండి',folderSub:'పద్ధతి మరియు ఉదాహరణలను తెలుసుకోవడానికి ఒక టూల్ ఎంచుకోండి.',
+      cardSub:'పద్ధతి మరియు ఉదాహరణలు నేర్చుకోండి',lessonKicker:'నేర్చుకోండి • గణన',methodTitle:'పద్ధతిని అర్థం చేసుకోండి',exampleTitle:'సాధించిన ఉదాహరణ',
+      refTitle:'1–30 రిఫరెన్స్ జాబితా',practiceBtn:'ఈ అంశాన్ని ప్రాక్టీస్ చేయండి',backLabel:'తిరిగి వెళ్ళు',
+      faq:'Calculation Practice FAQ',q1:'NowPro అంటే ఏమిటి?',a1:'NowPro అనేది number skills, calculation speed మరియు accuracy మెరుగుపరచడానికి ఉచిత web-based practice platform.',
+      q2:'నేను ఏమి practice చేయగలను?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation మరియు exam topics practice చేయవచ్చు.',
+      q3:'Calculation speed ఎలా పెంచాలి?',a3:'Accuracyతో ప్రారంభించి, సరైన difficulty ఎంచుకుని, క్రమం తప్పకుండా practice చేస్తూ speed‌ను క్రమంగా పెంచండి.'
+    },
+    ur:{
+      kicker:'📚 سیکھیں',subject:'ریاضی',folderTitle:'حساب سیکھیں',folderSub:'طریقہ اور مثالیں دیکھنے کے لیے کوئی ٹول منتخب کریں۔',
+      cardSub:'طریقہ اور مثالیں سیکھیں',lessonKicker:'سیکھیں • حساب',methodTitle:'طریقہ سمجھیں',exampleTitle:'حل شدہ مثال',
+      refTitle:'1–30 حوالہ فہرست',practiceBtn:'اس موضوع کی مشق کریں',backLabel:'واپس جائیں',
+      faq:'Calculation Practice FAQ',q1:'NowPro کیا ہے؟',a1:'NowPro number skills، calculation speed اور accuracy بہتر بنانے کے لیے ایک free web-based practice platform ہے۔',
+      q2:'میں کیا practice کر سکتا ہوں؟',a2:'Tables، addition، subtraction، multiplication، division، squares، roots، cubes، mixed calculation اور exam topics کی practice کر سکتے ہیں۔',
+      q3:'Calculation speed کیسے بڑھائیں؟',a3:'Accuracy سے شروع کریں، مناسب difficulty منتخب کریں اور باقاعدہ practice سے speed آہستہ آہستہ بڑھائیں۔'
+    },
+    as:{
+      kicker:'📚 শিকক',subject:'গণিত',folderTitle:'গণনা শিকক',folderSub:'পদ্ধতি আৰু উদাহৰণ চাবলৈ এটা সঁজুলি বাছক।',
+      cardSub:'পদ্ধতি আৰু উদাহৰণ শিকক',lessonKicker:'শিকক • গণনা',methodTitle:'পদ্ধতি বুজক',exampleTitle:'সমাধান কৰা উদাহৰণ',
+      refTitle:'1–30 প্ৰসংগ তালিকা',practiceBtn:'এই বিষয়টো অনুশীলন কৰক',backLabel:'উভতি যাওক',
+      faq:'Calculation Practice FAQ',q1:'NowPro কি?',a1:'NowPro হৈছে number skills, calculation speed আৰু accuracy উন্নত কৰাৰ এটা free web-based practice platform।',
+      q2:'মই কি practice কৰিব পাৰোঁ?',a2:'Tables, addition, subtraction, multiplication, division, squares, roots, cubes, mixed calculation আৰু exam topics practice কৰিব পাৰি।',
+      q3:'Calculation speed কেনেকৈ বৃদ্ধি কৰিম?',a3:'Accuracy-ৰ পৰা আৰম্ভ কৰক, উপযুক্ত difficulty বাছক আৰু নিয়মিত practice-ৰ জৰিয়তে speed ধীৰে ধীৰে বৃদ্ধি কৰক।'
+    }
+  };
+
+  var TABLES_FIELDS=['title','text','learning','subtitle','back','range','rangeTables','count','table','tip1','tip2','tip5','tip10','tip'];
+  var TABLES_I18N={
+    hi:['टेबल','टेबल याद करें और गणना तेज़ करें।','सीखें','1 से 60 तक के पहाड़े: पहले समूह, फिर पहाड़ा चुनें।','सीखने के पृष्ठ पर वापस जाएँ','पहाड़ों का समूह','{range} के पहाड़े','{count} पहाड़े','{n} का पहाड़ा','1 से गुणा करने पर संख्या वही रहती है।','हर अगला उत्तर 2 से बढ़ता है।','उत्तर का आखिरी अंक 0 या 5 होता है।','पूर्ण संख्या के अंत में 0 जोड़ें।','हर पंक्ति बोलकर पढ़ें, फिर बिना देखे दोहराएँ।'],
+    en:['Table','Learn tables and calculate faster.','Learn','Tables from 1 to 60: choose a range, then a table.','Back to learning','Table range','Tables {range}','{count} tables','Table of {n}','Multiplying by 1 leaves the number unchanged.','Each answer increases by 2.','Answers end in 0 or 5.','Add a zero to the end of the whole number.','Read each row aloud, then repeat without looking.'],
+    gu:['ટેબલ','ટેબલ યાદ કરો અને ગણતરી ઝડપી બનાવો.','શીખો','1 થી 60 સુધીના ઘડિયા: પહેલાં જૂથ, પછી ઘડિયો પસંદ કરો.','શીખવાના પૃષ્ઠ પર પાછા જાઓ','ઘડિયાનું જૂથ','{range} ના ઘડિયા','{count} ઘડિયા','{n} નો ઘડિયો','1 થી ગુણવાથી સંખ્યા બદલાતી નથી.','દરેક આગળનો જવાબ 2 થી વધે છે.','જવાબનો છેલ્લો અંક 0 અથવા 5 હોય છે.','પૂર્ણ સંખ્યાના અંતે 0 ઉમેરો.','દરેક પંક્તિ બોલીને વાંચો, પછી જોયા વિના દોહરાવો.'],
+    mr:['टेबल','टेबल पाठ करा आणि गणना वेगाने करा.','शिका','1 ते 60 पर्यंतचे पाढे: आधी गट, मग पाढा निवडा.','शिकण्याच्या पानावर परत जा','पाढ्यांचा गट','{range} चे पाढे','{count} पाढे','{n} चा पाढा','1 ने गुणल्यावर संख्या तीच राहते.','प्रत्येक पुढील उत्तर 2 ने वाढते.','उत्तराचा शेवटचा अंक 0 किंवा 5 असतो.','पूर्ण संख्येच्या शेवटी 0 जोडा.','प्रत्येक ओळ मोठ्याने वाचा, मग न पाहता पुन्हा म्हणा.'],
+    bn:['টেবিল','টেবিল শিখুন ও দ্রুত হিসাব করুন।','শিখুন','1 থেকে 60-এর নামতা: আগে পরিসর, তারপর নামতা বেছে নিন।','শেখার পাতায় ফিরুন','নামতার পরিসর','{range}-এর নামতা','{count}টি নামতা','{n}-এর নামতা','1 দিয়ে গুণ করলে সংখ্যা একই থাকে।','প্রতিটি পরের উত্তর 2 করে বাড়ে।','উত্তরের শেষ অঙ্ক 0 বা 5 হয়।','পূর্ণ সংখ্যার শেষে 0 যোগ করুন।','প্রতিটি সারি জোরে পড়ুন, তারপর না দেখে বলুন।'],
+    ta:['அட்டவணை','அட்டவணையைக் கற்று வேகமாகக் கணக்கிடுங்கள்.','கற்க','1 முதல் 60 வரை: முதலில் வரம்பு, பிறகு வாய்ப்பாட்டைத் தேர்ந்தெடுக்கவும்.','கற்றல் பக்கத்திற்குத் திரும்பு','வாய்ப்பாட்டு வரம்பு','{range} வாய்ப்பாடுகள்','{count} வாய்ப்பாடுகள்','{n} வாய்ப்பாடு','1 ஆல் பெருக்கினால் எண் மாறாது.','ஒவ்வொரு அடுத்த விடையும் 2 அதிகரிக்கும்.','விடைகள் 0 அல்லது 5 இல் முடியும்.','முழு எண்ணின் இறுதியில் 0 சேர்க்கவும்.','ஒவ்வொரு வரியையும் உரக்கப் படித்து, பார்க்காமல் மீண்டும் சொல்லுங்கள்.'],
+    te:['టేబుల్','టేబుల్ నేర్చుకుని వేగంగా లెక్కించండి.','నేర్చుకోండి','1 నుండి 60 వరకు: ముందు పరిధిని, తర్వాత ఎక్కాన్ని ఎంచుకోండి.','నేర్చుకునే పేజీకి తిరిగి వెళ్లండి','ఎక్కాల పరిధి','{range} ఎక్కాలు','{count} ఎక్కాలు','{n} ఎక్కం','1తో గుణిస్తే సంఖ్య మారదు.','ప్రతి తదుపరి జవాబు 2 పెరుగుతుంది.','జవాబులు 0 లేదా 5తో ముగుస్తాయి.','పూర్ణ సంఖ్య చివర 0 చేర్చండి.','ప్రతి వరుసను పైకి చదివి, చూడకుండా మళ్లీ చెప్పండి.'],
+    ur:['ٹیبل','ٹیبل سیکھیں اور تیزی سے حساب کریں۔','سیکھیں','1 سے 60 تک کے پہاڑے: پہلے حد، پھر پہاڑا منتخب کریں۔','سیکھنے کے صفحے پر واپس جائیں','پہاڑوں کی حد','{range} کے پہاڑے','{count} پہاڑے','{n} کا پہاڑا','1 سے ضرب دینے پر عدد نہیں بدلتا۔','ہر اگلا جواب 2 سے بڑھتا ہے۔','جواب کا آخری ہندسہ 0 یا 5 ہوتا ہے۔','صحیح عدد کے آخر میں 0 لگائیں۔','ہر سطر بلند آواز سے پڑھیں، پھر دیکھے بغیر دہرائیں۔'],
+    as:['নামতা','নামতা শিকক আৰু দ্ৰুত গণনা কৰক।','শিকক','1ৰ পৰা 60লৈ নামতা: প্ৰথমে পৰিসৰ, তাৰ পিছত নামতা বাছক।','শিকাৰ পৃষ্ঠালৈ উভতি যাওক','নামতাৰ পৰিসৰ','{range}ৰ নামতা','{count}টা নামতা','{n}ৰ নামতা','1ৰে পূৰণ কৰিলে সংখ্যাটো একেই থাকে।','প্ৰতিটো পৰৱৰ্তী উত্তৰ 2কৈ বাঢ়ে।','উত্তৰৰ শেষ অংক 0 বা 5 হয়।','পূৰ্ণ সংখ্যাৰ শেষত 0 যোগ কৰক।','প্ৰতিটো শাৰী সশব্দে পঢ়ক, তাৰ পিছত নোচোৱাকৈ আওৰাওক।']
+  };
+
+  var LESSONS={
+    addition:['जोड़','Addition','संख्याओं को दहाई और इकाई में बाँटकर जोड़ें।','Split numbers into tens and units, then combine them.','47 + 28 = (40 + 20) + (7 + 8) = 60 + 15 = 75','एक आसान संख्या तक पहुँचें: 49 + 26 = 50 + 25 = 75।','Bridge to a round number: 49 + 26 = 50 + 25 = 75.'],
+    subtraction:['घटाव','Subtraction','दोनों संख्याओं में बराबर बदलाव करने से उनका अंतर नहीं बदलता।','Changing both numbers by the same amount preserves their difference.','83 − 29 = 84 − 30 = 54','पहले बड़ी place value घटाएँ, फिर छोटी।','Subtract the larger place value first, then the smaller one.'],
+    multiplication:['गुणा','Multiplication','एक संख्या को सुविधाजनक हिस्सों में बाँटकर प्रत्येक हिस्से का गुणा करें।','Split a number into convenient parts and multiply each part.','23 × 12 = 23 × (10 + 2) = 230 + 46 = 276','गुणा बार-बार जोड़ने के बराबर है।','Multiplication is repeated addition.'],
+    division:['भाग','Division','भाग को उल्टे गुणा की तरह समझें। भाजक × भागफल = भाज्य।','Think of division as reverse multiplication: divisor × quotient = dividend.','144 ÷ 12 = 12, because 12 × 12 = 144','जाँच करें: भाजक × भागफल + शेष = भाज्य।','Check: divisor × quotient + remainder = dividend.'],
+    square:['वर्ग','Squares','किसी संख्या को उसी से गुणा करने पर उसका वर्ग मिलता है।','Multiply a number by itself to find its square.','23² = (20 + 3)² = 400 + 120 + 9 = 529','(a + b)² = a² + 2ab + b²; बीच वाला पद न भूलें।','(a + b)² = a² + 2ab + b²; do not omit the middle term.'],
+    root:['वर्गमूल','Square Root','वर्गमूल वह गैर-ऋणात्मक संख्या है जिसका वर्ग दी गई संख्या के बराबर है।','The square root is the nonnegative number whose square equals the given number.','√144 = 12, because 12 × 12 = 144','10² = 100 और 11² = 121, इसलिए √110 दोनों के बीच है।','10² = 100 and 11² = 121, so √110 lies between 10 and 11.'],
+    cube:['घन','Cubes','किसी संख्या को तीन बार गुणा करने पर उसका घन मिलता है।','Multiply a number by itself three times to find its cube.','12³ = 12 × 12 × 12 = 144 × 12 = 1728','(a + b)³ = a³ + 3a²b + 3ab² + b³','(a + b)³ = a³ + 3a²b + 3ab² + b³'],
+    cuberoot:['घनमूल','Cube Root','घनमूल वह संख्या है जिसका घन दी गई संख्या है।','A cube root is the number whose cube equals the given number.','∛1728 = 12, because 12³ = 1728','घनमूल ऋणात्मक भी हो सकता है: ∛(−27) = −3।','Cube roots can be negative: ∛(−27) = −3.'],
+    mixed:['मिश्रित गणना','Mixed Calculation','पहले कोष्ठक, फिर घात; गुणा/भाग और जोड़/घटाव को अपने स्तर पर बाएँ से दाएँ करें।','Brackets first, then powers; multiplication/division and addition/subtraction are each evaluated left to right.','18 − 6 ÷ 3 × 2 + 4 = 18 − 4 + 4 = 18','गुणा को हमेशा भाग से पहले करना गलत है; दोनों का समान स्तर है।','Multiplication does not always precede division; they have equal precedence.'],
+    percentage:['प्रतिशत','Percentage','प्रतिशत का अर्थ प्रति सौ है। p% of N = p × N ÷ 100।','Percent means per hundred. p% of N = p × N ÷ 100.','15% of 240 = 10% + 5% = 24 + 12 = 36','1% निकालने के लिए 100 से भाग करें; 10% के लिए 10 से।','Divide by 100 for 1%, and by 10 for 10%.'],
+    fraction:['भिन्न','Fractions','भिन्न जोड़ने के लिए समान हर बनाएँ और फिर अंश जोड़ें।','Use a common denominator before adding numerators.','1/3 + 1/4 = 4/12 + 3/12 = 7/12','सरल रूप के लिए अंश और हर को उनके HCF से भाग दें।','Divide numerator and denominator by their HCF to simplify.'],
+    average:['औसत','Average','औसत = सभी मानों का योग ÷ मानों की संख्या।','Average = sum of values ÷ number of values.','(12 + 18 + 24) ÷ 3 = 54 ÷ 3 = 18','अलग आकार के समूहों के औसत का सीधा औसत न लें; weighted average लें।','For unequal group sizes use a weighted average, not a simple average of averages.'],
+    ratio:['अनुपात','Ratio','अनुपात तुलना बताता है। कुल को हिस्सों में बाँटने के लिए पहले सभी हिस्से जोड़ें।','A ratio compares quantities. Add all ratio parts before sharing a total.','120 in 2 : 3 → 120 ÷ 5 = 24 → 48 : 72','अनुपात की दोनों राशियाँ समान इकाई में रखें।','Express both quantities in the same unit.'],
+    lcmhcf:['ल.स.प. / म.स.प.','LCM / HCF','HCF सबसे बड़ा साझा गुणनखंड और LCM सबसे छोटा साझा धनात्मक गुणज है।','HCF is the greatest common factor; LCM is the least positive common multiple.','12 = 2² × 3; 18 = 2 × 3² → HCF = 6; LCM = 36','दो धनात्मक पूर्णांकों के लिए HCF × LCM = दोनों का गुणनफल।','For two positive integers: HCF × LCM = their product.'],
+    simplification:['सरलीकरण','Simplification','BODMAS के क्रम में हल करें; समान प्राथमिकता वाले operations बाएँ से दाएँ करें।','Follow BODMAS and evaluate operations of equal precedence left to right.','(8 + 4) × 3 − 6 ÷ 2 = 36 − 3 = 33','पहले पूरा numerator और denominator समझें, फिर division करें।','Identify the complete numerator and denominator before dividing.'],
+    approximation:['अनुमान','Approximation','सुविधाजनक संख्या तक round करें; अनुमान exact answer नहीं है।','Round to convenient numbers; an estimate is not an exact answer.','198 × 51 ≈ 200 × 50 = 10000; exact = 10098','जितनी precision चाहिए, उसके अनुसार rounding चुनें।','Choose rounding precision according to the accuracy needed.'],
+    memorycalculation:['गणना स्मृति','Calculation Memory','संख्या और operation का क्रम याद रखते हुए running total बनाएँ।','Keep a running total while remembering the numbers and operations in order.','12 → + 8 → × 2 → − 5 : 12 → 20 → 40 → 35','यह क्रमिक स्मृति उदाहरण है: हर step पिछले result पर लागू होता है।','This is a sequential memory example: each step acts on the previous result.'],
+    fallingcalculation:['गिरती गणना','Falling Calculation','पहले सवाल पहचानें, फिर सही mental method चुनें; speed बाद में बढ़ाएँ।','Identify the operation first and choose a mental method; increase speed gradually.','19 × 5 = (20 × 5) − 5 = 95','समय से पहले सही उत्तर देना लक्ष्य है; अनुमान को exact answer न मानें।','Aim for a correct answer before time runs out; do not treat an estimate as exact.']
+  };
+
+  /* Topic-wise learning notes: Hindi and English content. */
+  var LESSON_EXTRA={
+    addition:{hi:{steps:['इकाई और दहाई को अलग-अलग जोड़ें।','यदि इकाई का योग 10 या अधिक हो, तो carry अगली place value में जोड़ें।','अंत में सभी place values को मिलाकर उत्तर जाँचें।'],more:['बड़ी संख्या में छोटी संख्या जोड़ते समय compensation अपनाएँ: 398 + 27 = 400 + 25 = 425।','तीन संख्याओं में पहले ऐसी जोड़ी चुनें जिसका योग 10, 100 या 1000 बने।'],mistake:'Carry को अगली place value में जोड़ना न भूलें। दशमलव जोड़ते समय decimal points एक सीध में रखें।',practice:['268 + 157 = 425','499 + 236 = 735']},en:{steps:['Add the ones, tens and higher place values separately.','If a column totals 10 or more, carry to the next place.','Combine the place values and verify the result.'],more:['Use compensation: 398 + 27 = 400 + 25 = 425.','For three numbers, pair values that make 10, 100 or 1,000.'],mistake:'Do not forget to carry. For decimals, align the decimal points.',practice:['268 + 157 = 425','499 + 236 = 735']}},
+    subtraction:{hi:{steps:['संख्याओं को place value के अनुसार एक-दूसरे के नीचे लिखें।','इकाई से घटाना शुरू करें; जरूरत हो तो अगली place से regroup/borrow करें।','घटाव की जाँच: अंतर + घटाई गई संख्या = मूल संख्या।'],more:['99 घटाना हो तो 100 घटाकर 1 जोड़ें: 564 − 99 = 465।','घटाव को जोड़ से जाँचने की आदत डालें।'],mistake:'Borrow लेने के बाद अगली column की संख्या 1 कम करना न भूलें।',practice:['503 − 278 = 225','800 − 396 = 404']},en:{steps:['Write numbers aligned by place value.','Subtract from the ones; regroup from the next place when needed.','Check: difference + subtrahend = original number.'],more:['For subtracting 99, subtract 100 then add 1: 564 − 99 = 465.','Verify subtraction using addition.'],mistake:'After borrowing, reduce the donor column by one.',practice:['503 − 278 = 225','800 − 396 = 404']}},
+    multiplication:{hi:{steps:['गुणा को repeated addition या groups के रूप में समझें।','दो अंकों की संख्या को tens और ones में तोड़ें।','आंशिक गुणनफल जोड़ें और place value सही रखें।'],more:['25 से गुणा: 100 से गुणा करके 4 से भाग दें। जैसे 48 × 25 = 4800 ÷ 4 = 1200।','9 से गुणा: 10 गुना करके मूल संख्या घटाएँ।'],mistake:'आंशिक गुणनफल जोड़ते समय tens/ hundreds की जगह गलत न रखें।',practice:['36 × 14 = 504','48 × 25 = 1200']},en:{steps:['Think of multiplication as repeated addition or equal groups.','Split a two-digit factor into tens and ones.','Add partial products while preserving place value.'],more:['Multiply by 25: multiply by 100, then divide by 4. 48 × 25 = 1,200.','Multiply by 9: multiply by 10, then subtract the number.'],mistake:'Keep partial products in the correct place-value columns.',practice:['36 × 14 = 504','48 × 25 = 1,200']}},
+    division:{hi:{steps:['भाज्य, भाजक, भागफल और शेष पहचानें।','ऐसा गुणज चुनें जो भाज्य से बड़ा न हो।','शेष हमेशा भाजक से छोटा होना चाहिए।'],more:['भाग को गुणा से जाँचें: भाजक × भागफल + शेष = भाज्य।','10, 100 या 1000 से भाग में decimal point बाईं ओर खिसकाएँ।'],mistake:'शेष को भाजक के बराबर या उससे बड़ा न छोड़ें; एक और बार भाग देना होगा।',practice:['156 ÷ 12 = 13','197 ÷ 15 = 13 शेष 2']},en:{steps:['Identify the dividend, divisor, quotient and remainder.','Choose the largest multiple that does not exceed the dividend.','The remainder must always be smaller than the divisor.'],more:['Verify with divisor × quotient + remainder = dividend.','Dividing by 10, 100 or 1,000 shifts the decimal left.'],mistake:'A remainder equal to or greater than the divisor means division is incomplete.',practice:['156 ÷ 12 = 13','197 ÷ 15 = 13 remainder 2']}},
+    square:{hi:{steps:['वर्ग का अर्थ संख्या × वही संख्या है।','इकाई अंक और पास के ज्ञात वर्ग याद करें।','बड़ी संख्या को (a+b)² या (a−b)² से हल करें।'],more:['25 पर समाप्त संख्या का वर्ग: 25² = 625; 35² = 1225।','(a−b)² = a² − 2ab + b²।'],mistake:'(a+b)² में 2ab middle term छोड़ना आम गलती है।',practice:['35² = 1225','48² = 2304']},en:{steps:['A square is a number multiplied by itself.','Memorise unit-digit patterns and nearby known squares.','Use (a+b)² or (a−b)² for larger numbers.'],more:['Numbers ending in 5: 35² = 1,225.','(a−b)² = a² − 2ab + b².'],mistake:'Do not omit the middle term 2ab in (a+b)².',practice:['35² = 1,225','48² = 2,304']}},
+    root:{hi:{steps:['सबसे नजदीकी perfect squares पहचानें।','संख्या को prime factors में तोड़ें; समान factors की जोड़ी बनाएँ।','हर जोड़ी से एक factor बाहर लें।'],more:['√2025 = 45 क्योंकि 45² = 2025।','यदि a² < N < b², तो √N का मान a और b के बीच होगा।'],mistake:'√(a+b) को √a + √b नहीं लिख सकते।',practice:['√2025 = 45','√1764 = 42']},en:{steps:['Locate the nearest perfect squares.','Factorise into primes and make pairs of equal factors.','Take one factor from each pair outside the root.'],more:['√2,025 = 45 because 45² = 2,025.','If a² < N < b², then √N lies between a and b.'],mistake:'In general, √(a+b) is not equal to √a + √b.',practice:['√2,025 = 45','√1,764 = 42']}},
+    cube:{hi:{steps:['घन = संख्या × संख्या × संख्या।','संख्या को prime factors में तोड़कर तीन-तीन के समूह बनाएँ।','हर समूह से एक factor लेकर गुणा करें।'],more:['(a+b)³ में चार पद होते हैं: a³ + 3a²b + 3ab² + b³।','1 से 10 तक के cubes याद करना उपयोगी है।'],mistake:'Cube में संख्या तीन बार गुणा होती है, दो बार नहीं।',practice:['8³ = 512','15³ = 3375']},en:{steps:['Cube = number × number × number.','Prime-factorise and group equal factors in threes.','Take one factor from each group and multiply.'],more:['(a+b)³ has four terms: a³ + 3a²b + 3ab² + b³.','Memorising cubes from 1 to 10 is useful.'],mistake:'A cube uses three equal factors, not two.',practice:['8³ = 512','15³ = 3,375']}},
+    cuberoot:{hi:{steps:['दी गई संख्या के perfect cube factors खोजें।','Prime factors को तीन-तीन के समूह में रखें।','हर समूह से एक factor लेकर गुणा करें।'],more:['∛2197 = 13 क्योंकि 13³ = 2197।','ऋणात्मक संख्या का घनमूल ऋणात्मक होता है।'],mistake:'Square root की तरह factors की जोड़ी नहीं, तीन का समूह बनाएँ।',practice:['∛3375 = 15','∛−216 = −6']},en:{steps:['Find perfect-cube factors of the number.','Group prime factors in threes.','Take one factor from each group and multiply.'],more:['∛2,197 = 13 because 13³ = 2,197.','The cube root of a negative number is negative.'],mistake:'Make groups of three factors, not pairs.',practice:['∛3,375 = 15','∛−216 = −6']}},
+    mixed:{hi:{steps:['पहले brackets हल करें।','फिर powers/roots; उसके बाद division और multiplication बाएँ से दाएँ।','अंत में addition और subtraction बाएँ से दाएँ करें।'],more:['गुणा और भाग की priority समान है।','जोड़ और घटाव की priority भी समान है।'],mistake:'सिर्फ BODMAS के अक्षर देखकर multiplication को division से हमेशा पहले न करें।',practice:['24 ÷ 6 × 3 + 2 = 14','18 − 4 × 3 + 8 ÷ 2 = 10']},en:{steps:['Solve brackets first.','Then powers/roots; next division and multiplication from left to right.','Finally do addition and subtraction from left to right.'],more:['Multiplication and division have equal precedence.','Addition and subtraction also have equal precedence.'],mistake:'Do not assume multiplication always comes before division just from the BODMAS letters.',practice:['24 ÷ 6 × 3 + 2 = 14','18 − 4 × 3 + 8 ÷ 2 = 10']}},
+    percentage:{hi:{steps:['प्रतिशत को प्रति 100 समझें।','x% of N = N × x ÷ 100।','बढ़ोतरी/कमी में मूल मान को आधार रखें।'],more:['10% = संख्या का दसवाँ भाग; 5% = 10% का आधा।','20% छूट के बाद कीमत मूल कीमत का 80% रहती है।'],mistake:'20% बढ़ने और फिर 20% घटने पर मूल मान वापस नहीं आता।',practice:['35% of 200 = 70','₹800 पर 15% discount के बाद = ₹680']},en:{steps:['Understand percent as per hundred.','x% of N = N × x ÷ 100.','For increase/decrease, identify the original base.'],more:['10% is one tenth; 5% is half of 10%.','After a 20% discount, 80% of the original price remains.'],mistake:'A 20% increase followed by a 20% decrease does not restore the original value.',practice:['35% of 200 = 70','After 15% off ₹800 = ₹680']}},
+    fraction:{hi:{steps:['अंश ऊपर और हर नीचे होता है।','जोड़/घटाव से पहले समान हर बनाएँ।','गुणा में अंश × अंश और हर × हर करें; भाग में दूसरी भिन्न उलटें।'],more:['3/4 का 2/3 = 1/2।','भिन्न को सरल करने के लिए अंश और हर को HCF से भाग दें।'],mistake:'अलग हर वाली भिन्नों के अंश सीधे जोड़ना गलत है।',practice:['2/3 + 1/6 = 5/6','3/4 ÷ 1/2 = 3/2']},en:{steps:['The numerator is above the fraction bar; denominator below.','Make denominators equal before adding or subtracting.','Multiply numerator by numerator; for division, invert the second fraction.'],more:['2/3 of 3/4 = 1/2.','Reduce a fraction by dividing numerator and denominator by their HCF.'],mistake:'Do not add numerators directly when denominators differ.',practice:['2/3 + 1/6 = 5/6','3/4 ÷ 1/2 = 3/2']}},
+    average:{hi:{steps:['सभी observations का योग निकालें।','योग को observations की संख्या से भाग दें।','नई संख्या जुड़ने/हटने पर कुल योग और count दोनों अपडेट करें।'],more:['कुल योग = औसत × संख्या।','लगातार संख्याओं का औसत = (पहली + आखिरी) ÷ 2।'],mistake:'औसत और कुल योग को एक न समझें; प्रश्न में कितनी values हैं, गिनें।',practice:['10, 20, 30, 40 का औसत = 25','5 संख्याओं का औसत 18 है; योग = 90']},en:{steps:['Find the sum of all observations.','Divide the sum by the number of observations.','When a value is added/removed, update both sum and count.'],more:['Total = average × number of values.','For consecutive values, average = (first + last) ÷ 2.'],mistake:'Do not confuse average with total; count the observations carefully.',practice:['Average of 10, 20, 30, 40 = 25','Average of 5 values is 18; total = 90']}},
+    ratio:{hi:{steps:['दोनों राशियों को समान unit में बदलें।','अनुपात के सभी parts का HCF लेकर सरल करें।','कुल बाँटना हो तो parts जोड़कर कुल को भाग दें।'],more:['2:3 में कुल 50 हो तो एक part = 50÷5 = 10; हिस्से 20 और 30।','अनुपात की दोनों राशियों को समान संख्या से गुणा/भाग करने पर अनुपात नहीं बदलता।'],mistake:'इकाइयाँ अलग हों तो पहले convert करें; जैसे 1 m : 50 cm = 100:50 = 2:1।',practice:['18:24 = 3:4','₹840 को 3:4 में बाँटें = ₹360 और ₹480']},en:{steps:['Convert both quantities to the same unit.','Simplify the parts using their common factor.','To divide a total, add the ratio parts and divide the total.'],more:['If 2:3 totals 50, one part is 10; shares are 20 and 30.','Multiplying or dividing both terms by the same nonzero number preserves a ratio.'],mistake:'Convert units first: 1 m : 50 cm = 100:50 = 2:1.',practice:['18:24 = 3:4','Divide ₹840 in 3:4 = ₹360 and ₹480']}},
+    lcmhcf:{hi:{steps:['दोनों संख्याओं के prime factors लिखें।','HCF के लिए common factors की छोटी powers लें।','LCM के लिए सभी factors की बड़ी powers लें।'],more:['Co-prime संख्याओं का HCF = 1 और LCM = उनका गुणनफल।','भिन्नों के जोड़ में LCM से समान हर बनाया जा सकता है।'],mistake:'HCF में common factors ही लें; LCM में कोई आवश्यक prime factor न छोड़ें।',practice:['HCF(24,36)=12','LCM(12,18)=36']},en:{steps:['Write the prime factorisation of both numbers.','For HCF, take the lower powers of common primes.','For LCM, take the highest powers of every prime present.'],more:['Co-prime numbers have HCF 1 and LCM equal to their product.','LCM helps create common denominators for fractions.'],mistake:'HCF uses common factors only; LCM must include every required prime factor.',practice:['HCF(24,36) = 12','LCM(12,18) = 36']}},
+    simplification:{hi:{steps:['Expression में brackets सबसे पहले हल करें।','Powers/roots के बाद division और multiplication बाएँ से दाएँ करें।','अंत में addition और subtraction बाएँ से दाएँ करें।'],more:['Fraction bar के ऊपर का पूरा भाग numerator और नीचे का पूरा भाग denominator होता है।','Calculation में हर intermediate step साफ लिखें।'],mistake:'एक ही स्तर के operations को मनमाने क्रम में न करें; left-to-right नियम अपनाएँ।',practice:['36 ÷ 6 × 2 + 5 = 17','(15 − 3) ÷ 4 + 7 = 10']},en:{steps:['Evaluate brackets first.','After powers/roots, do division and multiplication left to right.','Finish with addition and subtraction left to right.'],more:['Everything above a fraction bar is the numerator; everything below is the denominator.','Write intermediate steps clearly.'],mistake:'Do not reorder equal-precedence operations; follow left-to-right order.',practice:['36 ÷ 6 × 2 + 5 = 17','(15 − 3) ÷ 4 + 7 = 10']}},
+    approximation:{hi:{steps:['प्रश्न के अनुसार nearest 10, 100 या decimal place चुनें।','हर संख्या को चुनी हुई precision तक round करें।','अनुमान से answer की range जाँचें; जरूरत हो तो exact calculation करें।'],more:['49 × 21 ≈ 50 × 20 = 1000।','Division में compatible numbers चुनें: 398 ÷ 8 ≈ 400 ÷ 8 = 50।'],mistake:'Approximation को exact answer न लिखें; प्रश्न exact value माँगता है या estimate, देखें।',practice:['602 + 198 ≈ 600 + 200 = 800','79 × 31 ≈ 80 × 30 = 2400']},en:{steps:['Choose nearest 10, 100 or decimal place based on the question.','Round each number to the chosen precision.','Use the estimate to check the answer range; calculate exactly if required.'],more:['49 × 21 ≈ 50 × 20 = 1,000.','For division, choose compatible numbers: 398 ÷ 8 ≈ 400 ÷ 8 = 50.'],mistake:'Do not present an estimate as exact; check whether the question asks for an estimate or exact value.',practice:['602 + 198 ≈ 600 + 200 = 800','79 × 31 ≈ 80 × 30 = 2,400']}},
+    memorycalculation:{hi:{steps:['पहले दी गई शुरुआती संख्या याद रखें।','हर operation को क्रम से लागू करें और बीच का result मन में दोहराएँ।','अंतिम उत्तर देने से पहले operation sequence दोबारा जाँचें।'],more:['Chunking अपनाएँ: 4–5 steps को छोटे समूहों में याद करें।','Accuracy स्थिर होने पर ही speed बढ़ाएँ।'],mistake:'हर नए operation को original number पर न लगाएँ; सामान्यतः वह पिछले result पर लागू होता है।',practice:['10 → +5 → ×2 → −4 = 26','8 → ×3 → +6 → ÷2 = 15']},en:{steps:['Remember the starting number.','Apply each operation in sequence and rehearse the running result.','Review the operation sequence before giving the final answer.'],more:['Use chunking: remember four or five steps as smaller groups.','Increase speed only after accuracy becomes stable.'],mistake:'Do not apply every operation to the original number; each usually acts on the running result.',practice:['10 → +5 → ×2 → −4 = 26','8 → ×3 → +6 → ÷2 = 15']}},
+    fallingcalculation:{hi:{steps:['गिरते सवाल को पूरा पढ़ने से पहले operation पहचानें।','पहले आसान mental shortcut चुनें।','उत्तर दर्ज करने के बाद अगले सवाल पर ध्यान ले जाएँ।'],more:['5 से गुणा: 10 से गुणा करके आधा करें।','25 से गुणा: 100 से गुणा करके 4 से भाग करें।','गलतियों का प्रकार नोट करें—गणना, पढ़ने या जल्दीबाजी की।'],mistake:'केवल तेजी के लिए गलत उत्तर न दें; पहले सही पहचान और accuracy पर काम करें।',practice:['64 × 5 = 320','125 × 8 = 1000']},en:{steps:['Identify the operation as soon as the falling question is readable.','Choose a simple mental shortcut.','Submit the answer, then shift attention to the next question.'],more:['Multiply by 5: multiply by 10 and halve.','Multiply by 25: multiply by 100 and divide by 4.','Track whether errors come from calculation, reading or rushing.'],mistake:'Do not sacrifice correctness for speed; build accurate recognition first.',practice:['64 × 5 = 320','125 × 8 = 1,000']}}
+  };
+
+  function normalizeLang(code){
+    var c=String(code||'en').toLowerCase().trim().split(/[-_]/)[0];
+    return UI_PACK[c]?c:'en';
+  }
+  function isToolOpen(){
+    var ts=$('cbLearningTablesScreen'),ls=$('cbLearningLessonScreen');
+    return !!(ts&&!ts.hidden)||!!(ls&&!ls.hidden);
+  }
+  function notifyHost(){
+    try{
+      var h=Math.max(document.documentElement.scrollHeight||0,document.body.scrollHeight||0,420)+8;
+      window.parent.postMessage({
+        type:'cb-learning-state',
+        toolOpen:isToolOpen(),
+        activeTool:activeTool||(isToolOpen()?'tables':null),
+        height:h,
+        scrollMode:'parent'
+      },'*');
+    }catch(e){}
+  }
+  function applyTheme(dark,tokens){
+    var isDark=!!dark;
+    document.body.classList.toggle('dark',isDark);
+    document.documentElement.classList.toggle('dark',isDark);
+    if(tokens&&typeof tokens==='object'){
+      ['bg','card','soft','text','muted','line','p','p2'].forEach(function(k){
+        if(tokens[k])document.documentElement.style.setProperty('--'+k,tokens[k]);
+      });
+    }
+  }
+  function tTable(key,values){
+    var pack=TABLES_I18N[currentLang]||TABLES_I18N.en;
+    var val=pack[TABLES_FIELDS.indexOf(key)]||'';
+    return val.replace(/\{(n|range|count)\}/g,function(m,name){
+      return values&&values[name]!==undefined?String(values[name]):m;
+    });
+  }
+  function toolTitle(key){
+    var m=TOOL_NAMES[key];
+    if(m&&m[currentLang])return m[currentLang];
+    if(m&&m.en)return m.en;
+    return LESSONS[key]?LESSONS[key][currentLang==='hi'?0:1]:key;
+  }
+  function node(tag,cls,text){
+    var el=document.createElement(tag);
+    if(cls)el.className=cls;
+    if(text!==undefined)el.textContent=text;
+    return el;
+  }
+
+  /* Tables View */
+  function tipKey(n){
+    return (n===1||n===2||n===5||n===10)?'tip'+n:'tip';
+  }
+  function updateRanges(){
+    document.querySelectorAll('[data-table-range]').forEach(function(btn){
+      var sel=btn.getAttribute('data-table-range')===activeRange;
+      btn.classList.toggle('active',sel);
+      btn.setAttribute('aria-pressed',String(sel));
+    });
+  }
+  function updatePicker(){
+    var picker=$('cbLearningTablePicker');
+    if(!picker)return;
+    picker.querySelectorAll('[data-table-number]').forEach(function(btn){
+      var n=Number(btn.getAttribute('data-table-number'));
+      var sel=n===activeTable;
+      btn.classList.toggle('active',sel);
+      btn.setAttribute('aria-pressed',String(sel));
+      btn.setAttribute('aria-label',tTable('table',{n:n}));
+    });
+  }
+  function updateRenderedTablesText(){
+    var bounds=RANGES[activeRange];
+    if($('cbLearningRangeTitle'))$('cbLearningRangeTitle').textContent=tTable('rangeTables',{range:activeRange.replace('-','–')});
+    if($('cbLearningRangeCount'))$('cbLearningRangeCount').textContent=tTable('count',{count:bounds[1]-bounds[0]+1});
+    if(!hasRenderedTables)return;
+    updatePicker();
+    if(focusHeading)focusHeading.textContent=tTable('table',{n:activeTable});
+    if(focusTip)focusTip.textContent='💡 '+tTable(tipKey(activeTable));
+    updateTableSidebar();
+  }
+  function updateTableSidebar(){
+    var hi=currentLang==='hi';
+    var vals=[];for(var i=1;i<=10;i++)vals.push(activeTable*i);
+    var quick=$('cbTableQuickList');
+    if(quick){quick.textContent='';[
+      (hi?activeTable+' का पहाड़ा याद रखने का आसान तरीका:':'An easy way to remember the '+activeTable+' table:'),
+      vals.join(', '),
+      (hi?'हर बार '+activeTable+' जोड़ते जाएँ।':'Keep adding '+activeTable+' each time.'),
+      (hi?'आखिरी अंकों का पैटर्न देखें: ':'Notice the last-digit pattern: ')+vals.map(function(v){return String(v%10)}).join(', ')
+    ].forEach(function(t){var li=node('li','',t);li.insertAdjacentText('afterbegin','✓  ');quick.appendChild(li);});}
+    var next=activeTable<60?activeTable+1:null,prev=activeTable>1?activeTable-1:null;
+    var set=function(id,text){var el=$(id);if(el)el.textContent=text;};
+    set('cbTableQuickTitle',(hi?'जल्दी सीखें — '+activeTable+' का पहाड़ा':'Quick Learning — Table of '+activeTable));
+    set('cbTableNextHeading',(hi?'अगला पहाड़ा':'Next Table'));
+    set('cbTablePrevHeading',(hi?'पिछला पहाड़ा':'Previous Table'));
+    set('cbTableNextName',next===null?(hi?'आखिरी पहाड़ा':'Last table'):(hi?'टेबल '+next:'Table of '+next));
+    set('cbTablePrevName',prev===null?(hi?'पहला पहाड़ा':'First table'):(hi?'टेबल '+prev:'Table of '+prev));
+    set('cbTableNextIcon',next===null?'✓':String(next));
+    set('cbTablePrevIcon',prev===null?'✓':String(prev));
+    set('cbTableNextSub',next===null?'':next+' × 1 to '+next+' × 10');
+    set('cbTablePrevSub',prev===null?'':prev+' × 1 to '+prev+' × 10');
+    set('cbTablePracticeOneText',(hi?'टेबल का अभ्यास':'Practice Table')+' ('+activeTable+')');
+    set('cbTablePracticeMixedText',hi?'मिश्रित टेबल अभ्यास':'Mixed Table Practice');
+    if($('cbTableNext'))$('cbTableNext').disabled=next===null;
+    if($('cbTablePrev'))$('cbTablePrev').disabled=prev===null;
+  }
+  function chooseTable(n){
+    if(n<1||n>60)return;
+    activeTable=n;
+    activeRange=Math.floor((n-1)/10)*10+1;
+    activeRange=activeRange+'-'+(activeRange+9);
+    updateRanges();renderTablePicker();
+  }
+  function startTablePractice(tool){
+    var table=activeTable;
+    closeTables();
+    try{window.parent.postMessage({type:'cb-learning-practice',tool:tool,table:table},'*');}catch(e){}
+  }
+
+  function renderTableFocus(){
+    var focus=$('cbLearningTableFocus');
+    if(!focus)return;
+    focus.textContent='';
+    var title=node('div','cb-learning-focus-title');
+    focusHeading=node('h3','',tTable('table',{n:activeTable}));
+    title.appendChild(focusHeading);
+    title.appendChild(node('span','cb-learning-focus-badge','× 1–10'));
+    focus.appendChild(title);
+    var rows=node('div','cb-learning-multiples');
+    rows.setAttribute('dir','ltr');
+    for(var i=1;i<=10;i++){
+      var row=node('div','cb-learning-multiple');
+      row.appendChild(node('span','',activeTable+' × '+i));
+      row.appendChild(node('strong','',String(activeTable*i)));
+      rows.appendChild(row);
+    }
+    focus.appendChild(rows);
+    focusTip=node('div','cb-learning-tip','💡 '+tTable(tipKey(activeTable)));
+    focus.appendChild(focusTip);
+    updateTableSidebar();
+  }
+  function renderTablePicker(){
+    var bounds=RANGES[activeRange];
+    if(activeTable<bounds[0]||activeTable>bounds[1])activeTable=bounds[0];
+    var picker=$('cbLearningTablePicker');
+    if(!picker)return;
+    picker.textContent='';
+    for(var n=bounds[0];n<=bounds[1];n++){
+      var btn=node('button','cb-learning-table-chip',String(n));
+      btn.type='button';
+      btn.setAttribute('data-table-number',String(n));
+      picker.appendChild(btn);
+    }
+    hasRenderedTables=true;
+    renderTableFocus();
+    updateRenderedTablesText();
+    picker.setAttribute('aria-label',tTable('rangeTables',{range:activeRange.replace('-','–')}));
+  }
+  function openTables(){
+    var grid=$('cbLearningToolGrid'),screen=$('cbLearningTablesScreen'),lesson=$('cbLearningLessonScreen');
+    if(lesson){lesson.hidden=true;lesson.setAttribute('aria-hidden','true');}
+    if(grid){grid.hidden=true;grid.setAttribute('aria-hidden','true');}
+    if(screen){screen.hidden=false;screen.removeAttribute('aria-hidden');}
+    activeTool='tables';
+    if(!hasRenderedTables)renderTablePicker();
+    try{$('cbLearningTablesBack').focus({preventScroll:true});}catch(e){}
+    notifyHost();
+  }
+  function closeTables(){
+    var grid=$('cbLearningToolGrid'),screen=$('cbLearningTablesScreen');
+    if(screen){screen.hidden=true;screen.setAttribute('aria-hidden','true');}
+    if(grid){grid.hidden=false;grid.removeAttribute('aria-hidden');}
+    activeTool=null;
+    try{$('cbLearningTablesEntry').focus({preventScroll:true});}catch(e){}
+    notifyHost();
+  }
+
+  function renderExtraLesson(key,screen){
+    var pack=LESSON_EXTRA[key];
+    if(!pack)return;
+    var lang=pack[currentLang]||pack.en;
+    var labels=currentLang==='hi'?{steps:'सीखने के चरण',more:'ज़रूरी तरीके और शॉर्टकट',mistake:'आम गलती से बचें',practice:'स्वयं जाँचें'}:{steps:'Step-by-step method',more:'Useful methods and shortcuts',mistake:'Avoid this common mistake',practice:'Quick self-check'};
+    function addDetails(title,items,kind){
+      var details=node('details','cb-learning-compact-detail cb-learning-extra');
+      var summary=node('summary','',title);
+      details.appendChild(summary);
+      if(kind==='mistake'){
+        details.appendChild(node('p','cb-learning-tip',items));
+      }else{
+        var list=node(kind==='practice'?'ul':'ol','cb-learning-extra-list');
+        items.forEach(function(item){list.appendChild(node('li','',item));});
+        details.appendChild(list);
+      }
+      screen.appendChild(details);
+    }
+    addDetails(labels.steps,lang.steps,'list');
+    addDetails(labels.more,lang.more,'list');
+    addDetails(labels.mistake,lang.mistake,'mistake');
+    addDetails(labels.practice,lang.practice,'practice');
+  }
+
+  /* Lesson View */
+  function renderLesson(){
+    if(!activeTool||!LESSONS[activeTool])return;
+    var screen=$('cbLearningLessonScreen');
+    var data=LESSONS[activeTool];
+    var ui=UI_PACK[currentLang]||UI_PACK.en;
+    var useHi=(currentLang==='hi');
+    screen.replaceChildren();
+    var head=node('div','cb-learning-tables-head');
+    var back=node('button','cb-learning-back','‹');
+    back.type='button';
+    back.id='cbLearningLessonBack';
+    back.setAttribute('aria-label',ui.backLabel);
+    back.addEventListener('click',function(){closeLesson(true);});
+    var intro=node('div');
+    intro.append(node('div','cb-learning-kicker',ui.lessonKicker),node('h2','',toolTitle(activeTool)));
+    head.append(back,intro);
+    screen.append(head);
+
+    var concept=node('section','cb-learning-range-card cb-learning-lesson-summary');
+    concept.append(node('h3','',ui.methodTitle),node('p','',data[useHi?2:3]));
+    screen.append(concept);
+
+    var example=node('section','cb-learning-range-card cb-learning-lesson-example');
+    example.append(node('h3','',ui.exampleTitle),node('div','cb-lesson-equation',data[4]),node('p','cb-learning-tip',data[useHi?5:6]));
+    screen.append(example);
+    renderExtraLesson(activeTool,screen);
+
+    if(['square','root','cube','cuberoot'].indexOf(activeTool)!==-1){
+      var ref=node('details','cb-learning-range-card cb-learning-reference');
+      ref.appendChild(node('summary','',ui.refTitle));
+      var rows=node('div','cb-learning-multiples');
+      rows.dir='ltr';
+      for(var n=1;n<=30;n++){
+        var power=(activeTool==='cube'||activeTool==='cuberoot')?3:2;
+        var val=Math.pow(n,power);
+        var expr=activeTool==='root'?'√'+val:activeTool==='cuberoot'?'∛'+val:n+(power===2?'²':'³');
+        var row=node('div','cb-learning-multiple');
+        row.append(node('span','',expr),node('strong','',String(activeTool==='root'||activeTool==='cuberoot'?n:val)));
+        rows.append(row);
+      }
+      ref.append(rows);
+      screen.append(ref);
+    }
+
+    var activeKey=activeTool;
+    var practice=node('button','btn',ui.practiceBtn);
+    practice.type='button';
+    practice.addEventListener('click',function(){
+      closeLesson(false);
+      try{
+        window.parent.postMessage({type:'cb-learning-practice',tool:activeKey},'*');
+      }catch(e){}
+    });
+    screen.append(practice);
+  }
+  function openLesson(key,trigger){
+    if(key==='tables'){openTables();return;}
+    if(!LESSONS[key])return;
+    activeTool=key;
+    previousTrigger=trigger||null;
+    var grid=$('cbLearningToolGrid'),screen=$('cbLearningLessonScreen'),tables=$('cbLearningTablesScreen');
+    if(tables){tables.hidden=true;tables.setAttribute('aria-hidden','true');}
+    if(grid){grid.hidden=true;grid.setAttribute('aria-hidden','true');}
+    if(screen){
+      screen.hidden=false;
+      screen.removeAttribute('aria-hidden');
+      renderLesson();
+      var b=screen.querySelector('button');
+      if(b)try{b.focus({preventScroll:true});}catch(e){}
+    }
+    notifyHost();
+  }
+  function closeLesson(restoreFocus){
+    var grid=$('cbLearningToolGrid'),screen=$('cbLearningLessonScreen'),tables=$('cbLearningTablesScreen');
+    if(screen){screen.hidden=true;screen.setAttribute('aria-hidden','true');}
+    if(tables){tables.hidden=true;tables.setAttribute('aria-hidden','true');}
+    if(grid){grid.hidden=false;grid.removeAttribute('aria-hidden');}
+    activeTool=null;
+    if(restoreFocus!==false&&previousTrigger){
+      try{previousTrigger.focus({preventScroll:true});}catch(e){}
+    }
+    notifyHost();
+  }
+
+  function applyLang(code){
+    currentLang=normalizeLang(code);
+    var ui=UI_PACK[currentLang]||UI_PACK.en;
+    document.documentElement.lang=currentLang;
+    document.documentElement.dir=(currentLang==='ur')?'rtl':'ltr';
+
+    if($('cbLearningKicker'))$('cbLearningKicker').textContent=ui.kicker;
+    if($('cbLearningSubjectBadge'))$('cbLearningSubjectBadge').textContent=ui.subject;
+    if($('cbLearningFolderTitle'))$('cbLearningFolderTitle').textContent=ui.folderTitle;
+    if($('cbLearningFolderSub'))$('cbLearningFolderSub').textContent=ui.folderSub;
+
+    if($('learnTablesTitle'))$('learnTablesTitle').textContent=tTable('title');
+    if($('learnTablesText'))$('learnTablesText').textContent=tTable('text');
+    var screen=$('cbLearningTablesScreen');
+    if(screen){
+      var h2=screen.querySelector('.cb-learning-tables-head h2');
+      var sub=screen.querySelector('.cb-learning-tables-head p');
+      var kick=screen.querySelector('.cb-learning-kicker');
+      if(h2)h2.textContent=tTable('title');
+      if(sub)sub.textContent=tTable('subtitle');
+      if(kick)kick.textContent='🔢 '+tTable('learning');
+    }
+    if($('cbLearningTablesBack')){
+      $('cbLearningTablesBack').setAttribute('aria-label',tTable('back'));
+      $('cbLearningTablesBack').setAttribute('title',tTable('back'));
+    }
+    if($('cbLearningRangeLabel'))$('cbLearningRangeLabel').textContent=tTable('range');
+    updateRenderedTablesText();
+
+    document.querySelectorAll('[data-learning-tool]').forEach(function(btn){
+      var k=btn.getAttribute('data-learning-tool');
+      var b=btn.querySelector('b'),sm=btn.querySelector('small');
+      if(b)b.textContent=toolTitle(k);
+      if(sm)sm.textContent=ui.cardSub;
+    });
+
+    if($('learningFaqTitle'))$('learningFaqTitle').textContent=ui.faq;
+    if($('faqQ1'))$('faqQ1').textContent=ui.q1;
+    if($('faqA1'))$('faqA1').textContent=ui.a1;
+    if($('faqQ2'))$('faqQ2').textContent=ui.q2;
+    if($('faqA2'))$('faqA2').textContent=ui.a2;
+    if($('faqQ3'))$('faqQ3').textContent=ui.q3;
+    if($('faqA3'))$('faqA3').textContent=ui.a3;
+
+    if(activeTool&&activeTool!=='tables')renderLesson();
+    notifyHost();
+  }
+
+  /* Bind events */
+  $('cbLearningTablesEntry').addEventListener('click',function(e){e.preventDefault();openTables();});
+  $('cbLearningTablesBack').addEventListener('click',function(e){e.preventDefault();closeTables();});
+  $('cbLearningTablePicker').addEventListener('click',function(e){
+    var btn=e.target&&e.target.closest?e.target.closest('[data-table-number]'):null;
+    if(!btn)return;
+    var n=Number(btn.getAttribute('data-table-number'));
+    var bounds=RANGES[activeRange];
+    if(!Number.isInteger(n)||n<bounds[0]||n>bounds[1])return;
+    activeTable=n;
+    updatePicker();
+    renderTableFocus();
+    notifyHost();
+  });
+  $('cbLearningTablesScreen').addEventListener('click',function(e){
+    var btn=e.target&&e.target.closest?e.target.closest('[data-table-range]'):null;
+    if(!btn)return;
+    var next=btn.getAttribute('data-table-range');
+    if(!RANGES[next])return;
+    activeRange=next;
+    activeTable=RANGES[next][0];
+    updateRanges();
+    renderTablePicker();
+    notifyHost();
+  });
+  $('cbTableNext').addEventListener('click',function(){if(activeTable<60)chooseTable(activeTable+1);});
+  $('cbTablePrev').addEventListener('click',function(){if(activeTable>1)chooseTable(activeTable-1);});
+  $('cbTablePracticeOne').addEventListener('click',function(){startTablePractice('tables');});
+  $('cbTablePracticeMixed').addEventListener('click',function(){startTablePractice('mixed');});
+  document.querySelectorAll('[data-learning-tool]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      openLesson(btn.getAttribute('data-learning-tool'),btn);
+    });
+  });
+  document.querySelectorAll('#cbLearningFaqSection details').forEach(function(d){
+    d.addEventListener('toggle',function(){setTimeout(notifyHost,20);});
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&isToolOpen()){
+      e.preventDefault();
+      closeLesson(true);
+    }
+  });
+
+  window.addEventListener('message',function(e){
+    if(window.parent!==window && e.source!==window.parent)return;
+    var d=e.data;
+    if(!d||typeof d!=='object')return;
+    if(d.type==='cb-learning-settings'||d.type==='cb-community-settings'||d.type==='cb-ai-chat-settings'){
+      if(d.lang)applyLang(d.lang);
+      if(typeof d.dark==='boolean')applyTheme(d.dark,d.tokens);
+    }
+    if(d.type==='cb-learning-open'&&d.tool){
+      var el=document.querySelector('[data-learning-tool="'+d.tool+'"]');
+      openLesson(d.tool,el);
+    }
+    if(d.type==='cb-learning-close'||d.type==='cb-learning-back'){
+      closeLesson(true);
+    }
+  });
+
+  window.addEventListener('storage',function(e){
+    if(e.key==='cbLang'&&e.newValue)applyLang(e.newValue);
+    if(e.key==='cbDark')applyTheme(e.newValue==='1');
+  });
+  window.addEventListener('resize',function(){requestAnimationFrame(notifyHost);},{passive:true});
+  window.addEventListener('load',function(){setTimeout(notifyHost,60);},{once:true});
+  if(window.ResizeObserver){
+    var learningResizeObserver=new ResizeObserver(function(){notifyHost();});
+    var learningRoot=document.querySelector('.learning-root');
+    if(learningRoot)learningResizeObserver.observe(learningRoot);
+  }
+
+  function boot(){
+    updateRanges();
+    var p=new URLSearchParams(location.search);
+    var initLang=p.get('lang');
+    var initDark=p.get('dark');
+    var initTool=p.get('tool');
+    try{
+      if(!initLang)initLang=localStorage.getItem('cbLang')||'hi';
+      if(initDark===null)initDark=localStorage.getItem('cbDark');
+    }catch(e){}
+    applyTheme(initDark==='1'||initDark==='true');
+    applyLang(initLang||'hi');
+    if(initTool)openLesson(initTool,null);
+    try{window.parent.postMessage({type:'cb-learning-ready'},'*');}catch(e){}
+    setTimeout(notifyHost,50);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script>
+</body>
+</html>
