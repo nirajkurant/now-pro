@@ -2508,7 +2508,7 @@ body{height:auto!important;min-height:100%;overflow-x:clip!important;overflow-y:
 </div></div></div>
 </div>
 <div aria-labelledby="cbTabLearning" class="cb-main-tab-panel" hidden="" id="cbPanelLearning" role="tabpanel">
-<iframe id="cbLearningFrame" src="learning.html" title="NowPro Learning" sandbox="allow-scripts allow-same-origin" style="display:block;width:100%;border:none;border-radius:20px;background:transparent;min-height:680px" loading="lazy"></iframe>
+<iframe id="cbLearningFrame" src="learning.html" title="NowPro Learning" sandbox="allow-scripts allow-same-origin" style="display:block;width:100%;border:none;border-radius:20px;background:transparent;min-height:0" loading="lazy"></iframe>
 </div></section>
 <section class="screen" id="practice"><button aria-label="Back to Home" class="back" onclick="goHome()"><span id="back">Home पर जाएँ</span></button><div class="card" id="settings"></div><div class="card q"><div class="head"><span class="pill" id="pill"></span><span class="timer-wrap"><button aria-label="Timer information" class="info-practice" onclick="showTimerInfo(this)" title="Timer information" type="button">i</button><span class="timer" id="timer"></span></span></div><div id="question"></div><div class="feedback" id="feedback"></div><div class="stats"><div class="stat"><b id="c">0</b><span id="sc">सही</span></div><div class="stat"><b id="w">0</b><span id="sw">गलत</span></div><div class="stat"><b id="acc">0%</b><span id="sa">सटीकता</span></div></div><div class="streak-live" id="liveStreak">🔥 Streak: 0</div></div><div class="card" id="attemptsCard"></div></section>
 <footer class="site-footer">
